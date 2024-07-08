@@ -30,6 +30,15 @@ class Outcomes(YamlAbleEnum):
     DISCONNECTED: int = 2
     UNDETERMINED: int = 3
 
+    # SAV Outcomes
+    FALSE_POSITIVE: int = 0 # Incorrectly block legitimate packet from legitimate sender
+    FALSE_NEGATIVE: int = 1 # Incorrectly allows illegitimate packet from attacker
+    TRUE_POSITIVE: int = 2  # Correctly allows legitimate packet from legitimate sender
+    TRUE_NEGATIVE: int = 3  # Correctly blocks illegitimate packet from attacker
+    # Non-SAV Outcomes
+    NOT_ON_PATH: int = 4
+    ON_ATTACKER_PATH: int = 5
+    ON_VICTIM_PATH: int = 6
 
 class Relationships(YamlAbleEnum):
     # Must start at one for the priority
@@ -86,6 +95,7 @@ class Prefixes(YamlAbleEnum):
     PREFIX1: str = "1.2.0.0/24"
     PREFIX2: str = "1.3.0.0/23"
     PREFIX3: str = "1.4.0.0/22"
+    PREFIX4: str = "1.5.0.0/21"
 
 
 class ASNs(YamlAbleEnum):

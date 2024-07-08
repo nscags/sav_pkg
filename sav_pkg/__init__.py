@@ -1,11 +1,11 @@
 from . import enums
-from . import scenarios
+from . import simluation_framework
 from . import tests
 from . import utils
 
 __all__ = [
     "enums",
-    "scenarios",
+    "simluation_framework",
     "tests",
     "utils",
 ]

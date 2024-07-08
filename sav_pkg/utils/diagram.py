@@ -4,19 +4,19 @@ from typing import Optional, TYPE_CHECKING
 from graphviz import Digraph
 import ipaddress
 
-from bgpy.enums import Outcomes
 from bgpy.simulation_engine import BGPPolicy
 from bgpy.simulation_engine import BGPSimplePolicy
 from bgpy.simulation_engine import BaseSimulationEngine
-
 from bgpy.simulation_framework import Scenario
+
+from sav_pkg.enums import Outcomes
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
     from bgpy.simulation_framework.metric_tracker import MetricTracker
 
 
-class SAVDiagram:
+class SAVDiagram():
     """Creates a diagram of an AS graph with traceback"""
 
     def __init__(self):
@@ -48,31 +48,24 @@ class SAVDiagram:
     def _add_legend(self, traceback: dict[int, int], scenario: Scenario) -> None:
         """Adds legend to the graph with outcome counts"""
 
-        attacker_success_count = sum(
-            1 for x in traceback.values() if x == Outcomes.ATTACKER_SUCCESS.value
+        false_negative_count = sum(
+            1 for x in traceback.values() if x == Outcomes.FALSE_NEGATIVE.value
         )
-        victim_success_count = sum(
-            1 for x in traceback.values() if x == Outcomes.VICTIM_SUCCESS.value
-        )
-        disconnect_count = sum(
-            1 for x in traceback.values() if x == Outcomes.DISCONNECTED.value
+        true_positive_count = sum(
+            1 for x in traceback.values() if x == Outcomes.TRUE_POSITIVE.value
         )
         html = f"""<
               <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
               <TR>
-          <TD COLSPAN="2" BORDER="0">(For most specific prefix only)</TD>
+          <TD COLSPAN="2" BORDER="0">(*** Placeholder ***)</TD>
               </TR>
               <TR>
-          <TD BGCOLOR="#ff6060:white">&#128520; ATTACKER SUCCESS &#128520;</TD>
-                <TD>{attacker_success_count}</TD>
+          <TD BGCOLOR="#ff6060:white">&#128520; FALSE NEGATIVE &#128520;</TD>
+                <TD>{false_negative_count}</TD>
               </TR>
               <TR>
-         <TD BGCOLOR="#90ee90:white">&#128519; VICTIM SUCCESS &#128519;</TD>
-                <TD>{victim_success_count}</TD>
-              </TR>
-              <TR>
-                <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
-                <TD>{disconnect_count}</TD>
+         <TD BGCOLOR="#90ee90:white">&#128519; TRUE POSITIVE &#128519;</TD>
+                <TD>{true_positive_count}</TD>
               </TR>
         """
 
@@ -163,6 +156,8 @@ class SAVDiagram:
             asn_str = "&#128519;" + asn_str + "&#128519;"
         elif as_obj.asn in scenario.attacker_asns:
             asn_str = "&#128520;" + asn_str + "&#128520;"
+        elif as_obj.asn in scenario.reflector_asns:
+            asn_str = "&#128526;" + asn_str + "&#128526;"
 
         html = f"""<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="{colspan}">
@@ -239,14 +234,19 @@ class SAVDiagram:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
             if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
                 kwargs["shape"] = "doubleoctagon"
+        # obj is the reflector
+        elif as_obj.asn in scenario.reflector_asns:
+            kwargs.update({"fillcolor": "#99d9ea", "shape": "doublecircle"})
+            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+                kwargs["shape"] = "doubleoctagon"
 
-        # As obj is not attacker or victim
+        # As obj is not attacker or victim or reflector
         else:
-            if traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS.value:
-                kwargs.update({"fillcolor": "#ff6060:yellow"})
-            elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS.value:
+            if traceback[as_obj.asn] == Outcomes.ON_ATTACKER_PATH.value:
+                kwargs.update({"fillcolor": "#ff6060:white"})
+            if traceback[as_obj.asn] == Outcomes.ON_VICTIM_PATH.value:
                 kwargs.update({"fillcolor": "#90ee90:white"})
-            elif traceback[as_obj.asn] == Outcomes.DISCONNECTED.value:
+            elif traceback[as_obj.asn] == Outcomes.NOT_ON_PATH.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
             if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:

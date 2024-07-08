@@ -5,11 +5,11 @@ from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
 from bgpy.simulation_framework.metric_tracker.metric_tracker import MetricTracker
 from bgpy.simulation_framework.as_graph_analyzers import (
     BaseASGraphAnalyzer,
-    ASGraphAnalyzer,
 )
 from bgpy.simulation_framework import ScenarioConfig
 
 from sav_pkg.utils.diagram import SAVDiagram
+from sav_pkg.simluation_framework import SAVASGraphAnalyzer
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,5 +26,5 @@ class EngineRunConfig:
     ASGraphCls: type[ASGraph] = CAIDAASGraph
     SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine  # type: ignore
     MetricTrackerCls: type[MetricTracker] = MetricTracker
-    ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer
+    ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = SAVASGraphAnalyzer
     DiagramCls: type[SAVDiagram] = SAVDiagram
