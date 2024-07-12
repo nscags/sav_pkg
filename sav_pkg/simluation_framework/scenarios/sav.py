@@ -105,7 +105,7 @@ class SAVScenario(Scenario):
         # This is coming from YAML, do not recalculate
         if override_reflector_asns is not None:
             reflector_asns = override_reflector_asns
-        # Reuse the victim from the last scenario for comparability
+        # Reuse the reflectors from the last scenario for comparability
         elif prev_scenario:
             reflector_asns = prev_scenario.reflector_asns
         # This is being initialized for the first time
@@ -121,7 +121,7 @@ class SAVScenario(Scenario):
                 )
             )
 
-        err = "Number of victims is different from victim length"
+        err = "Number of reflectors is different from reflectors length"
         assert len(reflector_asns) == self.scenario_config.num_reflectors, err
 
         return reflector_asns
@@ -132,7 +132,7 @@ class SAVScenario(Scenario):
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
-        """Returns possible victim ASNs, defaulted from config"""
+        """Returns possible reflectors ASNs, defaulted from config"""
 
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.reflector_subcategory_attr
@@ -140,7 +140,7 @@ class SAVScenario(Scenario):
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
-        # Remove attackers from possible victims
+        # Remove attackers and victims from possible reflectors
         possible_asns = possible_asns.difference(self.attacker_asns)
         possible_asns = possible_asns.difference(self.victim_asns)
         return possible_asns

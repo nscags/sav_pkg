@@ -31,9 +31,9 @@ as_graph_info_001 = ASGraphInfo(
             CPLink(provider_asn=8, customer_asn=2),
             CPLink(provider_asn=9, customer_asn=4),
             CPLink(provider_asn=10, customer_asn=ASNs.VICTIM.value),
-            CPLink(provider_asn=ASNs.REFLECTOR.value, customer_asn=8),
-            CPLink(provider_asn=ASNs.REFLECTOR.value, customer_asn=9),
-            CPLink(provider_asn=ASNs.REFLECTOR.value, customer_asn=10),
+            CPLink(provider_asn=11, customer_asn=8),
+            CPLink(provider_asn=11, customer_asn=9),
+            CPLink(provider_asn=11, customer_asn=10),
             CPLink(provider_asn=12, customer_asn=10),
         ]
     ),
@@ -41,6 +41,6 @@ as_graph_info_001 = ASGraphInfo(
         (ASNs.ATTACKER.value, ASNs.VICTIM.value),
         (1, 2, 3, 4),
         (5, 8, 9, 10),
-        (ASNs.REFLECTOR.value, 12),
+        (11, 12),
     ),
 )

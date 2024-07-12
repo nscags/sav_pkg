@@ -49,11 +49,32 @@ class SAVDiagram():
         """Adds legend to the graph with outcome counts"""
 
         false_negative_count = sum(
-            1 for x in traceback.values() if x == Outcomes.FALSE_NEGATIVE.value
+            1 for x in traceback.values() if (x == Outcomes.FALSE_NEGATIVE.value) or 
+                                             (x == Outcomes.ALLOW_ALL.value) or
+                                             (x == Outcomes.FAILURE.value)
         )
         true_positive_count = sum(
-            1 for x in traceback.values() if x == Outcomes.TRUE_POSITIVE.value
+            1 for x in traceback.values() if (x == Outcomes.TRUE_POSITIVE.value) or 
+                                             (x == Outcomes.ALLOW_ALL.value) or
+                                             (x == Outcomes.SUCCESS.value) 
         )
+        false_positive_count = sum(
+            1 for x in traceback.values() if (x == Outcomes.FALSE_POSITIVE.value) or 
+                                             (x == Outcomes.BLOCK_ALL.value) or
+                                             (x == Outcomes.FAILURE.value)
+        )
+        true_negative_count = sum(
+            1 for x in traceback.values() if (x == Outcomes.TRUE_NEGATIVE.value) or 
+                                             (x == Outcomes.BLOCK_ALL.value) or
+                                             (x == Outcomes.SUCCESS.value)
+        )
+        # not_on_path_count = sum(
+        #     1 for x in traceback.values() if x == Outcomes.NOT_ON_PATH.value
+        # )
+        #   <TR>
+        #     <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
+        #     <TD>{not_on_path_count}</TD>
+        #   </TR>
         html = f"""<
               <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
               <TR>
@@ -64,8 +85,16 @@ class SAVDiagram():
                 <TD>{false_negative_count}</TD>
               </TR>
               <TR>
-         <TD BGCOLOR="#90ee90:white">&#128519; TRUE POSITIVE &#128519;</TD>
+          <TD BGCOLOR="#90ee90:white">&#128519; TRUE POSITIVE &#128519;</TD>
                 <TD>{true_positive_count}</TD>
+              </TR>
+              <TR>
+          <TD BGCOLOR="#90ee90:white">&#128519; TRUE NEGATIVE &#128519;</TD>
+                <TD>{true_negative_count}</TD>
+              </TR>
+              <TR>
+          <TD BGCOLOR="#90ee90:white">&#128519; FALSE POSITIVE &#128519;</TD>
+                <TD>{false_positive_count}</TD>
               </TR>
         """
 
@@ -156,8 +185,8 @@ class SAVDiagram():
             asn_str = "&#128519;" + asn_str + "&#128519;"
         elif as_obj.asn in scenario.attacker_asns:
             asn_str = "&#128520;" + asn_str + "&#128520;"
-        elif as_obj.asn in scenario.reflector_asns:
-            asn_str = "&#128526;" + asn_str + "&#128526;"
+        # elif as_obj.asn in scenario.reflector_asns:
+        #     asn_str = "&#128526;" + asn_str + "&#128526;"
 
         html = f"""<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="{colspan}">
@@ -246,7 +275,7 @@ class SAVDiagram():
                 kwargs.update({"fillcolor": "#ff6060:white"})
             if traceback[as_obj.asn] == Outcomes.ON_VICTIM_PATH.value:
                 kwargs.update({"fillcolor": "#90ee90:white"})
-            elif traceback[as_obj.asn] == Outcomes.NOT_ON_PATH.value:
+            elif traceback[as_obj.asn] == Outcomes.DISCONNECTED.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
             if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:

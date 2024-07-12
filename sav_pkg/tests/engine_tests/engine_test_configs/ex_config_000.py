@@ -2,7 +2,7 @@ from frozendict import frozendict
 from .as_graph_info_000 import as_graph_info_000
 
 from bgpy.simulation_engine import (
-    BGPSimplePolicy,
+    BGP,
 )
 
 from sav_pkg.tests import EngineTestConfig
@@ -20,7 +20,7 @@ ex_config_000 = EngineTestConfig(
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
-        BasePolicyCls=BGPSimplePolicy,
+        BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),

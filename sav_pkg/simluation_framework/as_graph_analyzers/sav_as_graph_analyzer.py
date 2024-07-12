@@ -36,6 +36,8 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
         }
         self.data_plane_tracking: bool = data_plane_tracking
 
+
+
     def _get_reflector_ann(self, as_obj: AS) -> Optional["Ann"]:
         """
         Get all reflector announcements for each AS in graph
@@ -45,7 +47,10 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
                 return ann
         return None
 
-    def analyze(self) -> dict[int, dict[int, tuple[int]]]:
+
+
+
+    def analyze(self) -> dict[int, dict[int, int]]:
         """
         data plane analysis -> outcomes
         """
@@ -60,19 +65,13 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
 
         for as_obj in self.engine.as_graph:
             if self._data_plane_outcomes.get(as_obj.asn) is None:
-                self._data_plane_outcomes[as_obj.asn] = Outcomes.NOT_ON_PATH.value
+                self._data_plane_outcomes[as_obj.asn] = Outcomes.DISCONNECTED.value
     
         return self.outcomes
 
     ####################
     # Data plane funcs #
     ####################
-
-    # TODO: Traceback from attacker to reflector
-    #       and from victim (legit_sender) to reflector
-    #       at each AS check if it performs SAV
-    #       if so, run SAV and see if packet would be filtered
-    #       similar to what is done now for "data plane" tracking
 
     def _get_as_outcome_data_plane(self, as_obj: AS) -> int:
         """
@@ -87,44 +86,67 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
         while True:
             reflector_ann = self._reflector_ann_dict[as_obj]
             outcome_int = self._determine_as_outcome_data_plane(as_obj, reflector_ann, spoofed_packet)
-
-            self._data_plane_outcomes[as_obj.asn] = outcome_int
             
+            # Instead of addition and only reflectors
+            # non-reflector ASes can deploy SAV
+            # enumerate the multiple outcomes
+            # have a function to handle if an as_obj already has an outcome
+
+            if self._data_plane_outcomes.get(as_obj.asn):
+                # a) have a function to handle multiple outcome
+                # b) stick with the addition based method
+                if self._data_plane_outcomes.get(as_obj.asn):
+                    self._data_plane_outcomes[as_obj.asn] += outcome_int
+                else:
+                    self._data_plane_outcomes[as_obj.asn] = outcome_int
+            
+            # possibly want to implement more check to see if we should continue traceback
+            # for example if a packet gets filtered then stop traceback
             if as_obj.asn in self.scenario.reflector_asns:
                 break
             else:
                 as_obj = self.engine.as_graph.as_dict[reflector_ann.next_hop_asn]
 
+            # if as_obj.asn in self.scenario.reflector_asns:
+            #     if self._data_plane_outcomes.get(as_obj.asn):
+            #         self._data_plane_outcomes[as_obj.asn] += outcome_int
+            #     else:
+            #         self._data_plane_outcomes[as_obj.asn] = outcome_int
+            #     break
+            # else:
+            #     self._data_plane_outcomes[as_obj.asn] = outcome_int
+            #     as_obj = self.engine.as_graph.as_dict[reflector_ann.next_hop_asn]
+
     def _determine_as_outcome_data_plane(
         self, as_obj: AS, reflector_ann: Optional["Ann"], spoofed_packet
     ) -> int:
         """
-        check if AS is deploying SAV
-        run SAV policy
-        determine outcome
+        Check if as_obj is deploying SAV
+        if yes:
+          run SAV policy and determine outcome
+        if no:
+          forward packet to next AS
         """
 
-        # Check if as_obj is deploying SAV
-        # if yes:
-        #   run SAV policy and determine outcome
-        # if no:
-        #   forward packet to next AS
-
-        # Attacker and Victim ASes (likely not deploying SAV)
+        # Attacker and Victim ASes (defualt not deploying SAV)
         if as_obj.asn in self.scenario.attacker_asns:
             return Outcomes.ON_ATTACKER_PATH.value
         elif as_obj.asn in self.scenario.victim_asns:
-            return Outcomes.ON_ATTACKER_PATH.value
+            return Outcomes.ON_VICTIM_PATH.value
         
-        # Determine reflector outcome (likely always deploying SAV)
-        elif as_obj.asn in self.scenario.reflector_asns:
-            # *** deploy SAV policy ***
-            if spoofed_packet:
+        # ASes deploying SAV (reflectors by defualt)
+        elif as_obj.policy.source_address_validation_policy:
+            validated = as_obj.policy.source_address_validation()
+            if validated and spoofed_packet:
                 return Outcomes.FALSE_NEGATIVE.value
-            elif not spoofed_packet:
+            elif validated and not spoofed_packet:
                 return Outcomes.TRUE_POSITIVE.value
+            elif not validated and spoofed_packet:
+                return Outcomes.TRUE_NEGATIVE.value
+            elif not validated and not spoofed_packet:
+                return Outcomes.FALSE_POSITIVE.value
             
-        # ASes along path
+        # ASes along path not deploying SAV
         else:
             if spoofed_packet:
                 return Outcomes.ON_ATTACKER_PATH.value

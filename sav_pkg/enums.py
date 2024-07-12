@@ -25,20 +25,24 @@ class YamlAbleEnum(Enum):
 
 
 class Outcomes(YamlAbleEnum):
-    ATTACKER_SUCCESS: int = 0
-    VICTIM_SUCCESS: int = 1
-    DISCONNECTED: int = 2
-    UNDETERMINED: int = 3
-
     # SAV Outcomes
-    FALSE_POSITIVE: int = 0 # Incorrectly block legitimate packet from legitimate sender
-    FALSE_NEGATIVE: int = 1 # Incorrectly allows illegitimate packet from attacker
-    TRUE_POSITIVE: int = 2  # Correctly allows legitimate packet from legitimate sender
-    TRUE_NEGATIVE: int = 3  # Correctly blocks illegitimate packet from attacker
+    FALSE_POSITIVE: int = 1 # Incorrectly block legitimate packet from legitimate sender
+    FALSE_NEGATIVE: int = 2 # Incorrectly allows illegitimate packet from attacker
+    TRUE_POSITIVE: int = 4  # Correctly allows legitimate packet from legitimate sender
+    TRUE_NEGATIVE: int = 7  # Correctly blocks illegitimate packet from attacker
+
+    # Multiple SAV Outcomes
+    # Since both attacker and victim send packets
+    # ASes will possibly have two outcomes (one for attacker packet, one for victim packet)
+    BLOCK_ALL: int = 8 # Both packets were blocked (FP + TN)
+    ALLOW_ALL: int = 6 # Both packets were allowed (TP + FN)
+    SUCCESS: int = 11  # Only legit packet allowed (TP + TN)
+    FAILURE: int = 3   # Only spoofed packet allowed (FP + FN)
+
     # Non-SAV Outcomes
-    NOT_ON_PATH: int = 4
-    ON_ATTACKER_PATH: int = 5
-    ON_VICTIM_PATH: int = 6
+    DISCONNECTED: int = 5     # ASes which do not recieve a packet (filtered by AS on path)
+    ON_ATTACKER_PATH: int = 9 # ASes on path from attacker to reflector
+    ON_VICTIM_PATH: int = 10  # ASes on path from victim to reflector
 
 class Relationships(YamlAbleEnum):
     # Must start at one for the priority
@@ -92,10 +96,9 @@ class Prefixes(YamlAbleEnum):
     PREFIX: str = "1.2.0.0/16"
     SUBPREFIX: str = "1.2.3.0/24"
 
-    PREFIX1: str = "1.2.0.0/24"
-    PREFIX2: str = "1.3.0.0/23"
-    PREFIX3: str = "1.4.0.0/22"
-    PREFIX4: str = "1.5.0.0/21"
+    PREFIX1: str = "1.0.0.0/24"
+    PREFIX2: str = "1.1.0.0/24"
+    PREFIX3: str = "1.2.0.0/24"
 
 
 class ASNs(YamlAbleEnum):

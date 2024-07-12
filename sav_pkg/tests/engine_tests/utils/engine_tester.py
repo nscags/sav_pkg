@@ -3,11 +3,11 @@ from pathlib import Path
 import pickle
 from pprint import pformat
 
-from bgpy.enums import Outcomes
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import MetricTracker
 from bgpy.simulation_framework import Scenario
 
+from sav_pkg.enums import Outcomes
 from sav_pkg.utils import EngineRunner
 
 
