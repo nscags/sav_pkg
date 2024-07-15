@@ -49,22 +49,22 @@ class SAVDiagram():
         """Adds legend to the graph with outcome counts"""
 
         false_negative_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.FALSE_NEGATIVE.value) or 
+            1 for x in traceback.values() if (x == Outcomes.FALSE_NEGATIVE_DISCONNECTED.value) or 
                                              (x == Outcomes.ALLOW_ALL.value) or
                                              (x == Outcomes.FAILURE.value)
         )
         true_positive_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.TRUE_POSITIVE.value) or 
+            1 for x in traceback.values() if (x == Outcomes.TRUE_POSITIVE_DISCONNECTED.value) or 
                                              (x == Outcomes.ALLOW_ALL.value) or
                                              (x == Outcomes.SUCCESS.value) 
         )
         false_positive_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.FALSE_POSITIVE.value) or 
+            1 for x in traceback.values() if (x == Outcomes.FALSE_POSITIVE_DISCONNECTED.value) or 
                                              (x == Outcomes.BLOCK_ALL.value) or
                                              (x == Outcomes.FAILURE.value)
         )
         true_negative_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.TRUE_NEGATIVE.value) or 
+            1 for x in traceback.values() if (x == Outcomes.TRUE_NEGATIVE_DISCONNECTED.value) or 
                                              (x == Outcomes.BLOCK_ALL.value) or
                                              (x == Outcomes.SUCCESS.value)
         )
@@ -210,29 +210,31 @@ class SAVDiagram():
                       </TR>"""
 
             for ann in local_rib_anns:
-                mask = "/" + ann.prefix.split("/")[-1]
-                path = ", ".join(str(x) for x in ann.as_path)
-                ann_help = ""
-                if getattr(ann, "blackhole", False):
-                    ann_help = "&#10041;"
-                elif getattr(ann, "preventive", False):
-                    ann_help = "&#128737;"
-                elif any(x in ann.as_path for x in scenario.attacker_asns):
-                    ann_help = "&#128520;"
-                elif any(x == ann.origin for x in scenario.victim_asns):
-                    ann_help = "&#128519;"
-                elif any(x == ann.origin for x in scenario.reflector_asns):
-                    ann_help = "&#128526;"
-                else:
-                    raise Exception(f"Not valid ann for rib? {ann}")
+                if (ann.as_path[-1] in scenario.attacker_asns or 
+                    ann.as_path[-1] in scenario.victim_asns):
+                    mask = "/" + ann.prefix.split("/")[-1]
+                    path = ", ".join(str(x) for x in ann.as_path)
+                    ann_help = ""
+                    if getattr(ann, "blackhole", False):
+                        ann_help = "&#10041;"
+                    elif getattr(ann, "preventive", False):
+                        ann_help = "&#128737;"
+                    elif any(x in ann.as_path for x in scenario.attacker_asns):
+                        ann_help = "&#128520;"
+                    elif any(x == ann.origin for x in scenario.victim_asns):
+                        ann_help = "&#128519;"
+                    elif any(x == ann.origin for x in scenario.reflector_asns):
+                        ann_help = "&#128526;"
+                    else:
+                        raise Exception(f"Not valid ann for rib? {ann}")
 
-                html += f"""<TR>
-                            <TD>{mask}</TD>
-                            <TD>{path}</TD>
-                            <TD>{ann_help}</TD>"""
-                if display_next_hop_asn:
-                    html += f"""<TD>{ann.next_hop_asn}</TD>"""
-                html += """</TR>"""
+                    html += f"""<TR>
+                                <TD>{mask}</TD>
+                                <TD>{path}</TD>
+                                <TD>{ann_help}</TD>"""
+                    if display_next_hop_asn:
+                        html += f"""<TD>{ann.next_hop_asn}</TD>"""
+                    html += """</TR>"""
         html += "</TABLE>>"
         return html
 
@@ -264,17 +266,34 @@ class SAVDiagram():
             if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
                 kwargs["shape"] = "doubleoctagon"
         # obj is the reflector
-        elif as_obj.asn in scenario.reflector_asns:
-            kwargs.update({"fillcolor": "#99d9ea", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
-                kwargs["shape"] = "doubleoctagon"
+        # elif as_obj.asn in scenario.reflector_asns:
+        #     kwargs.update({"fillcolor": "#99d9ea", "shape": "doublecircle"})
+        #     if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+        #         kwargs["shape"] = "doubleoctagon"
 
         # As obj is not attacker or victim or reflector
         else:
-            if traceback[as_obj.asn] == Outcomes.ON_ATTACKER_PATH.value:
+            if traceback[as_obj.asn] == Outcomes.BLOCK_ALL.value:
+                kwargs.update({"fillcolor": "#90ee90:#ff6060"})
+            if traceback[as_obj.asn] == Outcomes.ALLOW_ALL.value:
+                kwargs.update({"fillcolor": "#ff6060:#90ee90"})
+            if traceback[as_obj.asn] == Outcomes.FAILURE.value:
+                kwargs.update({"fillcolor": "#ff6060:#ff6060"})
+            if traceback[as_obj.asn] == Outcomes.SUCCESS.value:
+                kwargs.update({"fillcolor": "#90ee90:#90ee90"})
+            if traceback[as_obj.asn] == Outcomes.FALSE_NEGATIVE_DISCONNECTED.value:
                 kwargs.update({"fillcolor": "#ff6060:white"})
-            if traceback[as_obj.asn] == Outcomes.ON_VICTIM_PATH.value:
+            if traceback[as_obj.asn] == Outcomes.FALSE_POSITIVE_DISCONNECTED.value:
+                kwargs.update({"fillcolor": "white:#ff6060"})
+            if traceback[as_obj.asn] == Outcomes.TRUE_NEGATIVE_DISCONNECTED.value:
                 kwargs.update({"fillcolor": "#90ee90:white"})
+            if traceback[as_obj.asn] == Outcomes.TRUE_POSITIVE_DISCONNECTED.value:
+                kwargs.update({"fillcolor": "white:#90ee90"})
+
+            # if traceback[as_obj.asn] == Outcomes.ON_ATTACKER_PATH.value:
+            #     kwargs.update({"fillcolor": "grey:white"})
+            # elif traceback[as_obj.asn] == Outcomes.ON_VICTIM_PATH.value:
+            #     kwargs.update({"fillcolor": "grey:white"})
             elif traceback[as_obj.asn] == Outcomes.DISCONNECTED.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
