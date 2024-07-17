@@ -49,8 +49,8 @@ class Outcomes(YamlAbleEnum):
     VICTIM: int = 16       # Victim AS,   ^^^
 
     # ASes not deploying SAV
-    ON_ATTACKER_PATH: int = 16
-    ON_VICTIM_PATH: int = 17
+    ON_ATTACKER_PATH: int = 18
+    ON_VICTIM_PATH: int = 19
 
 class Relationships(YamlAbleEnum):
     # Must start at one for the priority

@@ -142,7 +142,7 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
             return Outcomes.VICTIM.value
         
         # ASes deploying SAV (reflectors by defualt)
-        elif as_obj.policy.source_address_validation_policy:
+        elif as_obj.policy.source_address_validation_policy is not None:
             validated = as_obj.policy.source_address_validation()
             if validated and spoofed_packet:
                 return Outcomes.FALSE_NEGATIVE.value
