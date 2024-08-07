@@ -69,12 +69,15 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
         elif as_obj.asn in self.scenario.victim_asns:
             spoofed_packet = False
 
+        source = as_obj.asn
+
         # as_obj == attacker or victim
         for ann in as_obj.policy._local_rib.data.values():
             # ann is for specific as_obj
             if ann.as_path[-1] in self.scenario.reflector_asns:
                 dst = ann.as_path[-1]
                 tmp_as_obj = as_obj
+                prev_hop = None
 
                 while True:
                     # Get announcement for dst at each AS along path
@@ -93,14 +96,20 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
                                 if tmp_as_obj.asn == dst:
                                     break
                                 else:
+                                    prev_hop = tmp_as_obj
                                     tmp_as_obj = self.engine.as_graph.as_dict[tmp_ann.next_hop_asn]
                         # Outcome not in outcome dict
                         else:
-                            outcome_int = self._determine_as_outcome_data_plane(tmp_as_obj, tmp_ann, spoofed_packet)
+                            outcome_int = self._determine_as_outcome_data_plane(tmp_as_obj, 
+                                                                                tmp_ann, 
+                                                                                spoofed_packet, 
+                                                                                prev_hop, 
+                                                                                source)
                             self._attacker_data_plane_outcomes[tmp_as_obj.asn] = outcome_int
                             if tmp_as_obj.asn == dst:
                                 break
                             else:
+                                prev_hop = tmp_as_obj
                                 tmp_as_obj = self.engine.as_graph.as_dict[tmp_ann.next_hop_asn]
                             
                     elif not spoofed_packet:
@@ -114,18 +123,24 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
                                 if tmp_as_obj.asn == dst:
                                     break
                                 else:
+                                    prev_hop = tmp_as_obj
                                     tmp_as_obj = self.engine.as_graph.as_dict[tmp_ann.next_hop_asn]
                         # Outcome not in dict
                         else:
-                            outcome_int = self._determine_as_outcome_data_plane(tmp_as_obj, tmp_ann, spoofed_packet)
+                            outcome_int = self._determine_as_outcome_data_plane(tmp_as_obj, 
+                                                                                tmp_ann, 
+                                                                                spoofed_packet, 
+                                                                                prev_hop, 
+                                                                                source)
                             self._victim_data_plane_outcomes[tmp_as_obj.asn] = outcome_int
                             if tmp_as_obj.asn == dst:
                                 break
                             else:
+                                prev_hop = tmp_as_obj
                                 tmp_as_obj = self.engine.as_graph.as_dict[tmp_ann.next_hop_asn]
                             
     def _determine_as_outcome_data_plane(
-        self, as_obj: AS, ann: Optional["Ann"], spoofed_packet
+        self, as_obj: AS, ann: Optional["Ann"], spoofed_packet, prev_hop, source
     ) -> int:
         """
         Check if as_obj is deploying SAV
@@ -143,7 +158,7 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
         
         # ASes deploying SAV (reflectors by defualt)
         elif as_obj.policy.source_address_validation_policy is not None:
-            validated = as_obj.policy.source_address_validation()
+            validated = as_obj.policy.source_address_validation(as_obj, prev_hop, source)
             if validated and spoofed_packet:
                 return Outcomes.FALSE_NEGATIVE.value
             elif validated and not spoofed_packet:
@@ -153,7 +168,7 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
             elif not validated and not spoofed_packet:
                 return Outcomes.FALSE_POSITIVE.value
             
-        # ASes along path not deploying SAV
+        # # ASes along path not deploying SAV
         else:
             if spoofed_packet:
                 return Outcomes.FALSE_NEGATIVE.value

@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 from bgpy.simulation_framework import ScenarioConfig
 from bgpy.enums import ASGroups
+from bgpy.simulation_engine.policies import BaseSAVPolicy
 
 @dataclass(frozen=True)
 class SAVScenarioConfig(ScenarioConfig):
@@ -13,6 +14,7 @@ class SAVScenarioConfig(ScenarioConfig):
     reflector_subcategory_attr: Optional[str] = ASGroups.STUBS_OR_MH.value
     override_reflector_asns: Optional[frozenset[int]] = None
 
+    BaseSAVPolicyCls: Optional[BaseSAVPolicy] = None
 
     def __post_init__(self):
         super().__post_init__()

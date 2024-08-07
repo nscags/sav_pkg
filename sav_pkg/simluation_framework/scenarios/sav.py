@@ -178,3 +178,23 @@ class SAVScenario(Scenario):
             )
 
         return tuple(anns)
+    
+    #############################
+    # Engine Manipulation Funcs #
+    #############################
+
+    def setup_engine(
+        self, engine: BaseSimulationEngine, prev_scenario: Optional["Scenario"] = None
+    ) -> None:
+        """Sets up engine"""
+
+        self.policy_classes_used = engine.setup(
+            self.announcements,
+            self.scenario_config.BasePolicyCls,
+            self.non_default_asn_cls_dict,
+            prev_scenario,
+            self.attacker_asns,
+            self.scenario_config.AttackerBasePolicyCls,
+            self.reflector_asns,
+            self.scenario_config.BaseSAVPolicyCls
+        )

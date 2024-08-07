@@ -13,10 +13,10 @@ from sav_pkg.simluation_framework.scenarios import (
 )
 
 
-desc = "SAV test with each AS as reflector and default metrics"
+desc = "Every AS is a reflector running EmptySAV"
 
-ex_config_001 = EngineTestConfig(
-    name="ex_001_sav",
+config_001 = EngineTestConfig(
+    name="config_001",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenarioMultipleReflectors,
