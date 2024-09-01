@@ -9,7 +9,7 @@ from bgpy.simulation_framework.as_graph_analyzers import (
 from bgpy.simulation_framework import ScenarioConfig
 
 from sav_pkg.utils.diagram import SAVDiagram
-from sav_pkg.simluation_framework import SAVASGraphAnalyzer
+from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 
 
 @dataclass(frozen=True, slots=True)

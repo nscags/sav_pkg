@@ -1,31 +1,32 @@
 from frozendict import frozendict
-from .as_graph_info_001 import as_graph_info_001
+from .as_graph_info_000 import as_graph_info_000
 
 from bgpy.simulation_engine import (
     BGP,
 )
 
+from sav_pkg.simulation_engine import StrictuRPF
 from sav_pkg.tests import EngineTestConfig
 from sav_pkg.enums import ASNs
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
-    SAVScenarioMultipleReflectors,
+    SAVScenario,
 )
 
 
-desc = "Every AS is a reflector running EmptySAV"
+desc = "Single Reflector w/ Strict uRPF"
 
-config_001 = EngineTestConfig(
-    name="config_001",
+config_100 = EngineTestConfig(
+    name="config_100",
     desc=desc,
     scenario_config=SAVScenarioConfig(
-        ScenarioCls=SAVScenarioMultipleReflectors,
+        ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
-        num_reflectors=10,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({1,2,3,4,5,8,9,10,11,12}),
+        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_non_default_asn_cls_dict=frozendict(),
+        BaseSAVPolicyCls=StrictuRPF
     ),
-    as_graph_info=as_graph_info_001,
+    as_graph_info=as_graph_info_000,
 )

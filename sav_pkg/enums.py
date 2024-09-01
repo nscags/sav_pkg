@@ -26,22 +26,22 @@ class YamlAbleEnum(Enum):
 
 class Outcomes(YamlAbleEnum):
     # SAV Outcomes
-    FALSE_POSITIVE: int = 1 # Incorrectly block legitimate packet from legitimate sender
-    FALSE_NEGATIVE: int = 2 # Incorrectly allows illegitimate packet from attacker
-    TRUE_POSITIVE: int = 6  # Correctly allows legitimate packet from legitimate sender
-    TRUE_NEGATIVE: int = 4  # Correctly blocks illegitimate packet from attacker
+    FALSE_POSITIVE: int = 1 # Incorrectly block legitimate packet
+    FALSE_NEGATIVE: int = 2 # Incorrectly allows spoofed packet
+    TRUE_POSITIVE: int = 4  # Correctly blocks spoofed packet
+    TRUE_NEGATIVE: int = 6  # Correctly allows legitimate packet
 
     # Multiple SAV Outcomes
-    BLOCK_ALL: int = 5 # Both packets were blocked (FP + TN)
-    ALLOW_ALL: int = 8 # Both packets were allowed (TP + FN)
-    SUCCESS: int = 10  # Only legit packet allowed (TP + TN)
-    FAILURE: int = 3   # Only spoofed packet allowed (FP + FN)
+    BLOCK_ALL: int = 5 # Both packets were blocked (FP + TP)
+    ALLOW_ALL: int = 8 # Both packets were allowed (FN + TN)
+    SUCCESS: int = 10  # Only legit packet allowed (TN + TP)
+    FAILURE: int = 3  # Only spoofed packet allowed (FP + FN)
 
     # Multiple SAV Outcomes w/disconnected AS
-    FALSE_POSITIVE_DISCONNECTED: int = 12  
-    FALSE_NEGATIVE_DISCONNECTED: int = 13 
-    TRUE_POSITIVE_DISCONNECTED: int = 17
-    TRUE_NEGATIVE_DISCONNECTED: int = 15
+    FALSE_POSITIVE_DISCONNECTED: int = 12
+    FALSE_NEGATIVE_DISCONNECTED: int = 13
+    TRUE_POSITIVE_DISCONNECTED: int = 15
+    TRUE_NEGATIVE_DISCONNECTED: int = 17
 
     # Non-SAV Outcomes
     DISCONNECTED: int = 11 # ASes which do not recieve a packet (filtered by AS on path)
