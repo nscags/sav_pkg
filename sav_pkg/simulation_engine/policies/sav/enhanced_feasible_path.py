@@ -3,17 +3,19 @@ from .base_sav_policy import BaseSAVPolicy
 class EnhancedFeasiblePath(BaseSAVPolicy):
     name: str = "EFP uRPF"
 
-    def validate(self, as_obj, prev_hop, source):
+    @staticmethod
+    def validate(as_obj, prev_hop, source, engine):
         # EFP uRPF is applied to only customer and peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):
             return True
         else:
-            for neighbor_asn, prefix_dict in as_obj.policy._ribs_in.data.items():
-                for prefix, ann_info in prefix_dict.items():
-                    ann = ann_info.unprocessed_ann
-                    if ann.as_path[-1] == source and ann.next_hop_asn == prev_hop.asn:
-                        return True
+            for prefix, ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).items():
+                ann = ann_info.unprocessed_ann
+                if ann.as_path[-1] == source:
+                    return True
             return False
+        
+            # this might be wrong, we should be looking in the dict where prev_hop = neighbor_asn
         
             # the above code may be more correct for EFP uRPF
             # any prefix from the same origin AS should be accepted on any of the recieved interfaces

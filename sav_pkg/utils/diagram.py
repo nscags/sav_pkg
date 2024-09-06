@@ -10,6 +10,7 @@ from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import Scenario
 
 from sav_pkg.enums import Outcomes
+from sav_pkg.simulation_engine import BGPwSAV
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
@@ -289,7 +290,7 @@ class SAVDiagram():
         # If the as obj is the attacker
         if as_obj.asn in scenario.attacker_asns:
             kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV):
                 kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
             kwargs.update({"fillcolor": "#FF7F7F"})
@@ -297,7 +298,7 @@ class SAVDiagram():
         # As obj is the victim
         elif as_obj.asn in scenario.victim_asns:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV):
                 kwargs["shape"] = "doubleoctagon"
         # obj is the reflector
         # elif as_obj.asn in scenario.reflector_asns:
@@ -309,7 +310,7 @@ class SAVDiagram():
         else:
             kwargs.update({"fillcolor": "grey:white"})
 
-            if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:
+            if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy, BGPwSAV]:
                 kwargs["shape"] = "octagon"
         return kwargs
 

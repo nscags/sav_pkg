@@ -3,7 +3,8 @@ from .base_sav_policy import BaseSAVPolicy
 class StrictuRPF(BaseSAVPolicy):
     name: str = "Strict-uRPF"
 
-    def validate(self, as_obj, prev_hop, source):
+    @staticmethod
+    def validate(as_obj, prev_hop, source, engine):
         # Strict uRPF is applied to only customer and peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):
             return True

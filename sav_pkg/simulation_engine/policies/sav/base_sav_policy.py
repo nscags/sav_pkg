@@ -2,5 +2,5 @@ from abc import ABC, abstractmethod
 
 class BaseSAVPolicy(ABC):
     @abstractmethod
-    def validate(self):
+    def validate():
         raise NotImplementedError

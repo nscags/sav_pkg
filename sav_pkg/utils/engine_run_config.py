@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
-from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
+from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.metric_tracker.metric_tracker import MetricTracker
 from bgpy.simulation_framework.as_graph_analyzers import (
     BaseASGraphAnalyzer,
@@ -10,7 +10,7 @@ from bgpy.simulation_framework import ScenarioConfig
 
 from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
-
+from sav_pkg.simulation_engine import SimulationEngine
 
 @dataclass(frozen=True, slots=True)
 class EngineRunConfig:

@@ -1,8 +1,6 @@
 from frozendict import frozendict
 from .as_graph_info_000 import as_graph_info_000
 
-from bgpy.simulation_engine import BGPFull
-
 from sav_pkg.simulation_engine import EnhancedFeasiblePath
 from sav_pkg.tests import EngineTestConfig
 from sav_pkg.enums import ASNs
@@ -10,6 +8,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenario,
 )
+from sav_pkg.simulation_engine import BGPFull
 
 
 desc = "Single reflector w/ Enhanced Feasible-Path uRPF"

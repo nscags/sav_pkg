@@ -47,7 +47,7 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
             if (as_obj.asn in self.scenario.attacker_asns or 
                 as_obj.asn in self.scenario.victim_asns):
                 if self.data_plane_tracking:
-                    self._get_as_outcome_data_plane(as_obj)
+                    self._get_as_outcome_data_plane(as_obj, self.engine)
                 self._get_other_as_outcome_hook(as_obj)
 
         # handle combining outcome dicts
@@ -59,7 +59,7 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
     # Data plane funcs #
     ####################
 
-    def _get_as_outcome_data_plane(self, as_obj: AS) -> int:
+    def _get_as_outcome_data_plane(self, as_obj: AS, engine) -> int:
         """
         Traceback from attacker->reflector and vitcim->reflector
         """
@@ -104,7 +104,8 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
                                                                                 tmp_ann, 
                                                                                 spoofed_packet, 
                                                                                 prev_hop, 
-                                                                                source)
+                                                                                source,
+                                                                                engine)
                             self._attacker_data_plane_outcomes[tmp_as_obj.asn] = outcome_int
                             if tmp_as_obj.asn == dst:
                                 break
@@ -131,7 +132,8 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
                                                                                 tmp_ann, 
                                                                                 spoofed_packet, 
                                                                                 prev_hop, 
-                                                                                source)
+                                                                                source,
+                                                                                engine)
                             self._victim_data_plane_outcomes[tmp_as_obj.asn] = outcome_int
                             if tmp_as_obj.asn == dst:
                                 break
@@ -140,7 +142,13 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
                                 tmp_as_obj = self.engine.as_graph.as_dict[tmp_ann.next_hop_asn]
                             
     def _determine_as_outcome_data_plane(
-        self, as_obj: AS, ann: Optional["Ann"], spoofed_packet, prev_hop, source
+        self, 
+        as_obj: AS, 
+        ann: Optional["Ann"], 
+        spoofed_packet, 
+        prev_hop, 
+        source, 
+        engine
     ) -> int:
         """
         Check if as_obj is deploying SAV
@@ -158,7 +166,7 @@ class SAVASGraphAnalyzer(ASGraphAnalyzer):
         
         # ASes deploying SAV (reflectors by defualt)
         elif as_obj.policy.source_address_validation_policy is not None:
-            validated = as_obj.policy.source_address_validation(as_obj, prev_hop, source)
+            validated = as_obj.policy.source_address_validation_policy.validate(as_obj=as_obj, prev_hop=prev_hop, source=source, engine=engine)
             if validated and spoofed_packet:
                 return Outcomes.FALSE_NEGATIVE.value
             elif validated and not spoofed_packet:

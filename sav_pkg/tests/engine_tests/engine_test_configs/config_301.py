@@ -10,7 +10,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenarioMultipleReflectors,
 )
-
+from sav_pkg.simulation_engine import BGPFull
 
 desc = "Every AS is a reflector running Enhanced Feasible Path uRPF"
 

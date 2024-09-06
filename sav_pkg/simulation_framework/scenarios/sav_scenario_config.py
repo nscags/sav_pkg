@@ -3,7 +3,8 @@ from dataclasses import dataclass
 
 from bgpy.simulation_framework import ScenarioConfig
 from bgpy.enums import ASGroups
-from bgpy.simulation_engine.policies import BaseSAVPolicy
+
+from sav_pkg.simulation_engine import BaseSAVPolicy
 
 @dataclass(frozen=True)
 class SAVScenarioConfig(ScenarioConfig):

@@ -1,8 +1,7 @@
 from frozendict import frozendict
 from .as_graph_info_001 import as_graph_info_001
 
-from bgpy.simulation_engine import BGP
-
+from sav_pkg.simulation_engine import BGPwSAV
 from sav_pkg.simulation_engine import StrictuRPF
 from sav_pkg.tests import EngineTestConfig
 from sav_pkg.enums import ASNs
@@ -19,7 +18,7 @@ config_101 = EngineTestConfig(
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenarioMultipleReflectors,
-        BasePolicyCls=BGP,
+        BasePolicyCls=BGPwSAV,
         num_reflectors=10,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
