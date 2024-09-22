@@ -15,7 +15,7 @@ class SAVScenarioMultipleReflectors(SAVScenario):
         for victim_asn in self.victim_asns:
             anns.append(
                 self.scenario_config.AnnCls(
-                    prefix=Prefixes.PREFIX1.value,
+                    prefix=Prefixes.VICTIM.value,
                     as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
                 )
@@ -24,7 +24,7 @@ class SAVScenarioMultipleReflectors(SAVScenario):
         for attacker_asn in self.attacker_asns:
             anns.append(
                 self.scenario_config.AnnCls(
-                    prefix=Prefixes.PREFIX2.value,
+                    prefix=Prefixes.ATTACKER.value,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
                 )

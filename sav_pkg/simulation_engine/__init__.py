@@ -4,6 +4,9 @@ from .policies import FeasiblePathuRPF
 from .policies import EnhancedFeasiblePath
 from .policies import BGPwSAV
 from .policies import BGPFull
+from .policies import BAR_SAV
+from .policies import ROVFull
+from .policies import ASPAFull
 
 from .simulation_engines import SimulationEngine
 
@@ -12,7 +15,10 @@ __all__ = [
     "StrictuRPF",
     "FeasiblePathuRPF",
     "EnhancedFeasiblePath",
+    "BAR_SAV",
     "BGPwSAV",
-    "BGPFull"
+    "BGPFull",
+    "ROVFull",
+    "ASPAFull",
     "SimulationEngine",
 ]

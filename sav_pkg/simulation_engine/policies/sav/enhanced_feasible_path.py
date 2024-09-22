@@ -1,17 +1,18 @@
 from .base_sav_policy import BaseSAVPolicy
+from sav_pkg.enums import ASNs
 
 class EnhancedFeasiblePath(BaseSAVPolicy):
     name: str = "EFP uRPF"
 
     @staticmethod
-    def validate(as_obj, prev_hop, source, engine):
+    def validate(as_obj, prev_hop, engine, as_path):
         # EFP uRPF is applied to only customer and peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):
             return True
         else:
             for prefix, ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).items():
                 ann = ann_info.unprocessed_ann
-                if ann.as_path[-1] == source:
+                if ann.as_path[-1] == ASNs.VICTIM.value:
                     return True
             return False
         
@@ -21,8 +22,6 @@ class EnhancedFeasiblePath(BaseSAVPolicy):
             # any prefix from the same origin AS should be accepted on any of the recieved interfaces
             # i.e. prefix doesn't matter, all are accepted, can just look at origin AS
             # For basic feasible path, we should consider just a single prefix (won't change graphs)
-
-
 
             # Interface, Origin AS, prefix
             # For each Origin AS,

@@ -153,7 +153,7 @@ class SAVScenario(Scenario):
         for victim_asn in self.victim_asns:
             anns.append(
                 self.scenario_config.AnnCls(
-                    prefix=Prefixes.PREFIX1.value,
+                    prefix=Prefixes.VICTIM.value,
                     as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
                 )
@@ -162,7 +162,7 @@ class SAVScenario(Scenario):
         for attacker_asn in self.attacker_asns:
             anns.append(
                 self.scenario_config.AnnCls(
-                    prefix=Prefixes.PREFIX2.value,
+                    prefix=Prefixes.ATTACKER.value,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
                 )
@@ -171,7 +171,7 @@ class SAVScenario(Scenario):
         for reflector_asn in self.reflector_asns:
             anns.append(
                 self.scenario_config.AnnCls(
-                    prefix=Prefixes.PREFIX3.value,
+                    prefix=Prefixes.REFLECTOR.value,
                     as_path=(reflector_asn,),
                     timestamp=Timestamps.VICTIM.value,
                 )

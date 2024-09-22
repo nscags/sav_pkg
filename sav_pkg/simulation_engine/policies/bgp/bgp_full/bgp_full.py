@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class BGPFullwSAV(BGPFull):
-    name = "BGP Full"
+    name = "BGPFull"
 
     def __init__(
         self,

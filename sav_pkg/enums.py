@@ -104,9 +104,9 @@ class Prefixes(YamlAbleEnum):
     PREFIX: str = "1.2.0.0/16"
     SUBPREFIX: str = "1.2.3.0/24"
 
-    PREFIX1: str = "1.0.0.0/24"
-    PREFIX2: str = "1.1.0.0/24"
-    PREFIX3: str = "1.2.0.0/24"
+    VICTIM: str = "1.0.0.0/24"
+    ATTACKER: str = "1.1.0.0/24"
+    REFLECTOR: str = "1.2.0.0/24"
 
 
 class ASNs(YamlAbleEnum):

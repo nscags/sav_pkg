@@ -11,6 +11,7 @@ from bgpy.simulation_framework import Scenario
 
 from sav_pkg.enums import Outcomes
 from sav_pkg.simulation_engine import BGPwSAV
+from sav_pkg.simulation_engine import BGPFull
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
@@ -192,6 +193,10 @@ class SAVDiagram():
             asn_str = "&#128520;" + asn_str + "&#128520;"
         # elif as_obj.asn in scenario.reflector_asns:
         #     asn_str = "&#128526;" + asn_str + "&#128526;"
+        
+
+        # TODO: reflector by defualt are non adopting
+        #       instead check each ASes policy
         if as_obj.asn in scenario.reflector_asns and scenario.scenario_config.BaseSAVPolicyCls is not None:
             sav_policy_str = f"{scenario.scenario_config.BaseSAVPolicyCls.name}"
         else:
@@ -207,14 +212,22 @@ class SAVDiagram():
             victim_str = "&#10003;"
             attacker_str = ""          
 
-        if traceback[as_obj.asn] in [Outcomes.BLOCK_ALL.value, Outcomes.SUCCESS.value, Outcomes.TRUE_POSITIVE_DISCONNECTED.value]:
+        if traceback[as_obj.asn] in [Outcomes.BLOCK_ALL.value, 
+                                     Outcomes.SUCCESS.value, 
+                                     Outcomes.TRUE_POSITIVE_DISCONNECTED.value]:
             attacker_str = "&#10005;"
-        elif traceback[as_obj.asn] in [Outcomes.ALLOW_ALL.value, Outcomes.FAILURE.value, Outcomes.FALSE_NEGATIVE_DISCONNECTED.value]:
+        elif traceback[as_obj.asn] in [Outcomes.ALLOW_ALL.value, 
+                                       Outcomes.FAILURE.value, 
+                                       Outcomes.FALSE_NEGATIVE_DISCONNECTED.value]:
             attacker_str = "&#10003;"
 
-        if traceback[as_obj.asn] in [Outcomes.ALLOW_ALL.value, Outcomes.SUCCESS.value, Outcomes.TRUE_NEGATIVE_DISCONNECTED.value]:
+        if traceback[as_obj.asn] in [Outcomes.ALLOW_ALL.value, 
+                                     Outcomes.SUCCESS.value, 
+                                     Outcomes.TRUE_NEGATIVE_DISCONNECTED.value]:
             victim_str = "&#10003;"
-        elif traceback[as_obj.asn] in [Outcomes.BLOCK_ALL.value, Outcomes.FAILURE.value, Outcomes.FALSE_POSITIVE_DISCONNECTED.value]:
+        elif traceback[as_obj.asn] in [Outcomes.BLOCK_ALL.value, 
+                                       Outcomes.FAILURE.value, 
+                                       Outcomes.FALSE_POSITIVE_DISCONNECTED.value]:
             victim_str = "&#10005;"
         
 
@@ -290,7 +303,7 @@ class SAVDiagram():
         # If the as obj is the attacker
         if as_obj.asn in scenario.attacker_asns:
             kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV):
+            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull):
                 kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
             kwargs.update({"fillcolor": "#FF7F7F"})
@@ -298,19 +311,19 @@ class SAVDiagram():
         # As obj is the victim
         elif as_obj.asn in scenario.victim_asns:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV):
+            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull):
                 kwargs["shape"] = "doubleoctagon"
         # obj is the reflector
-        # elif as_obj.asn in scenario.reflector_asns:
-        #     kwargs.update({"fillcolor": "#99d9ea", "shape": "doublecircle"})
-        #     if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
-        #         kwargs["shape"] = "doubleoctagon"
+        elif as_obj.asn in scenario.reflector_asns:
+            kwargs.update({"fillcolor": "#99d9ea", "shape": "doublecircle"})
+            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull):
+                kwargs["shape"] = "doubleoctagon"
 
         # As obj is not attacker or victim or reflector
         else:
             kwargs.update({"fillcolor": "grey:white"})
 
-            if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy, BGPwSAV]:
+            if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull]:
                 kwargs["shape"] = "octagon"
         return kwargs
 
