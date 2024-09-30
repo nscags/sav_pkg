@@ -11,12 +11,12 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import FeasiblePathuRPF
+from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
 
-desc = "Single reflector running Feasible Path uRPF"
+desc = "Single reflector, single transit AS running Enhanced Feasible Path uRPF"
 
-config_001 = EngineTestConfig(
-    name="config_001",
+config_003 = EngineTestConfig(
+    name="config_003",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
@@ -25,8 +25,8 @@ config_001 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
-        BaseSAVPolicyCls=FeasiblePathuRPF,
+        override_sav_asns=frozenset({1}),
+        BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,

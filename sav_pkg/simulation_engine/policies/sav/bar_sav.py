@@ -98,3 +98,12 @@ class BAR_SAV(BaseSAVPolicy):
             origin_as_obj = as_path[-1]
 
             return (origin_as_obj.asn in d) and (Prefixes.VICTIM.value in prefixes)
+        
+
+
+        # TODO: check against RFC specifications
+        #       change ROA assumptions
+        #       currently we assume that if an AS adopts ROV, it has published a ROA
+        #       this is incorrect, AS can adopt ROV without having a ROA
+        #       I believe there is ROA stuff already in the simulator
+        #       

@@ -5,7 +5,7 @@ class StrictuRPF(BaseSAVPolicy):
     name: str = "Strict-uRPF"
 
     @staticmethod
-    def validate(as_obj, prev_hop, engine, as_path):
+    def validate(as_obj, prev_hop, origin):
         # Strict uRPF is applied to only customer and peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):
             return True
@@ -22,5 +22,4 @@ class StrictuRPF(BaseSAVPolicy):
             if source_ann.next_hop_asn == prev_hop.asn:
                 return True
             else:
-                # raise ValueError(f"{source_ann.next_hop_asn}, {prev_hop.asn}")
                 return False

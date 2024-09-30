@@ -28,6 +28,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -46,6 +47,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -65,6 +67,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -100,6 +103,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -118,6 +122,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -137,6 +142,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -172,6 +178,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 2
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -204,6 +211,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -225,6 +233,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -244,6 +253,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -278,6 +288,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -313,6 +324,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -332,6 +344,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -350,6 +363,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -387,6 +401,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -407,6 +422,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 2
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -425,6 +441,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -459,6 +476,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -480,6 +498,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -498,6 +517,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -533,6 +553,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -568,6 +589,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -588,6 +610,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -605,6 +628,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 4
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: 555
             timestamp: 0
             traceback_end: false
@@ -637,6 +661,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -654,6 +679,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 4
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: 666
             timestamp: 1
             traceback_end: false
@@ -674,6 +700,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -706,6 +733,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 4
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: 777
             timestamp: 0
             traceback_end: false
@@ -725,6 +753,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
             traceback_end: false
@@ -744,6 +773,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: null
             roa_valid_length: null
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
             traceback_end: false

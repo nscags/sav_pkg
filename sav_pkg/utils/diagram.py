@@ -4,26 +4,24 @@ from typing import Optional, TYPE_CHECKING
 from graphviz import Digraph
 import ipaddress
 
-from bgpy.simulation_engine import BGPPolicy
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGP
+from bgpy.simulation_engine import BGPFull
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import Scenario
+from bgpy.utils import Diagram
 
 from sav_pkg.enums import Outcomes
-from sav_pkg.simulation_engine import BGPwSAV
-from sav_pkg.simulation_engine import BGPFull
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
     from bgpy.simulation_framework.metric_tracker import MetricTracker
 
 
-class SAVDiagram():
+class SAVDiagram(Diagram):
     """Creates a diagram of an AS graph with traceback"""
 
     def __init__(self):
         self.dot: Digraph = Digraph(format="png")
-        self.traffic = Digraph(name='cluster_traffic')
         # purple is cooler but I guess that's not paper worthy
         # self.dot.attr(bgcolor='purple:pink')
 
@@ -44,42 +42,54 @@ class SAVDiagram():
         display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
         self._add_ases(engine, traceback, scenario, display_next_hop_asn)
         self._add_edges(engine)
-        self._add_traffic_edges(engine, scenario, traceback)
-        self.dot.subgraph(self.traffic)
         self._add_diagram_ranks(diagram_ranks, static_order)
         self._add_description(description, display_next_hop_asn)
         self._render(path=path, view=view)
 
-    def _add_legend(self, traceback: dict[int, int], scenario: Scenario) -> None:
-        """Adds legend to the graph with outcome counts"""
 
+    def _get_gt_count(self, traceback):
         false_negative_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.FALSE_NEGATIVE_DISCONNECTED.value) or 
-                                             (x == Outcomes.ALLOW_ALL.value) or
-                                             (x == Outcomes.FAILURE.value)
+            1 for x in traceback.values() if x == Outcomes.FALSE_NEGATIVE.value
         )
         true_positive_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.TRUE_POSITIVE_DISCONNECTED.value) or 
-                                             (x == Outcomes.BLOCK_ALL.value) or
-                                             (x == Outcomes.SUCCESS.value) 
+            1 for x in traceback.values() if x == Outcomes.TRUE_POSITIVE.value
         )
         false_positive_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.FALSE_POSITIVE_DISCONNECTED.value) or 
-                                             (x == Outcomes.BLOCK_ALL.value) or
-                                             (x == Outcomes.FAILURE.value)
+            1 for x in traceback.values() if x == Outcomes.FALSE_POSITIVE.value
         )
         true_negative_count = sum(
-            1 for x in traceback.values() if (x == Outcomes.TRUE_NEGATIVE_DISCONNECTED.value) or 
-                                             (x == Outcomes.ALLOW_ALL.value) or
-                                             (x == Outcomes.SUCCESS.value)
+            1 for x in traceback.values() if x == Outcomes.TRUE_NEGATIVE.value
         )
-        # not_on_path_count = sum(
-        #     1 for x in traceback.values() if x == Outcomes.NOT_ON_PATH.value
-        # )
-        #   <TR>
-        #     <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
-        #     <TD>{not_on_path_count}</TD>
-        #   </TR>
+
+        return false_negative_count, true_positive_count, false_positive_count, true_negative_count
+    
+
+    def _get_guess_count(self, traceback):
+        fn = tp = fp = tn = 0
+
+        for origin_dict in traceback.values():
+            for prev_hop_dict in origin_dict.values():
+                for prev_hop_asn, outcome in prev_hop_dict.items():
+                    if outcome == Outcomes.FALSE_NEGATIVE.value: 
+                        fn += 1
+                    elif outcome == Outcomes.TRUE_POSITIVE.value:
+                        tp += 1
+                    elif outcome == Outcomes.FALSE_POSITIVE.value:
+                        fp += 1
+                    elif outcome == Outcomes.TRUE_NEGATIVE.value:
+                        tn += 1
+
+        return fn, tp, fp, tn
+
+
+    def _add_legend(self, traceback: dict, scenario: Scenario) -> None:
+        """Adds legend to the graph with outcome counts"""
+
+        if type(next(iter(traceback.values()))) == int:
+            false_negative_count, true_positive_count, false_positive_count, true_negative_count = self._get_gt_count(traceback)
+        else:
+            false_negative_count, true_positive_count, false_positive_count, true_negative_count = self._get_guess_count(traceback)
+
         html = f"""<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
                 <TR>
@@ -143,7 +153,7 @@ class SAVDiagram():
     def _add_ases(
         self,
         engine: BaseSimulationEngine,
-        traceback: dict[int, int],
+        traceback: dict,
         scenario: Scenario,
         display_next_hop_asn: bool,
     ) -> None:
@@ -158,27 +168,55 @@ class SAVDiagram():
         subgraph: Digraph,
         as_obj: "AS",
         engine: BaseSimulationEngine,
-        traceback: dict[int, int],
+        traceback: dict,
         scenario: Scenario,
         display_next_hop_asn: bool,
     ) -> None:
         kwargs = dict()
-        # if False:
-        #     kwargs = {"style": "filled,dashed",
-        #               "shape": "box",
-        #               "color": "black",
-        #               "fillcolor": "lightgray"}
+
         html = self._get_html(as_obj, engine, traceback, scenario, display_next_hop_asn)
 
         kwargs = self._get_kwargs(as_obj, engine, traceback, scenario)
 
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
+
+    def _get_gt_outcome_html(self, traceback, as_obj):
+        attacker_str = ""
+        victim_str = ""
+
+        return attacker_str, victim_str
+
+
+    def _get_guess_outcome_html(self, traceback, as_obj):
+
+        attacker_str = ""
+        victim_str = ""
+
+        for prev_hop_dict in traceback[as_obj.asn].values():
+            for prev_hop, outcome in prev_hop_dict.items():
+                if outcome == Outcomes.FALSE_NEGATIVE.value:
+                    attacker_str = "&#10003;"
+                # allowing a packet takes priority over blocking a packet
+                # attacker sends packets to all neighbors
+                # if even one packet reaches the reflector, it is considered an attacker success
+                elif outcome == Outcomes.TRUE_POSITIVE.value and attacker_str != "&#10003;": 
+                    attacker_str = "&#10005;"
+
+                # Victim behaves as normal, should only have one of these two outcomes (excluding disconnected)
+                elif outcome == Outcomes.TRUE_NEGATIVE.value:
+                    victim_str = "&#10003;"
+                elif outcome == Outcomes.FALSE_POSITIVE.value:
+                    victim_str = "&#10005;"
+
+        return attacker_str, victim_str
+
+
     def _get_html(
         self,
         as_obj: "AS",
         engine: BaseSimulationEngine,
-        traceback: dict[int, int],
+        traceback: dict,
         scenario: Scenario,
         display_next_hop_asn: bool,
     ) -> str:
@@ -191,16 +229,16 @@ class SAVDiagram():
             asn_str = "&#128519;" + asn_str + "&#128519;"
         elif as_obj.asn in scenario.attacker_asns:
             asn_str = "&#128520;" + asn_str + "&#128520;"
-        # elif as_obj.asn in scenario.reflector_asns:
-        #     asn_str = "&#128526;" + asn_str + "&#128526;"
+        elif as_obj.asn in scenario.reflector_asns:
+            asn_str = "&#128526;" + asn_str + "&#128526;"
         
 
         # TODO: reflector by defualt are non adopting
         #       instead check each ASes policy
-        if as_obj.asn in scenario.reflector_asns and scenario.scenario_config.BaseSAVPolicyCls is not None:
-            sav_policy_str = f"{scenario.scenario_config.BaseSAVPolicyCls.name}"
-        else:
-            sav_policy_str = "No SAV"
+        # if as_obj.asn in scenario.reflector_asns and scenario.scenario_config.BaseSAVPolicyCls is not None:
+        #     sav_policy_str = f"{scenario.scenario_config.BaseSAVPolicyCls.name}"
+        # else:
+        #     sav_policy_str = "No SAV"
 
         attacker_str = ""
         victim_str = ""
@@ -211,24 +249,11 @@ class SAVDiagram():
         elif as_obj.asn in scenario.victim_asns:
             victim_str = "&#10003;"
             attacker_str = ""          
-
-        if traceback[as_obj.asn] in [Outcomes.BLOCK_ALL.value, 
-                                     Outcomes.SUCCESS.value, 
-                                     Outcomes.TRUE_POSITIVE_DISCONNECTED.value]:
-            attacker_str = "&#10005;"
-        elif traceback[as_obj.asn] in [Outcomes.ALLOW_ALL.value, 
-                                       Outcomes.FAILURE.value, 
-                                       Outcomes.FALSE_NEGATIVE_DISCONNECTED.value]:
-            attacker_str = "&#10003;"
-
-        if traceback[as_obj.asn] in [Outcomes.ALLOW_ALL.value, 
-                                     Outcomes.SUCCESS.value, 
-                                     Outcomes.TRUE_NEGATIVE_DISCONNECTED.value]:
-            victim_str = "&#10003;"
-        elif traceback[as_obj.asn] in [Outcomes.BLOCK_ALL.value, 
-                                       Outcomes.FAILURE.value, 
-                                       Outcomes.FALSE_POSITIVE_DISCONNECTED.value]:
-            victim_str = "&#10005;"
+        else:
+            if type(next(iter(traceback.values()))) == int:
+                attacker_str, victim_str = self._get_gt_outcome_html(traceback, as_obj)
+            else:
+                attacker_str, victim_str = self._get_guess_outcome_html(traceback, as_obj)
         
 
         html = f"""<
@@ -240,9 +265,6 @@ class SAVDiagram():
             </TR>
             <TR>
                 <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{as_obj.policy.name}</TD>
-            </TR>
-            <TR>
-                <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{sav_policy_str}</TD>
             </TR>"""
         local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
         local_rib_anns = tuple(
@@ -290,7 +312,7 @@ class SAVDiagram():
         self,
         as_obj: "AS",
         engine: BaseSimulationEngine,
-        traceback: dict[int, int],
+        traceback: dict,
         scenario: Scenario,
     ) -> dict[str, str]:
         kwargs = {
@@ -303,7 +325,7 @@ class SAVDiagram():
         # If the as obj is the attacker
         if as_obj.asn in scenario.attacker_asns:
             kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull):
+            if as_obj.policy.__class__ not in (BGP, BGPFull):
                 kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
             kwargs.update({"fillcolor": "#FF7F7F"})
@@ -311,19 +333,19 @@ class SAVDiagram():
         # As obj is the victim
         elif as_obj.asn in scenario.victim_asns:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull):
+            if as_obj.policy.__class__ not in (BGP, BGPFull):
                 kwargs["shape"] = "doubleoctagon"
         # obj is the reflector
         elif as_obj.asn in scenario.reflector_asns:
             kwargs.update({"fillcolor": "#99d9ea", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull):
+            if as_obj.policy.__class__ not in (BGP, BGPFull):
                 kwargs["shape"] = "doubleoctagon"
 
         # As obj is not attacker or victim or reflector
         else:
             kwargs.update({"fillcolor": "grey:white"})
 
-            if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy, BGPwSAV, BGPFull]:
+            if as_obj.policy.__class__ not in [BGP, BGPFull]:
                 kwargs["shape"] = "octagon"
         return kwargs
 
@@ -345,96 +367,6 @@ class SAVDiagram():
                         style="dashed",
                         penwidth="2",
                     )
-
-    def _add_traffic_edges(self, engine: BaseSimulationEngine, scenario: Scenario, traceback: dict[int, int]):
-        # if packet is forwarded add edge
-        # if packet is dropped break
-
-        attacker_visited_asns = set()
-        victim_visited_asns = set()
-
-        for as_obj in engine.as_graph:
-            # find attacker and/or victim AS
-            if as_obj.asn in scenario.attacker_asns or as_obj.asn in scenario.victim_asns:
-                if as_obj.asn in scenario.attacker_asns:
-                    spoofed_packet = True
-                    color = 'red'
-                elif as_obj.asn in scenario.victim_asns:
-                    spoofed_packet = False
-                    color = '#22B14C'
-
-                # look at local rib for reflector announcements
-                for ann in as_obj.policy._local_rib.data.values():
-                    if ann.as_path[-1] in scenario.reflector_asns:
-
-                        # Add edges from attacker/victim AS to the first AS in the path
-                        first_hop_asn = ann.as_path[1]
-                        if spoofed_packet and first_hop_asn not in attacker_visited_asns:
-                            self.traffic.edge(str(as_obj.asn), 
-                                              str(first_hop_asn), 
-                                              constraint='false', 
-                                              color=color, 
-                                              style="dotted",
-                                              penwidth='3'
-                            )
-                            attacker_visited_asns.add(first_hop_asn)
-                        elif not spoofed_packet and first_hop_asn not in victim_visited_asns:
-                            self.traffic.edge(str(as_obj.asn), 
-                                              str(first_hop_asn), 
-                                              constraint='false', 
-                                              color=color, 
-                                              style="dotted",
-                                              penwidth='3'
-                            )
-                            victim_visited_asns.add(first_hop_asn)
-
-                        # Add edges for the rest of the path
-                        for i, asn in enumerate(ann.as_path[:-1]):
-                            next_asn = ann.as_path[i + 1]
-                            if spoofed_packet:
-                                if traceback[asn] in [
-                                    Outcomes.ALLOW_ALL.value,
-                                    Outcomes.FAILURE.value,
-                                    Outcomes.FALSE_NEGATIVE_DISCONNECTED.value,
-                                    Outcomes.ATTACKER.value
-                                ]:
-                                    if next_asn not in attacker_visited_asns:
-                                        self.traffic.edge(str(asn), 
-                                                          str(next_asn), 
-                                                          constraint='false', 
-                                                          color=color, 
-                                                          style="dotted",
-                                                          penwidth='3'
-                                        )
-                                        attacker_visited_asns.add(next_asn)
-                                else:
-                                    self.traffic.edge(str(asn), 
-                                                      str(next_asn), 
-                                                      constraint='false', 
-                                                      style='invis'
-                                    )
-                            elif not spoofed_packet:
-                                if traceback[asn] in [
-                                    Outcomes.ALLOW_ALL.value,
-                                    Outcomes.SUCCESS.value,
-                                    Outcomes.TRUE_NEGATIVE_DISCONNECTED.value,
-                                    Outcomes.VICTIM.value
-                                ]:
-                                    if next_asn not in victim_visited_asns:
-                                        self.traffic.edge(str(asn),
-                                                          str(next_asn), 
-                                                          constraint='false', 
-                                                          color=color, 
-                                                          style="dotted",
-                                                          penwidth='3'
-                                        )
-                                        victim_visited_asns.add(next_asn)
-                                else:
-                                    self.traffic.edge(str(asn), 
-                                                      str(next_asn), 
-                                                      constraint='false', 
-                                                      style='invis'
-                                    )
 
     def _add_diagram_ranks(
         self, diagram_ranks: tuple[tuple["AS", ...], ...], static_order: bool
