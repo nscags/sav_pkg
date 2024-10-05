@@ -8,9 +8,9 @@ class Outcomes(YamlAbleEnum):
     TRUE_NEGATIVE: int = 4  # Correctly allows legitimate packet
 
     # Non-SAV Outcomes
-    DISCONNECTED: int = 5 # ASes which do not recieve a packet (filtered by AS on path)
-    ATTACKER: int = 6     # Attacker AS, enumerating outcome so it doesn't get counted as disconnected
-    VICTIM: int = 7       # Victim AS,   ^^^
+    DISCONNECTED: int = 5   # ASes which do not recieve a packet (filtered by AS on path)
+    ATTACKER: int = 6       # Attacker AS, enumerating outcome so it doesn't get counted as disconnected
+    VICTIM: int = 7         # Victim AS,   ^^^
 
 
 class Prefixes(YamlAbleEnum):

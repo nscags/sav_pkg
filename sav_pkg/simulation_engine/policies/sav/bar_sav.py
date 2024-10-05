@@ -6,13 +6,14 @@ class BAR_SAV(BaseSAVPolicy):
     name: str = "BAR SAV"
 
     @staticmethod
-    def validate(as_obj, prev_hop, engine, as_path):  
+    def validate(as_obj, prev_hop, origin, engine):  
         
         # BAR SAV is applied to only customer and lateral peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):
             return True
         else:
-            # RFC specifications
+            # Internet draft procedure description
+            # https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/
             i = 0
             z = [{prev_hop.asn}]
             
@@ -24,8 +25,7 @@ class BAR_SAV(BaseSAVPolicy):
 
                 # For now we assume that if an AS is adopting ASPA
                 # then the adopting AS has published a list of providers
-                # this isn't necessary the case
-                # ASPA data somewhere?
+                # this isn't necessary the case, however don't have ASPA data
                 a_i = set()
                 for asn in z[i - 1]:
                     tmp_as_obj = engine.as_graph.as_dict[asn]
@@ -62,7 +62,6 @@ class BAR_SAV(BaseSAVPolicy):
 
             d = set().union(*z[:i_max])
 
-
             # "Select all ROAs in which the authorized origin ASN is in AS-set
             # D. Form the union of the sets of prefixes listed in the
             # selected ROAs. Name this union set of prefixes as Prefix-set P1."
@@ -95,15 +94,11 @@ class BAR_SAV(BaseSAVPolicy):
 
             prefixes = p1.union(p2)
 
-            origin_as_obj = as_path[-1]
-
-            return (origin_as_obj.asn in d) and (Prefixes.VICTIM.value in prefixes)
+            return (origin in d) and (Prefixes.VICTIM.value in prefixes)
         
 
 
-        # TODO: check against RFC specifications
-        #       change ROA assumptions
+        # TODO: change ROA assumptions
         #       currently we assume that if an AS adopts ROV, it has published a ROA
         #       this is incorrect, AS can adopt ROV without having a ROA
-        #       I believe there is ROA stuff already in the simulator
-        #       
+        #       I believe there is ROA functionality already in the simulator

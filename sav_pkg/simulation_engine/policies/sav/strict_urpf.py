@@ -2,7 +2,7 @@ from .base_sav_policy import BaseSAVPolicy
 from sav_pkg.enums import ASNs
 
 class StrictuRPF(BaseSAVPolicy):
-    name: str = "Strict-uRPF"
+    name: str = "Strict uRPF"
 
     @staticmethod
     def validate(as_obj, prev_hop, origin):

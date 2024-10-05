@@ -42,6 +42,7 @@ class SAVDiagram(Diagram):
         display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
         self._add_ases(engine, traceback, scenario, display_next_hop_asn)
         self._add_edges(engine)
+        self._add_traffic_edges(scenario, traceback)
         self._add_diagram_ranks(diagram_ranks, static_order)
         self._add_description(description, display_next_hop_asn)
         self._render(path=path, view=view)
@@ -188,7 +189,7 @@ class SAVDiagram(Diagram):
         return attacker_str, victim_str
 
 
-    def _get_guess_outcome_html(self, traceback, as_obj):
+    def _get_outcome_html(self, traceback, as_obj):
 
         attacker_str = ""
         victim_str = ""
@@ -233,12 +234,11 @@ class SAVDiagram(Diagram):
             asn_str = "&#128526;" + asn_str + "&#128526;"
         
 
-        # TODO: reflector by defualt are non adopting
-        #       instead check each ASes policy
-        # if as_obj.asn in scenario.reflector_asns and scenario.scenario_config.BaseSAVPolicyCls is not None:
-        #     sav_policy_str = f"{scenario.scenario_config.BaseSAVPolicyCls.name}"
-        # else:
-        #     sav_policy_str = "No SAV"
+        if as_obj.asn in scenario.sav_policy_asn_dict:
+            sav_policy_str = scenario.sav_policy_asn_dict.get(as_obj.asn).name
+        else:
+            sav_policy_str = "No SAV"
+
 
         attacker_str = ""
         victim_str = ""
@@ -253,7 +253,7 @@ class SAVDiagram(Diagram):
             if type(next(iter(traceback.values()))) == int:
                 attacker_str, victim_str = self._get_gt_outcome_html(traceback, as_obj)
             else:
-                attacker_str, victim_str = self._get_guess_outcome_html(traceback, as_obj)
+                attacker_str, victim_str = self._get_outcome_html(traceback, as_obj)
         
 
         html = f"""<
@@ -265,7 +265,11 @@ class SAVDiagram(Diagram):
             </TR>
             <TR>
                 <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{as_obj.policy.name}</TD>
+            </TR>
+            <TR>
+                <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{sav_policy_str}</TD>
             </TR>"""
+        
         local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
         local_rib_anns = tuple(
             sorted(
@@ -305,8 +309,10 @@ class SAVDiagram(Diagram):
                     if display_next_hop_asn:
                         html += f"""<TD>{ann.next_hop_asn}</TD>"""
                     html += """</TR>"""
+
         html += "</TABLE>>"
         return html
+
 
     def _get_kwargs(
         self,
@@ -349,6 +355,35 @@ class SAVDiagram(Diagram):
                 kwargs["shape"] = "octagon"
         return kwargs
 
+
+    def _add_traffic_edges(self, scenario, traceback):
+        for asn, origin_dict in traceback.items():
+            for origin, prev_hop_dict in origin_dict.items():
+                if origin in scenario.attacker_asns:
+                    color = 'red'
+                    for prev_hop, outcome in prev_hop_dict.items():
+                        if outcome in [Outcomes.FALSE_NEGATIVE.value, Outcomes.TRUE_POSITIVE.value]:
+                            self.dot.edge(str(prev_hop), 
+                                              str(asn), 
+                                              constraint='false', 
+                                              color=color, 
+                                              style="dotted", 
+                                              penwidth='3',
+                            )
+                            
+                elif origin in scenario.victim_asns:
+                    color = '#22B14C'
+                    for prev_hop, outcome in prev_hop_dict.items():
+                        if outcome in [Outcomes.TRUE_NEGATIVE.value, Outcomes.FALSE_POSITIVE]:
+                            self.dot.edge(str(prev_hop), 
+                                              str(asn), 
+                                              constraint='false', 
+                                              color=color, 
+                                              style="dotted", 
+                                              penwidth='3',
+                            )
+
+
     def _add_edges(self, engine: BaseSimulationEngine):
         # Then add all connections to the graph
         # Starting with provider to customer
@@ -367,6 +402,7 @@ class SAVDiagram(Diagram):
                         style="dashed",
                         penwidth="2",
                     )
+
 
     def _add_diagram_ranks(
         self, diagram_ranks: tuple[tuple["AS", ...], ...], static_order: bool
@@ -391,6 +427,7 @@ class SAVDiagram(Diagram):
                             # Add invisible edge to maintain static order
                             s.edge(previous_asn, asn, style="invis")  # type: ignore
                         previous_asn = asn
+
 
     def _add_description(self, description: str, display_next_hop_asn: bool) -> None:
         if display_next_hop_asn:

@@ -85,11 +85,10 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     self._propagate_packet(neighbor_as_obj, reflector_asn, origin, as_obj)
 
                     # discussed all or nothing
-                    # attacker will announce packet to all neighbors assuming
-                    # best path fails
+                    # attacker will announce packet to all neighbors assuming best path fails
 
 
-                    # no outcome for reflector AS (filtered on path)
+                    # # no outcome for reflector AS (filtered on path)
                     # if (reflector_asn not in self._data_plane_outcomes):
                     #     attacker_success = False
                     # # or if the reflector itself has filtered the packet, then try neighbors
