@@ -25,7 +25,7 @@ config_301 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({8}),
+        override_sav_asns=frozenset({1}),
         BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
     ),
     as_graph_info=as_graph_info_000,

@@ -5,7 +5,7 @@ class FeasiblePathuRPF(BaseSAVPolicy):
     name: str = "Feasible-Path uRPF"
 
     @staticmethod
-    def validate(as_obj, prev_hop, origin):  
+    def validate(as_obj, prev_hop, origin, engine):  
         
         # Feasible-Path uRPF is applied to only customer and peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):

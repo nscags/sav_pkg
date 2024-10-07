@@ -5,7 +5,7 @@ class EnhancedFeasiblePathuRPF(BaseSAVPolicy):
     name: str = "EFP uRPF"
 
     @staticmethod
-    def validate(as_obj, prev_hop, origin):
+    def validate(as_obj, prev_hop, origin, engine):
         # EFP uRPF is applied to only customer
         if (prev_hop.asn in as_obj.provider_asns or
             prev_hop.asn in as_obj.peer_asns):

@@ -46,26 +46,9 @@ class SAVDiagram(Diagram):
         self._add_diagram_ranks(diagram_ranks, static_order)
         self._add_description(description, display_next_hop_asn)
         self._render(path=path, view=view)
-
-
-    def _get_gt_count(self, traceback):
-        false_negative_count = sum(
-            1 for x in traceback.values() if x == Outcomes.FALSE_NEGATIVE.value
-        )
-        true_positive_count = sum(
-            1 for x in traceback.values() if x == Outcomes.TRUE_POSITIVE.value
-        )
-        false_positive_count = sum(
-            1 for x in traceback.values() if x == Outcomes.FALSE_POSITIVE.value
-        )
-        true_negative_count = sum(
-            1 for x in traceback.values() if x == Outcomes.TRUE_NEGATIVE.value
-        )
-
-        return false_negative_count, true_positive_count, false_positive_count, true_negative_count
     
 
-    def _get_guess_count(self, traceback):
+    def _get_count(self, traceback):
         fn = tp = fp = tn = 0
 
         for origin_dict in traceback.values():
@@ -86,10 +69,7 @@ class SAVDiagram(Diagram):
     def _add_legend(self, traceback: dict, scenario: Scenario) -> None:
         """Adds legend to the graph with outcome counts"""
 
-        if type(next(iter(traceback.values()))) == int:
-            false_negative_count, true_positive_count, false_positive_count, true_negative_count = self._get_gt_count(traceback)
-        else:
-            false_negative_count, true_positive_count, false_positive_count, true_negative_count = self._get_guess_count(traceback)
+        false_negative_count, true_positive_count, false_positive_count, true_negative_count = self._get_count(traceback)
 
         html = f"""<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
@@ -182,13 +162,6 @@ class SAVDiagram(Diagram):
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
 
-    def _get_gt_outcome_html(self, traceback, as_obj):
-        attacker_str = ""
-        victim_str = ""
-
-        return attacker_str, victim_str
-
-
     def _get_outcome_html(self, traceback, as_obj):
 
         attacker_str = ""
@@ -250,10 +223,7 @@ class SAVDiagram(Diagram):
             victim_str = "&#10003;"
             attacker_str = ""          
         else:
-            if type(next(iter(traceback.values()))) == int:
-                attacker_str, victim_str = self._get_gt_outcome_html(traceback, as_obj)
-            else:
-                attacker_str, victim_str = self._get_outcome_html(traceback, as_obj)
+            attacker_str, victim_str = self._get_outcome_html(traceback, as_obj)
         
 
         html = f"""<
@@ -270,45 +240,45 @@ class SAVDiagram(Diagram):
                 <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{sav_policy_str}</TD>
             </TR>"""
         
-        local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
-        local_rib_anns = tuple(
-            sorted(
-                local_rib_anns,
-                key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,
-                reverse=True,
-            )
-        )
-        if len(local_rib_anns) > 0:
-            html += f"""<TR>
-                        <TD COLSPAN="{colspan}" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
-                      </TR>"""
+        # local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
+        # local_rib_anns = tuple(
+        #     sorted(
+        #         local_rib_anns,
+        #         key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,
+        #         reverse=True,
+        #     )
+        # )
+        # if len(local_rib_anns) > 0:
+        #     html += f"""<TR>
+        #                 <TD COLSPAN="{colspan}" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+        #               </TR>"""
 
-            for ann in local_rib_anns:
-                if (ann.as_path[-1] in scenario.attacker_asns or 
-                    ann.as_path[-1] in scenario.victim_asns):
-                    mask = "/" + ann.prefix.split("/")[-1]
-                    path = ", ".join(str(x) for x in ann.as_path)
-                    ann_help = ""
-                    if getattr(ann, "blackhole", False):
-                        ann_help = "&#10041;"
-                    elif getattr(ann, "preventive", False):
-                        ann_help = "&#128737;"
-                    elif any(x in ann.as_path for x in scenario.attacker_asns):
-                        ann_help = "&#128520;"
-                    elif any(x == ann.origin for x in scenario.victim_asns):
-                        ann_help = "&#128519;"
-                    elif any(x == ann.origin for x in scenario.reflector_asns):
-                        ann_help = "&#128526;"
-                    else:
-                        raise Exception(f"Not valid ann for rib? {ann}")
+        #     for ann in local_rib_anns:
+        #         # if (ann.as_path[-1] in scenario.attacker_asns or 
+        #         #     ann.as_path[-1] in scenario.victim_asns):
+        #             mask = "/" + ann.prefix.split("/")[-1]
+        #             path = ", ".join(str(x) for x in ann.as_path)
+        #             ann_help = ""
+        #             if getattr(ann, "blackhole", False):
+        #                 ann_help = "&#10041;"
+        #             elif getattr(ann, "preventive", False):
+        #                 ann_help = "&#128737;"
+        #             elif any(x in ann.as_path for x in scenario.attacker_asns):
+        #                 ann_help = "&#128520;"
+        #             elif any(x == ann.origin for x in scenario.victim_asns):
+        #                 ann_help = "&#128519;"
+        #             elif any(x == ann.origin for x in scenario.reflector_asns):
+        #                 ann_help = "&#128526;"
+        #             else:
+        #                 raise Exception(f"Not valid ann for rib? {ann}")
 
-                    html += f"""<TR>
-                                <TD>{mask}</TD>
-                                <TD>{path}</TD>
-                                <TD>{ann_help}</TD>"""
-                    if display_next_hop_asn:
-                        html += f"""<TD>{ann.next_hop_asn}</TD>"""
-                    html += """</TR>"""
+        #             html += f"""<TR>
+        #                         <TD>{mask}</TD>
+        #                         <TD>{path}</TD>
+        #                         <TD>{ann_help}</TD>"""
+        #             if display_next_hop_asn:
+        #                 html += f"""<TD>{ann.next_hop_asn}</TD>"""
+        #             html += """</TR>"""
 
         html += "</TABLE>>"
         return html
@@ -436,6 +406,7 @@ class SAVDiagram(Diagram):
             )
         # https://stackoverflow.com/a/57461245/8903959
         self.dot.attr(label=description)
+
 
     def _render(self, path: Optional[Path] = None, view: bool = False) -> None:
         self.dot.render(path, view=view)

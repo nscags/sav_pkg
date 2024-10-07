@@ -132,14 +132,14 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             if ann.as_path[-1] == dst:
                 dst_ann = ann
 
-        # recursively propagate the packet until dst reached, packet is filtered, or the AS does not have
-        # a path to the destination
-        if (outcome_int not in [Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value] 
-            and as_obj.asn != dst 
-            and dst_ann is not None):
-            prev_hop = as_obj
-            as_obj = self.engine.as_graph.as_dict[dst_ann.next_hop_asn]
-            self._propagate_packet(as_obj, dst, origin, prev_hop)
+                # recursively propagate the packet until dst reached, packet is filtered, or the AS does not have
+                # a path to the destination
+                if (outcome_int not in [Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value] 
+                    and as_obj.asn != dst 
+                    and dst_ann is not None):
+                    prev_hop = as_obj
+                    as_obj = self.engine.as_graph.as_dict[dst_ann.next_hop_asn]
+                    self._propagate_packet(as_obj, dst, origin, prev_hop)
 
 
     def _determine_as_outcome_data_plane(self, as_obj, prev_hop, origin):
@@ -159,7 +159,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             sav_policy = self.scenario.sav_policy_asn_dict[as_obj.asn]
             
             # determine if packet is validated
-            validated = sav_policy.validate(as_obj, prev_hop, origin)
+            validated = sav_policy.validate(as_obj, prev_hop, origin, self.engine)
             if validated and spoofed_packet:
                 return Outcomes.FALSE_NEGATIVE.value
             elif validated and not spoofed_packet:

@@ -1,6 +1,6 @@
 from .base_sav_policy import BaseSAVPolicy
 
-from sav_pkg.enums import ASNs, Relationships, Prefixes
+from sav_pkg.enums import ASNs, Prefixes
 
 class BAR_SAV(BaseSAVPolicy):
     name: str = "BAR SAV"
