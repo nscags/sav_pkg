@@ -62,45 +62,11 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
     def _get_attacker_outcome_data_plane(self, as_obj):
         # as_obj is the attacker
         origin = as_obj.asn
-        prev_hop = None
 
         for reflector_asn in self.scenario.reflector_asns:
-            self._propagate_packet(as_obj, reflector_asn, origin, prev_hop)
-
-            # no outcome for reflector AS (filtered on path)
-            if (reflector_asn not in self._data_plane_outcomes):
-                attacker_success = False
-            # or if the reflector itself has filtered the packet, then try neighbors
-            elif (reflector_asn in self._data_plane_outcomes and
-                  origin in self._data_plane_outcomes[reflector_asn]):
-                attacker_success = False
-                for _prev_hop, outcome in self._data_plane_outcomes[reflector_asn][origin].items():
-                    if outcome == Outcomes.FALSE_NEGATIVE.value:
-                        attacker_success = True
-
-            # no outcome or no false negatives (packet reached dst and not filtered)
-            if not attacker_success:
-                for neighbor_as_obj in as_obj.neighbors:
-                    # propagate packet to neighbor with prev_hop = attacker
-                    self._propagate_packet(neighbor_as_obj, reflector_asn, origin, as_obj)
-
-                    # discussed all or nothing
-                    # attacker will announce packet to all neighbors assuming best path fails
-
-
-                    # # no outcome for reflector AS (filtered on path)
-                    # if (reflector_asn not in self._data_plane_outcomes):
-                    #     attacker_success = False
-                    # # or if the reflector itself has filtered the packet, then try neighbors
-                    # elif (reflector_asn in self._data_plane_outcomes and
-                    #         origin in self._data_plane_outcomes[reflector_asn]):
-                    #     attacker_success = False
-                    #     for _prev_hop, outcome in self._data_plane_outcomes[reflector_asn][origin].items():
-                    #         if outcome == Outcomes.FALSE_NEGATIVE.value:
-                    #             attacker_success = True
-
-                    # if attacker_success:
-                    #     break
+            for neighbor_as_obj in as_obj.neighbors:
+                # propagate packet to neighbor with prev_hop = attacker
+                self._propagate_packet(neighbor_as_obj, reflector_asn, origin, as_obj)
 
 
     def _propagate_packet(self, as_obj, dst, origin, prev_hop):

@@ -58,9 +58,7 @@ class SAVScenario(Scenario):
         self.reflector_asns: frozenset[int] = self._get_reflector_asns(
             scenario_config.override_reflector_asns, engine, prev_scenario
         )
-
-        # TODO: create function which assigns ASN to SAV policy
-        #       go through hardcoded first, otherwise default to BaseSAVPolicyCls
+        
         self.sav_policy_asn_dict = self._get_sav_policies_asn_dict()
  
         self.non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
@@ -180,12 +178,11 @@ class SAVScenario(Scenario):
                 )
             )
 
-
         return tuple(anns)
     
-    #############################
-    #     Get SAV Policies      #
-    #############################
+    ####################
+    # Get SAV Policies #
+    ####################
 
     def _get_sav_policies_asn_dict(self):
         # assign hardcoded SAV policies

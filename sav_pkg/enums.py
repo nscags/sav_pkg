@@ -11,6 +11,7 @@ class Outcomes(YamlAbleEnum):
     DISCONNECTED: int = 5   # ASes which do not recieve a packet (filtered by AS on path)
     ATTACKER: int = 6       # Attacker AS, enumerating outcome so it doesn't get counted as disconnected
     VICTIM: int = 7         # Victim AS,   ^^^
+    UNDETERMINED: int = 8
 
 
 class Prefixes(YamlAbleEnum):
@@ -29,3 +30,9 @@ class ASNs(YamlAbleEnum):
     ATTACKER: int = 666
     VICTIM: int = 777
     REFLECTOR: int = 555
+
+
+class ASGroups(YamlAbleEnum):
+    """AS types"""
+
+    REFLECTORS: str = "reflectors"
