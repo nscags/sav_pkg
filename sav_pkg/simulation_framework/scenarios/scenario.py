@@ -191,8 +191,14 @@ class SAVScenario(Scenario):
             for asn, sav_policy in self.scenario_config.hardcoded_asn_sav_dict.items():
                 sav_policy[asn] = sav_policy
         # remaining adopting ASes default to BaseSAVPolicy
-        for asn in self.scenario_config.override_sav_asns:
-            if asn not in sav_policy_asn_dict:
-                sav_policy_asn_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+        if self.scenario_config.override_sav_asns is not None:
+            for asn in self.scenario_config.override_sav_asns:
+                if asn not in sav_policy_asn_dict:
+                    sav_policy_asn_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+        # If relfectors are adopting by default (used for simulations)
+        if self.scenario_config.reflector_default_adopters == True:
+            for asn in self.reflector_asns:
+                if asn not in sav_policy_asn_dict:
+                    sav_policy_asn_dict[asn] = self.scenario_config.BaseSAVPolicyCls
 
         return frozendict(sav_policy_asn_dict)

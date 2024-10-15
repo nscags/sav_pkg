@@ -12,14 +12,8 @@ class StrictuRPF(BaseSAVPolicy):
         else:
             # Get announcement to source address
             for ann in as_obj.policy._local_rib.data.values():
-                if ann.as_path[-1] == ASNs.VICTIM.value:
-                    source_ann = ann
-
-            if source_ann is None:
-                raise TypeError
-
-            # check if interfaces match (symmetric route)
-            if source_ann.next_hop_asn == prev_hop.asn:
-                return True
-            else:
-                return False
+                # TODO: this should really be checked by prefix not ASN
+                if ann.as_path[-1] == ASNs.VICTIM.value and ann.next_hop_asn == prev_hop.asn:
+                    return True
+                
+            return False

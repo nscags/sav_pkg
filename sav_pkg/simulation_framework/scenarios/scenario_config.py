@@ -15,6 +15,8 @@ class SAVScenarioConfig(ScenarioConfig):
 
     # base SAV class
     BaseSAVPolicyCls: Optional[BaseSAVPolicy] = None
+    # make reflectors defualt adopters of base SAV policy
+    reflector_default_adopters: Optional[bool] = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt
     override_sav_asns: Optional[frozenset[int]] = None
     # Optional hardcode asn with SAV in case of testing with multiple ASes running
