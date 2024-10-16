@@ -10,6 +10,7 @@ from sav_pkg.simulation_engine import BaseSAVPolicy
 class MetricKey:
     """Key for storing data within each metric"""
 
+    plane: Plane
     as_group: ASGroups
     outcome: Outcomes
     PolicyCls: Optional[type[BaseSAVPolicy]] = None

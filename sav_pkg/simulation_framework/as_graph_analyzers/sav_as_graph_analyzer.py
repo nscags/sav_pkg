@@ -110,6 +110,12 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
 
     def _determine_as_outcome_data_plane(self, as_obj, prev_hop, origin):
         # Attacker and Victim don't validate their own packets
+
+        # NOTE: Though this is fine for attacker/victim at the edge
+        #       if the attacker were to fall on the route between the
+        #       victim and reflector, this will cause errors
+        # TODO: Change this eventually so the attackers and victims
+        #       will perform SAV if as_obj.asn != origin
         if as_obj.asn in self.scenario.attacker_asns:
             return Outcomes.ATTACKER.value
         elif as_obj.asn in self.scenario.victim_asns:
@@ -134,7 +140,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                 return Outcomes.TRUE_POSITIVE.value
             elif not validated and not spoofed_packet:
                 return Outcomes.FALSE_POSITIVE.value
-        
+        # Not adopting SAV, no validation, forward packet
         else:
             if spoofed_packet:
                 return Outcomes.FALSE_NEGATIVE.value

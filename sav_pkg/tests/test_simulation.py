@@ -13,18 +13,21 @@ def test_main():
     sim = Simulation(
         percent_adoptions=(
             0.0,
+            0.1,
+            0.5,
+            0.8,
         ),
         scenario_configs=(
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
-                num_reflectors=100,
+                num_reflectors=5,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
             ),
         ),
-        output_dir=Path("C:\\Users\\njsca\\BGPResearch\SAV\\simulation_results"), # this I don't think works
-        num_trials=100,
+        output_dir=Path("/mnt/c/users/njsca/Desktop/simulation_results"),
+        num_trials=1,
         parse_cpus=1, # try mulitple CPUs and see what happens (expecting some sort of error)
                       # need to implement the add function in MetricTracker
                       # or just steal Justin's
