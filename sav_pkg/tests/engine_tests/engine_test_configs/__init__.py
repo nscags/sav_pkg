@@ -1,8 +1,8 @@
 # Initial Tests 
-# from .config_001 import config_001
-# from .config_002 import config_002
-# from .config_003 import config_003
-# from .config_004 import config_004
+from .config_001 import config_001
+from .config_002 import config_002
+from .config_003 import config_003
+from .config_004 import config_004
 from .config_005 import config_005
 from .config_006 import config_006
 
@@ -86,10 +86,19 @@ engine_test_configs = [
     # config_002,
     # config_003,
     # config_004,
+<<<<<<< HEAD
     # config_100,
     # config_101,
     config_200,
     # config_201,
+=======
+    # config_005,
+    # config_006,
+    config_100,
+    config_101,
+    config_200,
+    config_201,
+>>>>>>> 1dd8c556cb74637cc298fb4aa7aa330b808bcbdd
     # config_202,
     # config_203,
     # config_204,
@@ -137,9 +146,15 @@ engine_test_configs = [
 
 
     # config_2200,
+<<<<<<< HEAD
 
     # config_300,
     # config_301,
+=======
+    # config_3200,
+    config_300,
+    config_301,
+>>>>>>> 1dd8c556cb74637cc298fb4aa7aa330b808bcbdd
     # config_302,
     # config_400,
     # config_401,

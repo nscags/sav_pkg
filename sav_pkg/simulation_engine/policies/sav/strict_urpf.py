@@ -1,5 +1,5 @@
 from .base_sav_policy import BaseSAVPolicy
-from sav_pkg.enums import ASNs
+from sav_pkg.enums import Prefixes
 
 class StrictuRPF(BaseSAVPolicy):
     name: str = "Strict uRPF"
@@ -12,14 +12,7 @@ class StrictuRPF(BaseSAVPolicy):
         else:
             # Get announcement to source address
             for ann in as_obj.policy._local_rib.data.values():
-                if ann.as_path[-1] == ASNs.VICTIM.value:
-                    source_ann = ann
-
-            if source_ann is None:
-                raise TypeError
-
-            # check if interfaces match (symmetric route)
-            if source_ann.next_hop_asn == prev_hop.asn:
-                return True
-            else:
-                return False
+                if ann.prefix == Prefixes.VICTIM.value and ann.next_hop_asn == prev_hop.asn:
+                    return True
+                
+            return False

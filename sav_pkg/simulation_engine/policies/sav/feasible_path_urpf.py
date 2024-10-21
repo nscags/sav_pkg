@@ -6,12 +6,11 @@ class FeasiblePathuRPF(BaseSAVPolicy):
 
     @staticmethod
     def validate(as_obj, prev_hop, origin, engine):  
-        
         # Feasible-Path uRPF is applied to only customer and peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):
             return True
         else:
-            # check local rib to see if it contains a path to the IP address through
+            # check ribs in to see if it contains a path to the IP address through
             # the interface you recieved the packet
             # this will always be the victim's IP address because either the packet was
             # sent by a legitimate sender (victim) or the packet was sent by the attacker

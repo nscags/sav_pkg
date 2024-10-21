@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 from frozendict import frozendict
 
@@ -13,10 +13,13 @@ class SAVScenarioConfig(ScenarioConfig):
     reflector_subcategory_attr: Optional[str] = ASGroups.STUBS_OR_MH.value
     override_reflector_asns: Optional[frozenset[int]] = None
 
-    # base SAV class
     BaseSAVPolicyCls: Optional[BaseSAVPolicy] = None
+    reflector_default_adopters: Optional[bool] = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt
     override_sav_asns: Optional[frozenset[int]] = None
     # Optional hardcode asn with SAV in case of testing with multiple ASes running
     # different SAV policies
-    hardcoded_asn_sav_dict: Optional[frozendict] = None
+    hardcoded_asn_sav_dict: frozendict[int, type[BaseSAVPolicy]] = field(
+        # Mypy doesn't understand frozendict typing, just ignore it
+        default_factory=frozendict  # type: ignore
+    )

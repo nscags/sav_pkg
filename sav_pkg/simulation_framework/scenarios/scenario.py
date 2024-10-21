@@ -1,5 +1,6 @@
 from typing import Optional, TYPE_CHECKING, Union, Type
 import random
+import math
 from frozendict import frozendict
 
 from bgpy.simulation_framework.scenarios import Scenario
@@ -59,7 +60,7 @@ class SAVScenario(Scenario):
             scenario_config.override_reflector_asns, engine, prev_scenario
         )
         
-        self.sav_policy_asn_dict = self._get_sav_policies_asn_dict()
+        self.sav_policy_asn_dict = self._get_sav_policies_asn_dict(engine)
  
         self.non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             self._get_non_default_asn_cls_dict(
@@ -169,6 +170,7 @@ class SAVScenario(Scenario):
                 )
             )
 
+        # NOTE: with this logic, we are limited to 254 reflectors
         for i, reflector_asn in enumerate(self.reflector_asns):
             anns.append(
                 self.scenario_config.AnnCls(
@@ -180,19 +182,90 @@ class SAVScenario(Scenario):
 
         return tuple(anns)
     
-    ####################
-    # Get SAV Policies #
-    ####################
+    #####################
+    # Get Adopting ASNs #
+    #####################
 
-    def _get_sav_policies_asn_dict(self):
-        # assign hardcoded SAV policies
+    def _get_sav_policies_asn_dict(self, engine):
+
         sav_policy_asn_dict = dict()
-        if self.scenario_config.hardcoded_asn_sav_dict is not None:
-            for asn, sav_policy in self.scenario_config.hardcoded_asn_sav_dict.items():
-                sav_policy[asn] = sav_policy
-        # remaining adopting ASes default to BaseSAVPolicy
-        for asn in self.scenario_config.override_sav_asns:
-            if asn not in sav_policy_asn_dict:
+
+        # Override SAV asns
+        if self.scenario_config.override_sav_asns is not None:
+            for asn in self.scenario_config.override_sav_asns:
                 sav_policy_asn_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+        else:
+            sav_policy_asn_dict = self._get_randomized_sav_asn_dict(engine)
 
         return frozendict(sav_policy_asn_dict)
+    
+
+    def _get_randomized_sav_asn_dict(
+        self,
+        engine: BaseSimulationEngine,
+    ):
+        """Get adopting ASNs and non default ASNs
+
+        By default, to get even adoption, adopt in each of the three
+        subcategories
+        """
+
+        # Get the asn_cls_dict without randomized adoption
+        asn_sav_cls_dict = dict(self.scenario_config.hardcoded_asn_sav_dict)
+        for asn in self._default_sav_adopters:
+            asn_sav_cls_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+
+        # Randomly adopt in all three subcategories
+        for subcategory in self.scenario_config.adoption_subcategory_attrs:
+            asns = engine.as_graph.asn_groups[subcategory]
+            # Remove ASes that are already pre-set
+            # Ex: Attacker and victim
+            # Ex: ROV Nodes (in certain situations)
+            possible_adopters = asns.difference(self._preset_sav_asns)
+
+            # Get how many ASes should be adopting
+
+            # Round for the start and end of the graph
+            # (if 0 ASes would be adopting, have 1 as adopt)
+            # (If all ASes would be adopting, have all -1 adopt)
+            # This was a feature request, but it's not supported
+            if self.percent_adoption == SpecialPercentAdoptions.ONLY_ONE:
+                k = 1
+            elif self.percent_adoption == SpecialPercentAdoptions.ALL_BUT_ONE:
+                k = len(possible_adopters) - 1
+            # Really used just for testing
+            elif self.percent_adoption == 0:
+                k = 0
+            else:
+                err = f"{self.percent_adoption}"
+                assert isinstance(self.percent_adoption, float), err
+                k = math.ceil(len(possible_adopters) * self.percent_adoption)
+
+            # https://stackoverflow.com/a/15837796/8903959
+            possible_adopters_tup = tuple(possible_adopters)
+            try:
+                for asn in random.sample(possible_adopters_tup, k):
+                    asn_sav_cls_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+            except ValueError:
+                raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
+        return asn_sav_cls_dict
+    
+
+    @property
+    def _default_sav_adopters(self) -> frozenset[int]:
+        """Reflectors adopt by default if set in Scenario Config"""
+
+        if self.scenario_config.reflector_default_adopters:
+            return self.reflector_asns 
+        else:
+            return frozenset
+        
+
+    @property
+    def _preset_sav_asns(self) -> frozenset[int]:
+        """ASNs that have a preset adoption policy"""
+
+        # Returns the union of default adopters and non adopters
+        hardcoded_asns = set(self.scenario_config.hardcoded_asn_sav_dict)
+        # reflectors (if set in config), victims, attackers, AS w/ hardcoded policies
+        return self._default_sav_adopters | self._default_adopters | self._default_non_adopters | hardcoded_asns
