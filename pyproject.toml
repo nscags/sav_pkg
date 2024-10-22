@@ -3,37 +3,28 @@ requires = ["setuptools>=69.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bgpy_pkg"
-version = "7.3.0"
+name = "sav_pkg"
+version = "0.0.1"
 requires-python = ">=3.10"
-description = "Simulates BGP and ROV in an extensible manner"
+description = "Extension to BGPy to simulation Source Address Validation"
 readme = "README.md"
 authors = [
-    {name = "Justin Furuness", email = "jfuruness@gmail.com"},
-    {name = "Cameron Morris", email = "cameron.morris@uconn.edu"},
-    {name = "Reynaldo Morillo", email = "reynaldo.morillo@uconn.edu"},
-    {name = "Arvind Kasiliya", email = "arvind.kasiliya@uconn.edu"}
+    {name = "Nicholas Scaglione", email = "njscaglione@gmail.com"},
 ]
 maintainers = [
-  {name = "Justin Furuness", email = "jfuruness@gmail.com"}
+  {name = "Nicholas Scaglione", email = "njscaglione@gmail.com"},
 ]
 license = {file = "LICENSE.txt"}
 keywords = [
+    "SAV",
+    "sav_pkg",
     "BGPy",
     "bgpy",
-    "bgpc",
     "bgpy_pkg",
     "BGP",
     "Caida",
     "CAIDA",
-    "Peers",
-    "Providers",
-    "Relationships",
-    "AS-Serial",
-    "Customers",
     "Simulation",
-    "ROV",
-    "Furuness"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -57,8 +48,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jfuruness/bgpy_pkg"
-Documentation = "https://github.com/jfuruness/bgpy/wiki"
+Homepage = "https://https://github.com/nscags/sav_pkg"
 
 [project.scripts]
 bgpy = "bgpy.__main__:main"
@@ -109,7 +99,7 @@ filterwarnings = [
 ]
 
 [tool.mypy]
-mypy_path = "bgpy"
+mypy_path = "sav_pkg"
 check_untyped_defs = true
 disallow_any_generics = true
 ignore_missing_imports = true

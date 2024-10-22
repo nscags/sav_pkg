@@ -94,6 +94,7 @@ class BAR_SAV(BaseSAVPolicy):
 
             prefixes = p1.union(p2)
 
+            # If the victim's prefix is within the list of prefixes
             return (origin in d) and (Prefixes.VICTIM.value in prefixes)
         
 

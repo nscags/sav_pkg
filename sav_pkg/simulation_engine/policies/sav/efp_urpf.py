@@ -55,6 +55,8 @@ class EnhancedFeasiblePathuRPF(BaseSAVPolicy):
             # previous hop not in customer interfaces
             if prev_hop.asn not in i:
                 return False
+            
+            # TODO: This should be any address within the victim's prefix
             # prefix not in allowed set (will always be victim prefix)
             if Prefixes.VICTIM.value not in z:
                 return False

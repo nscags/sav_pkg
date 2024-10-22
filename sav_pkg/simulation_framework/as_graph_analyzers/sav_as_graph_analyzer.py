@@ -1,4 +1,5 @@
 from typing import Optional, TYPE_CHECKING
+from time import time
 
 from bgpy.simulation_framework import BaseASGraphAnalyzer
 from bgpy.as_graphs import AS
@@ -36,6 +37,8 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         data plane analysis -> outcomes
         """
+        print("Starting data plane analysis:")
+        start = time()
 
         if self.data_plane_tracking:
             for as_obj in self.engine.as_graph:
@@ -46,6 +49,8 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                 
         # determine disconnections after all packets are sent
         self._handle_outcomes()
+        end = time()
+        print(f"RUNTIME: {end - start}")
 
         return self.outcomes
     
@@ -115,7 +120,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         #       if the attacker were to fall on the route between the
         #       victim and reflector, this will cause errors
         # TODO: Change this eventually so the attackers and victims
-        #       will perform SAV if as_obj.asn != origin
+        #       will perform SAV if as_obj.asn != origin (don't validate their own packet)
         if as_obj.asn in self.scenario.attacker_asns:
             return Outcomes.ATTACKER.value
         elif as_obj.asn in self.scenario.victim_asns:

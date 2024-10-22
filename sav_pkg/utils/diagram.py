@@ -327,6 +327,9 @@ class SAVDiagram(Diagram):
 
 
     def _add_traffic_edges(self, scenario, traceback):
+        # NOTE: since this does not track visted ASes
+        #       multiple attackers will cause multiple
+        #       traffic lines over same edge
         for asn, origin_dict in traceback.items():
             for origin, prev_hop_dict in origin_dict.items():
                 if origin in scenario.attacker_asns:

@@ -1,0 +1,157 @@
+0.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.1605846881866455
+Tracking trial metrics:
+Percent adoption: 0.0
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.017049074172973633
+10.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.10790538787841797
+Tracking trial metrics:
+Percent adoption: 0.1
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003159761428833008
+20.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.07759618759155273
+Tracking trial metrics:
+Percent adoption: 0.2
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003584146499633789
+30.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.08392095565795898
+Tracking trial metrics:
+Percent adoption: 0.3
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.004597902297973633
+40.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.08014321327209473
+Tracking trial metrics:
+Percent adoption: 0.4
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.0053234100341796875
+50.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.07948446273803711
+Tracking trial metrics:
+Percent adoption: 0.5
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.005446434020996094
+60.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.08621764183044434
+Tracking trial metrics:
+Percent adoption: 0.6
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003285646438598633
+70.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.10428166389465332
+Tracking trial metrics:
+Percent adoption: 0.7
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.0037827491760253906
+80.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.07465958595275879
+Tracking trial metrics:
+Percent adoption: 0.8
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.0034356117248535156
+90.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.10947942733764648
+Tracking trial metrics:
+Percent adoption: 0.9
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.009347677230834961
+99.0% SAVScenario #0          Starting data plane analysis:
+RUNTIME: 0.06880831718444824
+Tracking trial metrics:
+Percent adoption: 0.99
+trial: 0
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.00234222412109375
+0.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.25354790687561035
+Tracking trial metrics:
+Percent adoption: 0.0
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.02529764175415039
+10.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.08505558967590332
+Tracking trial metrics:
+Percent adoption: 0.1
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003613710403442383
+20.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.07091546058654785
+Tracking trial metrics:
+Percent adoption: 0.2
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003505229949951172
+30.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.17978239059448242
+Tracking trial metrics:
+Percent adoption: 0.3
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003424406051635742
+40.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.05730748176574707
+Tracking trial metrics:
+Percent adoption: 0.4
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003515481948852539
+50.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.10553574562072754
+Tracking trial metrics:
+Percent adoption: 0.5
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.003632068634033203
+60.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.07920718193054199
+Tracking trial metrics:
+Percent adoption: 0.6
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.0032532215118408203
+70.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.06104874610900879
+Tracking trial metrics:
+Percent adoption: 0.7
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.004672050476074219
+80.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.07036066055297852
+Tracking trial metrics:
+Percent adoption: 0.8
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.004489898681640625
+90.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.08799910545349121
+Tracking trial metrics:
+Percent adoption: 0.9
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.0059015750885009766
+99.0% SAVScenario #1          Starting data plane analysis:
+RUNTIME: 0.09506702423095703
+Tracking trial metrics:
+Percent adoption: 0.99
+trial: 1
+SAV Policy: Feasible-Path uRPF
+RUNTIME: 0.006186723709106445
+
+Wrote graphs to /mnt/c/users/njsca/Desktop/simulation_results/graphs
+TOTAL RUNTIME: 842.2401463985443

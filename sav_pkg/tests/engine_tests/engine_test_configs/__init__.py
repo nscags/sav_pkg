@@ -43,7 +43,7 @@ from .config_401 import config_401
 
 
 engine_test_configs = [
-    # config_001,
+    config_001,
     # config_002,
     # config_003,
     # config_004,

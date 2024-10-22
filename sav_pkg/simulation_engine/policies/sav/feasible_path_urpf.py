@@ -15,6 +15,8 @@ class FeasiblePathuRPF(BaseSAVPolicy):
             # this will always be the victim's IP address because either the packet was
             # sent by a legitimate sender (victim) or the packet was sent by the attacker
             # using a spoofed IP address (IP address of the victim/legit sender)
+
+            # TODO: Again this should be any address within the vicitm's prefix
             for prefix, ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).items():
                 if prefix == Prefixes.VICTIM.value:
                     return True

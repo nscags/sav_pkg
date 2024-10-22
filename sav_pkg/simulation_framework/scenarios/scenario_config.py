@@ -10,7 +10,7 @@ from sav_pkg.simulation_engine import BaseSAVPolicy
 @dataclass(frozen=True)
 class SAVScenarioConfig(ScenarioConfig):
     num_reflectors: int = 1
-    reflector_subcategory_attr: Optional[str] = ASGroups.STUBS_OR_MH.value
+    reflector_subcategory_attr: Optional[str] = ASGroups.ALL_WOUT_IXPS.value
     override_reflector_asns: Optional[frozenset[int]] = None
 
     BaseSAVPolicyCls: Optional[BaseSAVPolicy] = None

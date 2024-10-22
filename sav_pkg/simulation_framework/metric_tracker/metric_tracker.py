@@ -6,15 +6,18 @@ import pickle
 from statistics import mean
 from statistics import stdev
 from typing import Any, Optional, Union
+from time import time
 
+from bgpy.enums import Plane, SpecialPercentAdoptions
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework import MetricTracker
-from bgpy.enums import Plane
 
 from .data_key import DataKey
 from .metric import Metric
 from .metric_key import MetricKey
 
-from sav_pkg.simulation_framework.utils import get_metric_key
+from sav_pkg.simulation_framework.utils import get_metric_keys
 
 
 class MetricTracker(MetricTracker):
@@ -23,15 +26,54 @@ class MetricTracker(MetricTracker):
     def __init__(
         self,
         data: Optional[defaultdict[DataKey, list[Metric]]] = None,
-        metric_keys: Optional[list[MetricKey]] = list(get_metric_key()),
+        metric_keys: tuple[MetricKey, ...] = tuple(list(get_metric_keys())),
     ):
         """Inits data"""
-        self.data = data if data is not None else defaultdict(list)
-        self.metric_keys = metric_keys if metric_keys is not None else []
+
+        # This is a list of all the trial info
+        # You must save info trial by trial, so that you can join
+        # After a return from multiprocessing
+        # key DataKey (prop_round, percent_adopt, scenario_label, MetricKey)
+        # value is a list of metric instances
+        if data:
+            self.data: defaultdict[DataKey, list[Metric]] = data
+        else:
+            self.data = defaultdict(list)
+
+        self.metric_keys: tuple[MetricKey, ...] = metric_keys
 
     #############
     # Add Funcs #
     #############
+
+    def __add__(self, other):
+        """Merges other MetricTracker into this one and combines the data
+
+        This gets called when we need to merge all the MetricTrackers
+        from the various processes that were spawned
+        """
+
+        if isinstance(other, MetricTracker):
+            # Deepcopy is slow, but fine here since it's only called once after sims
+            # For BGPy __main__ using 100 trials, 3 percent adoptions, 1 scenario
+            # on a lenovo laptop
+            # 1.5s
+            # new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
+            # .04s, but dangerous
+            # new_data: defaultdict[DataKey, list[Metric]] = self.data
+            # for k, v in other.data.items():
+            #     new_data[k].extend(v)
+            # .04s, not dangerous
+            new_data: defaultdict[DataKey, list[Metric]] = defaultdict(list)
+            for obj in (self, other):
+                for k, v in obj.data.items():
+                    new_data[k].extend(v)
+            return self.__class__(data=new_data)
+        else:
+            return NotImplemented
+
+    def __radd__(self, other):
+        return self.__add__(other)
 
     ######################
     # Data Writing Funcs #
@@ -53,71 +95,92 @@ class MetricTracker(MetricTracker):
         with pickle_path.open("wb") as f:
             pickle.dump(self.get_pickle_data(), f)
 
-
     def get_csv_rows(self) -> list[dict[str, Any]]:
-        """Generates rows for CSV output."""
-        rows = []
-        for data_key, metrics in self.data.items():
-            # Aggregate percents for each MetricKey
-            for metric in metrics:
-                percents = metric.percents.get(metric.metric_key, [])
-                mean_percent = mean(percents) if percents else 0.0
-                yerr = self._get_yerr(percents)
+        """Returns rows for a CSV"""
+
+        rows = list()
+        for data_key, metric_list in self.data.items():
+            agg_percents = sum(metric_list, start=metric_list[0]).percents
+            # useful for debugging individual trials
+            # from pprint import pprint
+            # pprint(data_key)
+            # for x in metric_list:
+            #     pprint(x.metric_key)
+            #     pprint(x.percents)
+            # input("waiting")
+            for metric_key, trial_data in agg_percents.items():
                 row = {
-                    'scenario_config': data_key.scenario_config,
-                    'percent_adopt': data_key.percent_adopt,
-                    'propagation_round': data_key.propagation_round,
-                    'as_group': metric.metric_key.as_group,
-                    'outcome': metric.metric_key.outcome,
-                    'value': mean_percent,
-                    'yerr': yerr,
+                    "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
+                    "BaseSAVPolicyCls": data_key.scenario_config.BaseSAVPolicyCls.name,
+                    # "PolicyCls": metric_key.PolicyCls.__name__,
+                    "outcome_type": metric_key.plane.name,
+                    "as_group": metric_key.as_group.value,
+                    "outcome": metric_key.outcome.name,
+                    "percent_adopt": data_key.percent_adopt,
+                    "propagation_round": data_key.propagation_round,
+                    # trial_data can sometimes be empty
+                    # for example, if we have 1 adopting AS for stubs_and_multihomed
+                    # and that AS is multihomed, and not a stub, then for stubs,
+                    # no ASes adopt, and trial_data is empty
+                    # This is the proper way to do it, rather than defaulting trial_data
+                    # to [0], which skews results when aggregating trials
+                    "value": mean(trial_data) if trial_data else None,
+                    "yerr": self._get_yerr(trial_data),
+                    "scenario_config_label": data_key.scenario_config.csv_label,
+                    "scenario_label": data_key.scenario_config.scenario_label,
                 }
                 rows.append(row)
         return rows
 
-
     def get_pickle_data(self):
-        """Prepares data for pickling."""
-        pickle_data = []
-        for data_key, metrics in self.data.items():
-            for metric in metrics:
-                percents = metric.percents.get(metric.metric_key, [])
-                mean_percent = mean(percents) if percents else 0.0
-                yerr = self._get_yerr(percents)
-                data = {
-                    'data_key': data_key,
-                    'metric_key': metric.metric_key,
-                    'value': mean_percent,
-                    'yerr': yerr,
+        agg_data = list()
+        for data_key, metric_list in self.data.items():
+            agg_percents = sum(metric_list, start=metric_list[0]).percents
+            for metric_key, trial_data in agg_percents.items():
+                row = {
+                    "data_key": data_key,
+                    "metric_key": metric_key,
+                    "value": mean(trial_data) if trial_data else None,
+                    "yerr": self._get_yerr(trial_data),
                 }
-                pickle_data.append(data)
-        return pickle_data
-
+                agg_data.append(row)
+        return agg_data
 
     def _get_yerr(self, trial_data: list[float]) -> float:
-        """Calculates the 90% confidence interval."""
+        """Returns 90% confidence interval for graphing"""
+
         if len(trial_data) > 1:
-            yerr_num = 1.645 * stdev(trial_data)
+            yerr_num = 1.645 * 2 * stdev(trial_data)
             yerr_denom = sqrt(len(trial_data))
             return float(yerr_num / yerr_denom)
         else:
-            return 0.0
+            return 0
 
     ######################
     # Track Metric Funcs #
     ######################
 
+
+    # this function is where it all starts, beyond this call everything is done within
+    # the class (besides for the data writing functions I believe)
     def track_trial_metrics(
         self,
         *,
-        engine,  # Keeping as generic to match original code
-        percent_adopt: Union[float, Any],  # Any to match SpecialPercentAdoptions
+        engine: BaseSimulationEngine,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
-        scenario,  # Assuming scenario has necessary attributes
+        scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[int, dict[int, dict[int, int]]],
+        outcomes,
     ) -> None:
-        """Tracks all metrics from a single trial, adding to self.data"""
+        """
+        Tracks all metrics from a single trial, adding to self.data
+
+        The reason we don't simply save the engine to track metrics later
+        is because the engines are very large and this would take a lot longer
+        """
+        print(f"Tracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}")
+        start = time()
         self._track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
@@ -126,55 +189,79 @@ class MetricTracker(MetricTracker):
             propagation_round=propagation_round,
             outcomes=outcomes,
         )
-
+        end = time()
+        print(f"RUNTIME: {end - start}")
 
     def _track_trial_metrics(
         self,
         *,
-        engine,
-        percent_adopt: Union[float, Any],
+        engine: BaseSimulationEngine,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
-        scenario,
+        scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[int, dict[int, dict[int, int]]],
+        outcomes,
     ) -> None:
-        """Tracks all metrics from a single trial, adding to self.data"""
-        # Create metrics for each metric_key
-        metrics = [Metric(metric_key) for metric_key in self.metric_keys]
+        """
+        Tracks all metrics from a single trial, adding to self.data
+        """
 
-        # Get reflector ASNs from scenario
-        reflector_asns = scenario.reflector_asns
-        attacker_asns = scenario.attacker_asns
-        # print(f"Number of reflector ASNs: {len(reflector_asns)}")
+        # Ensure metric_keys are initialized properly before each run
+        if not hasattr(self, 'metric_keys') or not self.metric_keys:
+            self.metric_keys = tuple(list(get_metric_keys()))
+        else:
+            self.metric_keys = tuple(list(self.metric_keys))
 
-        # Data plane outcomes
-        data_plane_outcomes = outcomes[Plane.DATA.value]
-
-        # Process each AS
-        for as_obj in engine.as_graph:
-            asn = as_obj.asn
-            # if asn in reflector_asns:
-            #     print(f"Processing reflector ASN: {asn}")
-            for metric in metrics:
-                metric.add_data(
-                    asn=asn,
-                    data_plane_outcomes=data_plane_outcomes,
-                    reflector_asns=reflector_asns,
-                    attacker_asns=attacker_asns,
-                )
-
-        # After processing, save percents
+        metrics = [Metric(x) for x in self.metric_keys]
+        self._populate_metrics(
+            metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
+        )
         for metric in metrics:
-            metric.save_percents()
-            # Create DataKey
-            data_key = DataKey(
+            key = DataKey(
                 propagation_round=propagation_round,
                 percent_adopt=percent_adopt,
                 scenario_config=scenario.scenario_config,
                 metric_key=metric.metric_key,
             )
-            # Append metric to data
-            self.data[data_key].append(metric)
+            # print("\n")
+            # pprint(key)
+            # if key not in self.data:
+            #     self.data[key] = []
+            self.data[key].append(metric)
 
-        # Debug statement to check if data is being added
-        # print(f"Data added for trial {trial}: {len(self.data)} entries in self.data")
+
+    def _populate_metrics(
+        self,
+        *,
+        metrics: list[Metric],
+        engine: BaseSimulationEngine,
+        scenario: Scenario,
+        outcomes,
+    ) -> None:
+        """Populates all metrics with data"""
+
+        data_plane_outcomes = outcomes[Plane.DATA.value]
+
+        # Don't count these!
+        # in the base simulator these are just attacker/victim asns
+        uncountable_asns = scenario._untracked_asns
+
+        for as_obj in engine.as_graph:
+            # Don't count preset ASNs
+            if as_obj.asn in uncountable_asns:
+                continue
+            for metric in metrics:
+                # Must use .get, since if this tracking is turned off,
+                # this will be an empty dict
+
+                # we are now passing in the entire outcome dict to the add_data func
+                metric.add_data(
+                    as_obj=as_obj,
+                    engine=engine,
+                    scenario=scenario,
+                    data_plane_outcomes=data_plane_outcomes,
+                )
+
+        # Only call this once or else it adds significant amounts of time
+        for metric in metrics:
+            metric.save_percents()
