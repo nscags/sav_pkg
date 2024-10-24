@@ -50,7 +50,8 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         # determine disconnections after all packets are sent
         self._handle_outcomes()
         end = time()
-        print(f"RUNTIME: {end - start}")
+        print(f"RUNTIME: {end - start}\n")
+        print(f"OUTCOMES: {self.outcomes}")
 
         return self.outcomes
     

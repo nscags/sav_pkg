@@ -1,5 +1,4 @@
 from .base_sav_policy import BaseSAVPolicy
-
 from sav_pkg.enums import ASNs, Prefixes
 
 class BAR_SAV(BaseSAVPolicy):
@@ -7,13 +6,26 @@ class BAR_SAV(BaseSAVPolicy):
 
     @staticmethod
     def validate(as_obj, prev_hop, origin, engine):  
+        """
+        Validates incoming packets based on BAR SAV.
         
+        Internet draft procedure description:
+        https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/
+
+        Parameters:
+        - as_obj: The AS object representing the current AS.
+        - prev_hop: The AS object representing the previous hop (neighbor from which the packet arrived).
+        - origin: The origin ASN of the packet.
+        - engine: The simulation engine.
+
+        Returns:
+        - True if the packet is accepted according to BAR SAV.
+        - False if the packet is dropped.
+        """
         # BAR SAV is applied to only customer and lateral peer interfaces
         if (prev_hop.asn in as_obj.provider_asns):
             return True
         else:
-            # Internet draft procedure description
-            # https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/
             i = 0
             z = [{prev_hop.asn}]
             

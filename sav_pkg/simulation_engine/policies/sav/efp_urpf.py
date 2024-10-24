@@ -1,11 +1,27 @@
 from .base_sav_policy import BaseSAVPolicy
-from sav_pkg.enums import ASNs, Prefixes
+from sav_pkg.enums import Prefixes
 
 class EnhancedFeasiblePathuRPF(BaseSAVPolicy):
+    """
+    Implementation of Enhanced Feasible-Path uRPF (EFP-uRPF).
+    """
     name: str = "EFP uRPF"
 
     @staticmethod
     def validate(as_obj, prev_hop, origin, engine):
+        """
+        Validates incoming packets based on Algorithm 2 for EFP-uRPF specified in RFC 8704.
+
+        Parameters:
+        - as_obj: The AS object representing the current AS.
+        - prev_hop: The AS object representing the previous hop (neighbor from which the packet arrived).
+        - origin: The origin ASN of the packet.
+        - engine: The simulation engine or context.
+
+        Returns:
+        - True if the packet is accepted according to EFP-uRPF.
+        - False if the packet is dropped.
+        """
         # EFP uRPF is applied to only customer
         if (prev_hop.asn in as_obj.provider_asns or
             prev_hop.asn in as_obj.peer_asns):
@@ -55,8 +71,6 @@ class EnhancedFeasiblePathuRPF(BaseSAVPolicy):
             # previous hop not in customer interfaces
             if prev_hop.asn not in i:
                 return False
-            
-            # TODO: This should be any address within the victim's prefix
             # prefix not in allowed set (will always be victim prefix)
             if Prefixes.VICTIM.value not in z:
                 return False
@@ -65,12 +79,3 @@ class EnhancedFeasiblePathuRPF(BaseSAVPolicy):
                 return False
             
             return True
-            
-
-            
-
-
-
-
-
-

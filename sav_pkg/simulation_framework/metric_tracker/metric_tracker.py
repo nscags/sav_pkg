@@ -160,9 +160,6 @@ class MetricTracker(MetricTracker):
     # Track Metric Funcs #
     ######################
 
-
-    # this function is where it all starts, beyond this call everything is done within
-    # the class (besides for the data writing functions I believe)
     def track_trial_metrics(
         self,
         *,
@@ -190,7 +187,7 @@ class MetricTracker(MetricTracker):
             outcomes=outcomes,
         )
         end = time()
-        print(f"RUNTIME: {end - start}")
+        print(f"RUNTIME: {end - start}\n")
 
     def _track_trial_metrics(
         self,
@@ -213,6 +210,7 @@ class MetricTracker(MetricTracker):
             self.metric_keys = tuple(list(self.metric_keys))
 
         metrics = [Metric(x) for x in self.metric_keys]
+        print(f"Metrics: {metrics}")
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )
@@ -242,19 +240,13 @@ class MetricTracker(MetricTracker):
 
         data_plane_outcomes = outcomes[Plane.DATA.value]
 
-        # Don't count these!
-        # in the base simulator these are just attacker/victim asns
-        uncountable_asns = scenario._untracked_asns
-
-        for as_obj in engine.as_graph:
-            # Don't count preset ASNs
-            if as_obj.asn in uncountable_asns:
-                continue
+        for reflector_asn in scenario.relfector_asns:
+            as_obj = engine.as_graph.as_dict[reflector_asn]
             for metric in metrics:
-                # Must use .get, since if this tracking is turned off,
-                # this will be an empty dict
 
                 # we are now passing in the entire outcome dict to the add_data func
+                # TODO: I don't think we HAVE to pass the whole dict, could get the
+                #       {origin: {prev_hop: outcome}} dict and pass that into the Metric
                 metric.add_data(
                     as_obj=as_obj,
                     engine=engine,
@@ -265,3 +257,4 @@ class MetricTracker(MetricTracker):
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:
             metric.save_percents()
+            print(f"Percents: {metric.percents}")

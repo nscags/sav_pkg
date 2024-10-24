@@ -9,6 +9,9 @@
 *.pdf
 *.gv.png
 *guess.yaml
+outcomes_gt.yaml
+engine_gt.yaml
+metrics_gt.csv
 
 # For whatever reason, git is not ignoring these
 #
