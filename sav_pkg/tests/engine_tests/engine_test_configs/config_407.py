@@ -11,22 +11,25 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
+from sav_pkg.simulation_engine import FeasiblePathuRPF
 
-desc = "Single reflector with transit AS running EFP uRPF"
+desc = "Double reflector running Feasible-Path uRPF"
 
-config_303 = EngineTestConfig(
-    name="config_303",
+config_407 = EngineTestConfig(
+    name="config_407",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
-        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
-        override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
+        num_attackers=4,
+        num_victims=2,
+        num_reflectors=2,
+        override_attacker_asns=frozenset({ASNs.ATTACKER.value,1, 3,5}),
+        override_victim_asns=frozenset({ASNs.VICTIM.value,4}),
+        override_reflector_asns=frozenset({ASNs.REFLECTOR.value,12}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({1}),
-        BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
+        override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
+        BaseSAVPolicyCls=FeasiblePathuRPF,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
