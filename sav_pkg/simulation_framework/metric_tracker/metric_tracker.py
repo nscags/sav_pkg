@@ -176,7 +176,7 @@ class MetricTracker(MetricTracker):
         The reason we don't simply save the engine to track metrics later
         is because the engines are very large and this would take a lot longer
         """
-        print(f"Tracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}")
+        print(f"Tracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}", flush=True)
         start = time()
         self._track_trial_metrics(
             engine=engine,
@@ -187,7 +187,8 @@ class MetricTracker(MetricTracker):
             outcomes=outcomes,
         )
         end = time()
-        print(f"RUNTIME: {end - start}\n")
+        print(f"RUNTIME: {end - start}", flush=True)
+        print("+=============================+\n", flush=True)
 
     def _track_trial_metrics(
         self,
@@ -210,7 +211,7 @@ class MetricTracker(MetricTracker):
             self.metric_keys = tuple(list(self.metric_keys))
 
         metrics = [Metric(x) for x in self.metric_keys]
-        print(f"Metrics: {metrics}")
+        print(f"Metrics: {metrics}", flush=True)
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )
@@ -240,7 +241,7 @@ class MetricTracker(MetricTracker):
 
         data_plane_outcomes = outcomes[Plane.DATA.value]
 
-        for reflector_asn in scenario.relfector_asns:
+        for reflector_asn in scenario.reflector_asns:
             as_obj = engine.as_graph.as_dict[reflector_asn]
             for metric in metrics:
 
@@ -257,4 +258,7 @@ class MetricTracker(MetricTracker):
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:
             metric.save_percents()
-            print(f"Percents: {metric.percents}")
+            print(f"Metric: {metric.metric_key.outcome._name_}", flush=True)
+            print(f"Numerator: {metric._numerator}", flush=True)
+            print(f"Denominator: {metric._denominator}", flush=True)
+            print(f"Percents: {metric.percents}", flush=True)

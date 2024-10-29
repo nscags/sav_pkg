@@ -24,12 +24,10 @@ class FeasiblePathuRPF(BaseSAVPolicy):
         if (prev_hop.asn in as_obj.provider_asns):
             return True
         else:
-            # Convert the source IP to an IPv4Address object
             source_ip = Prefixes.VICTIM.value
-            # Get all prefixes announced by the previous hop
-            prefixes = as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).keys()
+            # Get all prefixes announced by the previous hop 
             # Check if the source IP belongs to any of these prefixes
-            for prefix in prefixes:
+            for prefix in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).keys():
                 if source_ip == prefix:
                     return True
             return False

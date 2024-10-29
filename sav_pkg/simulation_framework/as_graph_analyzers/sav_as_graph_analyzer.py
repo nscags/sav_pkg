@@ -14,7 +14,8 @@ if TYPE_CHECKING:
 
 
 class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
-    
+
+
     def __init__(
         self,
         engine: BaseSimulationEngine,
@@ -37,21 +38,22 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         data plane analysis -> outcomes
         """
-        print("Starting data plane analysis:")
+        print("+=============================+", flush=True)
+        print("Starting data plane analysis:", flush=True)
         start = time()
 
-        if self.data_plane_tracking:
-            for as_obj in self.engine.as_graph:
-                if as_obj.asn in self.scenario.attacker_asns:
-                    self._get_attacker_outcome_data_plane(as_obj)
-                elif as_obj.asn in self.scenario.victim_asns:
-                    self._get_victim_outcome_data_plane(as_obj)
+        # if self.data_plane_tracking:
+        for as_obj in self.engine.as_graph:
+            if as_obj.asn in self.scenario.attacker_asns:
+                self._get_attacker_outcome_data_plane(as_obj)
+            elif as_obj.asn in self.scenario.victim_asns:
+                self._get_victim_outcome_data_plane(as_obj)
                 
         # determine disconnections after all packets are sent
         self._handle_outcomes()
+
         end = time()
-        print(f"RUNTIME: {end - start}\n")
-        print(f"OUTCOMES: {self.outcomes}")
+        print(f"RUNTIME: {end - start}\n", flush=True)
 
         return self.outcomes
     
