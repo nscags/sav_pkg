@@ -1,5 +1,5 @@
 from frozendict import frozendict
-from .as_graph_info_000 import as_graph_info_000
+from .as_graph_info_003 import as_graph_info_003
 
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
@@ -10,6 +10,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
+from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
 
@@ -28,7 +29,8 @@ config_303 = EngineTestConfig(
         override_sav_asns=frozenset({1}),
         BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
     ),
-    as_graph_info=as_graph_info_000,
+    as_graph_info=as_graph_info_003,
     DiagramCls=SAVDiagram,
-    ASGraphAnalyzerCls=SAVASGraphAnalyzer
+    ASGraphAnalyzerCls=SAVASGraphAnalyzer,
+    MetricTrackerCls=MetricTracker,
 )

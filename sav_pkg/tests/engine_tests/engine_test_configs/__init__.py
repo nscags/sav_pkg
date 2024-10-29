@@ -89,6 +89,7 @@ from .config_6204 import config_6204
 from .config_6205 import config_6205
 from .config_6206 import config_6206
 from .config_6207 import config_6207
+from .config_6208 import config_6208
 # from .config_7200 import config_7200
 
 
@@ -145,31 +146,32 @@ engine_test_configs = [
     # config_212,
     # config_213,
     # config_214,
-    config_4201,
-    config_4202,
-    config_4203,
-    config_4204,
-    config_4205,
-    config_4206,
-    config_4207,
-    config_5201,
-    config_5202,
-    config_5203,
-    config_5204,
-    config_5205,
-    config_5206,
-    config_5207,
+    # config_4201,
+    # config_4202,
+    # config_4203,
+    # config_4204,
+    # config_4205,
+    # config_4206,
+    # config_4207,
+    # config_5201,
+    # config_5202,
+    # config_5203,
+    # config_5204,
+    # config_5205,
+    # config_5206,
+    # config_5207,
 
 
 
 
-    config_6201,
-    config_6202,
-    config_6203,
-    config_6204,
-    config_6205,
-    config_6206,
-    config_6207,
+    # config_6201,
+    # config_6202,
+    # config_6203,
+    # config_6204,
+    # config_6205,
+    # config_6206,
+    # config_6207,
+    # config_6208,
 
 
     
@@ -205,8 +207,8 @@ engine_test_configs = [
     # config_6200,
     # config_7200,
 
-    # config_300,
-    # config_301,
+    config_300,
+    config_301,
 
     config_303,
     config_304,
@@ -216,8 +218,8 @@ engine_test_configs = [
 
 
 
-    # config_400,
-    # config_401,
+    config_400,
+    config_401,
     config_402,
     config_403,
     config_404,

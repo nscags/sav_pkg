@@ -11,7 +11,7 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import FeasiblePathuRPF
+from sav_pkg.simulation_engine import BAR_SAV
 
 desc = "Double reflector running Feasible-Path uRPF"
 
@@ -29,7 +29,7 @@ config_403 = EngineTestConfig(
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value,12}),
         override_non_default_asn_cls_dict=frozendict(),
         override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
-        BaseSAVPolicyCls=FeasiblePathuRPF,
+        BaseSAVPolicyCls=BAR_SAV,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
