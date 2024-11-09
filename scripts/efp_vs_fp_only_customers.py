@@ -11,7 +11,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework import SAVScenarioConfig, SAVScenario, SAVASGraphAnalyzer, MetricTracker
-from sav_pkg.simulation_engine import FeasiblePathuRPF, StrictuRPF, EnhancedFeasiblePathuRPF, BAR_SAV
+from sav_pkg.simulation_engine import FeasiblePathuRPF, StrictuRPF, EnhancedFeasiblePathuRPF, BAR_SAV, FeasiblePathuRPFOnlyCustomers
 from sav_pkg.simulation_framework.utils import get_metric_keys
 
 
@@ -34,14 +34,6 @@ def main():
         scenario_configs=(
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
-                BasePolicyCls=BGP,
-                num_reflectors=10,
-                BaseSAVPolicyCls=StrictuRPF,
-                reflector_default_adopters=True,
-                scenario_label="strict"
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 num_reflectors=10,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
@@ -60,14 +52,14 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 num_reflectors=10,
-                BaseSAVPolicyCls=BAR_SAV,
+                BaseSAVPolicyCls=FeasiblePathuRPFOnlyCustomers,
                 reflector_default_adopters=True,
-                scenario_label="bar_sav"
+                scenario_label="fpOnlyCustomers"
             ),
         ),
-        output_dir=Path(f"~/sav/results").expanduser(),
-        num_trials=100,
-        parse_cpus=1,
+        output_dir=Path(f"~/sav/efpvsfp_results").expanduser(),
+        num_trials=99,
+        parse_cpus=8,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,
         metric_keys=get_metric_keys(),

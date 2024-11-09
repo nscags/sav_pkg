@@ -10,13 +10,14 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
+from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
+from sav_pkg.simulation_engine import FeasiblePathuRPFOnlyCustomers
 
-desc = "Single reflector running Enhanced Feasible Path uRPF"
+desc = "Single reflector running Feasible-Path uRPF"
 
-config_002 = EngineTestConfig(
-    name="config_002",
+config_500 = EngineTestConfig(
+    name="config_500",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
@@ -26,9 +27,10 @@ config_002 = EngineTestConfig(
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_non_default_asn_cls_dict=frozendict(),
         override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
-        BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
+        BaseSAVPolicyCls=FeasiblePathuRPFOnlyCustomers,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
-    ASGraphAnalyzerCls=SAVASGraphAnalyzer
+    ASGraphAnalyzerCls=SAVASGraphAnalyzer,
+    MetricTrackerCls=MetricTracker,
 )

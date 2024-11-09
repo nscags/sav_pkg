@@ -18,7 +18,12 @@ def get_metric_keys() -> Iterable[MetricKey]:
         MetricKey(plane=plane, outcome=outcome, as_group=as_group)
         for plane in [Plane.DATA]
         for as_group in [ASGroups.ALL_WOUT_IXPS]
-        for outcome in [Outcomes.FALSE_NEGATIVE, Outcomes.FALSE_POSITIVE]
+        for outcome in [
+            Outcomes.FALSE_NEGATIVE, 
+            Outcomes.FALSE_POSITIVE,
+            Outcomes.TRUE_NEGATIVE,
+            Outcomes.TRUE_POSITIVE,
+        ]        
     ]
     return metric_keys
 

@@ -33,16 +33,13 @@ class Metric:
         if not isinstance(other, Metric):
             return NotImplemented
 
-        # Ensure the metric keys are the same before adding
         if self.metric_key != other.metric_key:
             raise ValueError("Cannot add Metric objects with different metric_keys")
 
-        # FIX: Aggregate numerator and denominator as well
         result = Metric(self.metric_key)
         result._numerator = self._numerator + other._numerator
         result._denominator = self._denominator + other._denominator
 
-        # Aggregate percents
         for obj in (self, other):
             for metric_key, percent_list in obj.percents.items():
                 result.percents[metric_key].extend(percent_list)
@@ -51,7 +48,6 @@ class Metric:
 
     def save_percents(self):
         """Calculate and save percentage values"""
-        # FIX: Add calculation for the percentage from numerator and denominator
         if self._denominator != 0:
             percentage = (self._numerator / self._denominator) * 100
             self.percents[self.metric_key].append(percentage)

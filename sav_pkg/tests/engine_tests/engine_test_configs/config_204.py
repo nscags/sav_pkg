@@ -1,5 +1,5 @@
 from frozendict import frozendict
-from .as_graph_info_000 import as_graph_info_000
+from .as_graph_info_002 import as_graph_info_002
 
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
@@ -10,10 +10,11 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
+from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import FeasiblePathuRPF
 
-desc = "Limited SAV enforcement running Feasible-Path uRPF: AS 1,2,8,10,"
+desc = "Feasibe Path uRPF on Asymmetric Route"
 
 config_204 = EngineTestConfig(
     name="config_204",
@@ -21,14 +22,16 @@ config_204 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
-        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
-        override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
+        num_attackers=0,
+        override_attacker_asns=frozenset(),
+        override_victim_asns=frozenset({6}),
+        override_reflector_asns=frozenset({7}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({1, 2, 8, 10}),  # Only AS 1, 2, 8 and 10 enforce SAV
+        override_sav_asns=frozenset({2}),
         BaseSAVPolicyCls=FeasiblePathuRPF,
     ),
-    as_graph_info=as_graph_info_000,  
+    as_graph_info=as_graph_info_002,
     DiagramCls=SAVDiagram,
-    ASGraphAnalyzerCls=SAVASGraphAnalyzer
+    ASGraphAnalyzerCls=SAVASGraphAnalyzer,
+    MetricTrackerCls=MetricTracker,
 )

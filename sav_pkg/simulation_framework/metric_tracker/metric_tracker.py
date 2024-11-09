@@ -150,7 +150,7 @@ class MetricTracker(MetricTracker):
         """Returns 90% confidence interval for graphing"""
 
         if len(trial_data) > 1:
-            yerr_num = 1.645 * 2 * stdev(trial_data)
+            yerr_num = 1.96 * 2 * stdev(trial_data)
             yerr_denom = sqrt(len(trial_data))
             return float(yerr_num / yerr_denom)
         else:
