@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
-
+    """Performs data plane traceback, outputs outcomes"""
 
     def __init__(
         self,

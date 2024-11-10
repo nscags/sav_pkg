@@ -31,8 +31,19 @@ class ASNs(YamlAbleEnum):
     VICTIM: int = 777
     REFLECTOR: int = 555
 
-
 class ASGroups(YamlAbleEnum):
     """AS types"""
+
+    IXPS: str = "ixp"
+    # NOTE: only the IXP group has IXPs
+    STUBS: str = "stub"
+    MULTIHOMED: str = "multihomed"
+    STUBS_OR_MH: str = "stub_or_multihomed"
+    INPUT_CLIQUE: str = "input_clique"
+    # Not stubs, multihomed, or input clique
+    ETC: str = "etc"
+    # not stubs or multihomed
+    TRANSIT: str = "transit"
+    ALL_WOUT_IXPS: str = "all_wout_ixps"
 
     REFLECTORS: str = "reflectors"
