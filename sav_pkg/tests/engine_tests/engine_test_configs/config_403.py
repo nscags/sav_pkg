@@ -13,7 +13,7 @@ from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import BAR_SAV
 
-desc = "Double reflector running Feasible-Path uRPF"
+desc = "Double reflector running BAR uRPF"
 
 config_403 = EngineTestConfig(
     name="config_403",

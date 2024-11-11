@@ -14,7 +14,7 @@ from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
 
-desc = "Double reflector running Feasible-Path uRPF"
+desc = "Double reflector running EFP  uRPF"
 
 config_307 = EngineTestConfig(
     name="config_307",
