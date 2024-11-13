@@ -240,7 +240,7 @@ class MetricTracker(MetricTracker):
 
         data_plane_outcomes = outcomes[Plane.DATA.value]
 
-        for reflector_asn in scenario.relfector_asns:
+        for reflector_asn in scenario.reflector_asns:
             as_obj = engine.as_graph.as_dict[reflector_asn]
             for metric in metrics:
 
