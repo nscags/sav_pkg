@@ -1,5 +1,5 @@
 from frozendict import frozendict
-from .as_graph_info_000 import as_graph_info_000
+from .as_graph_info_002 import as_graph_info_002
 
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
@@ -14,7 +14,7 @@ from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import FeasiblePathuRPF
 
-desc = "Single reflector with transit AS running Feasible-Path uRPF"
+desc = "Feasible Path uRPF"
 
 config_201 = EngineTestConfig(
     name="config_201",
@@ -22,14 +22,15 @@ config_201 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
+        num_reflectors=2,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
+        override_reflector_asns=frozenset({7, 6}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({1}),
+        override_sav_asns=frozenset({7, 6}),
         BaseSAVPolicyCls=FeasiblePathuRPF,
     ),
-    as_graph_info=as_graph_info_000,
+    as_graph_info=as_graph_info_002,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
     MetricTrackerCls=MetricTracker,

@@ -37,6 +37,7 @@ class SAVScenario(Scenario):
 
         Any kwarg prefixed with default is only required for the test suite/YAML
         """
+        print("INITIALIZING SCENARIO", flush=True)
 
         # Config's ScenarioCls must be the same as instantiated Scenario
         assert scenario_config.ScenarioCls == self.__class__, (
@@ -90,7 +91,7 @@ class SAVScenario(Scenario):
         )
 
         self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
-
+        print("ALL DONE!", flush=True)
 
     ##################
     # Get Reflectors #
@@ -174,7 +175,7 @@ class SAVScenario(Scenario):
         for i, reflector_asn in enumerate(self.reflector_asns):
             anns.append(
                 self.scenario_config.AnnCls(
-                    prefix=f"1.{i+2}.0.0/24",
+                    prefix=f"1.{i}.0.0/24",
                     as_path=(reflector_asn,),
                     timestamp=Timestamps.VICTIM.value,
                 )

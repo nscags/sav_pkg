@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the CSV file
-file_path = r"C:\Users\njsca\BGPResearch\SAV\false_positive_results\data.csv"
+file_path = r"C:\Users\njsca\BGPResearch\SAV\false_positive_results_2\data.csv"
 data = pd.read_csv(file_path)
 
 # Filter data for the required outcome

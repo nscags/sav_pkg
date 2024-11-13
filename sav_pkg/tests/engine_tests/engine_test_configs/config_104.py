@@ -1,5 +1,5 @@
 from frozendict import frozendict
-from .as_graph_info_002 import as_graph_info_002
+from .as_graph_info_001 import as_graph_info_001
 
 from bgpy.simulation_engine.policies import BGP
 from bgpy.tests.engine_tests import EngineTestConfig
@@ -26,10 +26,10 @@ config_104 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({2}),
+        override_sav_asns=frozenset({ASNs.REFLECTOR.value, 2}),
         BaseSAVPolicyCls=StrictuRPF,
     ),
-    as_graph_info=as_graph_info_002,
+    as_graph_info=as_graph_info_001,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
     MetricTrackerCls=MetricTracker,

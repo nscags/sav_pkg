@@ -8,19 +8,22 @@ r"""
 """
 
 
-as_graph_info_004 = ASGraphInfo(
-    peer_links=frozenset(),
+as_graph_info_006 = ASGraphInfo(
+    peer_links=frozenset(
+        {
+            PeerLink(2, 3),
+            PeerLink(2, 1)
+        }
+    ),
     customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=ASNs.VICTIM.value),
-            CPLink(provider_asn=2, customer_asn=3),
-            CPLink(provider_asn=1, customer_asn=2),
             CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value),
         ]
     ),
     diagram_ranks=(
         (ASNs.VICTIM.value, ASNs.ATTACKER.value),
         (1, 3),
-        (2, ),
+        (2,),
     ),
 )

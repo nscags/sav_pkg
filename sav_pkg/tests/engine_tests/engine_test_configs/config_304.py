@@ -12,23 +12,22 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import FeasiblePathuRPF
+from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
 
-desc = "Feasibe Path uRPF on Asymmetric Route"
+desc = "EFP uRPF"
 
-config_205 = EngineTestConfig(
-    name="config_205",
+config_304 = EngineTestConfig(
+    name="config_304",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
-        num_attackers=0,
-        override_attacker_asns=frozenset(),
-        override_victim_asns=frozenset({6}),
-        override_reflector_asns=frozenset({1}),
+        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
+        override_victim_asns=frozenset({ASNs.VICTIM.value}),
+        override_reflector_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({3}),
-        BaseSAVPolicyCls=FeasiblePathuRPF,
+        override_sav_asns=frozenset({2}),
+        BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
     ),
     as_graph_info=as_graph_info_004,
     DiagramCls=SAVDiagram,

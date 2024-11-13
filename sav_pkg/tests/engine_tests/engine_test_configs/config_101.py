@@ -10,11 +10,11 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import StrictuRPF
+from sav_pkg.simulation_framework import MetricTracker
 
-desc = "Single reflector with transit AS running StrictuRPF"
+desc = "Single reflector with single transit provider running StrictuRPF"
 
 config_101 = EngineTestConfig(
     name="config_101",
@@ -26,11 +26,11 @@ config_101 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({8}),
+        override_sav_asns=frozenset({1}),
         BaseSAVPolicyCls=StrictuRPF,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=MetricTracker,
+    MetricTrackerCls=MetricTracker
 )

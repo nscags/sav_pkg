@@ -14,7 +14,7 @@ from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
 
-desc = "Single reflector with transit AS running EFP uRPF"
+desc = "EFP uRPF"
 
 config_303 = EngineTestConfig(
     name="config_303",
@@ -24,9 +24,9 @@ config_303 = EngineTestConfig(
         BasePolicyCls=BGPFull,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
+        override_reflector_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
+        override_sav_asns=frozenset({2}),
         BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
     ),
     as_graph_info=as_graph_info_003,
