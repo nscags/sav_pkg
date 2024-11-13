@@ -20,8 +20,7 @@ class FeasiblePathuRPF(BaseSAVPolicy):
         - False if the packet is dropped.
         """
         # Feasible-Path uRPF is applied to only customer and peer interfaces
-        # Allow all traffic from provider ASNs
-        if (prev_hop.asn in as_obj.provider_asns):
+        if prev_hop.asn in as_obj.provider_asns:
             return True
         else:
             source_ip = Prefixes.VICTIM.value

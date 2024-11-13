@@ -1,4 +1,5 @@
 from .base_sav_policy import BaseSAVPolicy
+from .loose_urpf import LooseuRPF
 from sav_pkg.enums import ASNs, Prefixes
 
 class BAR_SAV(BaseSAVPolicy):
@@ -23,8 +24,13 @@ class BAR_SAV(BaseSAVPolicy):
         - False if the packet is dropped.
         """
         # BAR SAV is applied to only customer and lateral peer interfaces
-        if (prev_hop.asn in as_obj.provider_asns):
-            return True
+        if prev_hop.asn in as_obj.provider_asns:
+            LooseuRPF.validate(
+                as_obj=as_obj,
+                prev_hop=prev_hop,
+                origin=origin,
+                engine=engine
+            )
         else:
             i = 0
             z = [{prev_hop.asn}]

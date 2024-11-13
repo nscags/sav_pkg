@@ -1,4 +1,5 @@
 from .base_sav_policy import BaseSAVPolicy
+from .loose_urpf import LooseuRPF
 from sav_pkg.enums import Prefixes
 
 class EnhancedFeasiblePathuRPF(BaseSAVPolicy):
@@ -7,9 +8,7 @@ class EnhancedFeasiblePathuRPF(BaseSAVPolicy):
     @staticmethod
     def validate(as_obj, prev_hop, origin, engine):
         # The EFP-uRPF method with Algorithm B SHOULD be applied on customer interfaces.
-        # The loose uRPF method SHOULD be applied on lateral peer and transit provider interfaces.
-        if (prev_hop.asn in as_obj.provider_asns or
-            prev_hop.asn in as_obj.peer_asns):
+        if prev_hop.asn in (as_obj.peer_asns | as_obj.provider_asns):
             return True
         else:
             # Create the set of all directly connected customer interfaces. 

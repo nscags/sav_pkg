@@ -23,8 +23,8 @@ class RFC8704(BaseSAVPolicy):
         """
         if prev_hop.asn in engine.as_graph.asn_groups[ASGroups.STUBS.value]:
             return StrictuRPF.validate(
-                as_obj=as_obj, 
-                prev_hop=prev_hop, 
+                as_obj=as_obj,
+                prev_hop=prev_hop,
                 origin=origin, 
                 engine=engine
             )
@@ -42,3 +42,5 @@ class RFC8704(BaseSAVPolicy):
                 origin=origin, 
                 engine=engine
             )
+        else:
+            raise AssertionError("RFC8704: Should never reach this condtion.")
