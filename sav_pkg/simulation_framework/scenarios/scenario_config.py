@@ -3,8 +3,8 @@ from typing import Optional
 from frozendict import frozendict
 
 from bgpy.simulation_framework.scenarios import ScenarioConfig
-from bgpy.enums import ASGroups
 
+from sav_pkg.enums import ASGroups, Prefixes
 from sav_pkg.simulation_engine import BaseSAVPolicy 
 
 @dataclass(frozen=True)
@@ -12,6 +12,8 @@ class SAVScenarioConfig(ScenarioConfig):
     num_reflectors: int = 1
     reflector_subcategory_attr: Optional[str] = ASGroups.ALL_WOUT_IXPS.value
     override_reflector_asns: Optional[frozenset[int]] = None
+
+    victim_source_prefix = Prefixes.VICTIM.value
 
     BaseSAVPolicyCls: Optional[BaseSAVPolicy] = None
     reflector_default_adopters: Optional[bool] = False

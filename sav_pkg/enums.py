@@ -1,17 +1,16 @@
 from bgpy.enums import YamlAbleEnum
 
 class Outcomes(YamlAbleEnum):
-    # SAV Outcomes
-    FALSE_POSITIVE: int = 1 # Incorrectly block legitimate packet
-    FALSE_NEGATIVE: int = 2 # Incorrectly allows spoofed packet
-    TRUE_POSITIVE: int = 3  # Correctly blocks spoofed packet
-    TRUE_NEGATIVE: int = 4  # Correctly allows legitimate packet
-
-    # Non-SAV Outcomes
-    DISCONNECTED: int = 5   # ASes which do not recieve a packet (filtered by AS on path)
-    ATTACKER: int = 6       # Attacker AS, enumerating outcome so it doesn't get counted as disconnected
-    VICTIM: int = 7         # Victim AS,   ^^^
-    UNDETERMINED: int = 8
+    """Outcomes for traceback"""
+    
+    ORIGIN: int = 1
+    DISCONNECTED: int = 2     # Not on path
+    FALSE_NEGATIVE: int = 3   # Incorrectly allows spoofed packet
+    TRUE_NEGATIVE: int = 4    # Correctly allows legitimate packet
+    FALSE_POSITIVE: int = 5   # Incorrectly block legitimate packet
+    TRUE_POSITIVE: int = 6    # Correctly blocks spoofed packet
+    FORWARD: int = 7
+    FILTERED_ON_PATH: int = 8 # Filtered on path from attacker/victim -> reflector
 
 
 class Prefixes(YamlAbleEnum):

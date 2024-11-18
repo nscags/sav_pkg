@@ -4,8 +4,7 @@ from .policies import StrictuRPF
 from .policies import FeasiblePathuRPF
 from .policies import EnhancedFeasiblePathuRPF
 from .policies import BAR_SAV
-from .policies import FeasiblePathuRPFOnlyCustomers
-from .policies import RFC8704
+
 
 __all__ = [
     "BaseSAVPolicy",
@@ -14,6 +13,4 @@ __all__ = [
     "FeasiblePathuRPF",
     "EnhancedFeasiblePathuRPF",
     "BAR_SAV",
-    "FeasiblePathuRPFOnlyCustomers",
-    "RFC8704",
 ]

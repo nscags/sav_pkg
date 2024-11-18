@@ -14,7 +14,6 @@ from sav_pkg.enums import Outcomes
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
-    from bgpy.simulation_framework.metric_tracker import MetricTracker
 
 
 class SAVDiagram(Diagram):
@@ -32,7 +31,7 @@ class SAVDiagram(Diagram):
         # Just the data plane
         traceback: dict[int, int],
         description: str,
-        metric_tracker: "MetricTracker",
+        metric_tracker,
         diagram_ranks: tuple[tuple["AS", ...], ...],
         static_order: bool = False,
         path: Optional[Path] = None,
@@ -48,28 +47,38 @@ class SAVDiagram(Diagram):
         self._render(path=path, view=view)
     
 
-    def _get_count(self, traceback):
-        fn = tp = fp = tn = 0
+    def _get_count(self, traceback, scenario):
+        fn = tp = fp = tn = ad = vd = af = vf = 0
 
-        for origin_dict in traceback.values():
-            for prev_hop_dict in origin_dict.values():
-                for prev_hop_asn, outcome in prev_hop_dict.items():
-                    if outcome == Outcomes.FALSE_NEGATIVE.value: 
-                        fn += 1
-                    elif outcome == Outcomes.TRUE_POSITIVE.value:
-                        tp += 1
-                    elif outcome == Outcomes.FALSE_POSITIVE.value:
-                        fp += 1
-                    elif outcome == Outcomes.TRUE_NEGATIVE.value:
-                        tn += 1
+        for key, outcome in traceback.items():
+            if outcome == Outcomes.FALSE_NEGATIVE.value: 
+                fn += 1
+            elif outcome == Outcomes.TRUE_POSITIVE.value:
+                tp += 1
+            elif outcome == Outcomes.FALSE_POSITIVE.value:
+                fp += 1
+            elif outcome == Outcomes.TRUE_NEGATIVE.value:
+                tn += 1
+            elif outcome == Outcomes.DISCONNECTED.value and key[3] in scenario.attacker_asns:
+                ad += 1
+            elif outcome == Outcomes.DISCONNECTED.value and key[3] in scenario.victim_asns:
+                vd += 1
+            elif (outcome == Outcomes.FILTERED_ON_PATH.value 
+                  and key[0] in scenario.reflector_asns 
+                  and key[3] in scenario.attacker_asns):
+                af += 1
+            elif (outcome == Outcomes.FILTERED_ON_PATH.value 
+                  and key[0] in scenario.reflector_asns 
+                  and key[3] in scenario.victim_asns):
+                vf += 1
 
-        return fn, tp, fp, tn
+        return fn, tp, fp, tn, ad, vd, af, vf
 
 
     def _add_legend(self, traceback: dict, scenario: Scenario) -> None:
         """Adds legend to the graph with outcome counts"""
 
-        false_negative_count, true_positive_count, false_positive_count, true_negative_count = self._get_count(traceback)
+        fn, tp, fp, tn, ad, vd, af, vf = self._get_count(traceback, scenario)
 
         html = f"""<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
@@ -81,19 +90,31 @@ class SAVDiagram(Diagram):
                     <TD COLSPAN="2" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">(Victim Outcomes)</TD>
                 </TR>
                 <TR>
-                    <TD BGCOLOR="#ff6060:white">&#10003; FALSE NEGATIVE &#10003;</TD>
-                    <TD>{false_negative_count}</TD>
-                    <TD BGCOLOR="#90ee90:white">&#10003; TRUE NEGATIVE &#10003;</TD>
-                    <TD>{true_negative_count}</TD>
+                    <TD BGCOLOR="#ff6060:white">&#10004; FALSE NEGATIVE &#10004;</TD>
+                    <TD>{fn}</TD>
+                    <TD BGCOLOR="#90ee90:white">&#10004; TRUE NEGATIVE &#10004;</TD>
+                    <TD>{tn}</TD>
                 </TR>
                 <TR>
-                    <TD BGCOLOR="#ff6060:white">&#10005; TRUE POSITIVE &#10005;</TD>
-                    <TD>{true_positive_count}</TD>  
-                    <TD BGCOLOR="#90ee90:white">&#10005; FALSE POSITIVE &#10005;</TD>
-                    <TD>{false_positive_count}</TD>
+                    <TD BGCOLOR="#ff6060:white">&#10006; TRUE POSITIVE &#10006;</TD>
+                    <TD>{tp}</TD>  
+                    <TD BGCOLOR="#90ee90:white">&#10006; FALSE POSITIVE &#10006;</TD>
+                    <TD>{fp}</TD>
+                </TR>
+                <TR>
+                    <TD BGCOLOR="#ff6060:white">&#10005; FILTERED ON PATH &#10005;</TD>
+                    <TD>{af}</TD> 
+                    <TD BGCOLOR="#90ee90:white">&#10005; FILTERED ON PATH &#10005;</TD>
+                    <TD>{vf}</TD>
+                </TR>
+                <TR>
+                    <TD BGCOLOR="#ff6060:white">&#8869; DISCONNECTED &#8869;</TD>
+                    <TD>{ad}</TD> 
+                    <TD BGCOLOR="#90ee90:white">&#8869; DISCONNECTED &#8869;</TD>
+                    <TD>{vd}</TD>
                 </TR>
         """
-
+        
         # ROAs takes up the least space right underneath the legend
         # which is why we have this here instead of a separate node
         # html += """
@@ -101,13 +122,13 @@ class SAVDiagram(Diagram):
         #         <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
         #       </TR>
         #       """
-        for roa_info in scenario.roa_infos:
-            html += f"""
-              <TR>
-                <TD>{roa_info.prefix}</TD>
-                <TD>{roa_info.origin}</TD>
-                <TD>{roa_info.max_length}</TD>
-              </TR>"""
+        # for roa_info in scenario.roa_infos:
+        #     html += f"""
+        #       <TR>
+        #         <TD>{roa_info.prefix}</TD>
+        #         <TD>{roa_info.origin}</TD>
+        #         <TD>{roa_info.max_length}</TD>
+        #       </TR>"""
         html += """</TABLE>>"""
 
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
@@ -162,26 +183,40 @@ class SAVDiagram(Diagram):
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
 
-    def _get_outcome_html(self, traceback, as_obj):
-
+    def _get_outcome_html(self, traceback, scenario, as_obj):
+        
         attacker_str = ""
         victim_str = ""
-
-        for prev_hop_dict in traceback[as_obj.asn].values():
-            for prev_hop, outcome in prev_hop_dict.items():
-                if outcome == Outcomes.FALSE_NEGATIVE.value:
-                    attacker_str = "&#10003;"
+        
+        for (key_asn, _, _, origin), outcome in traceback.items():
+            if key_asn == as_obj.asn:
+                # This is extremely messy looking switch case, may want to rewrite in future
+                if outcome == Outcomes.DISCONNECTED.value and origin in scenario.attacker_asns:
+                    attacker_str = "&#8869;"
+                elif outcome == Outcomes.DISCONNECTED.value and origin in scenario.victim_asns:
+                    victim_str = "&#8869;"
                 # allowing a packet takes priority over blocking a packet
                 # attacker sends packets to all neighbors
-                # if even one packet reaches the reflector, it is considered an attacker success
-                elif outcome == Outcomes.TRUE_POSITIVE.value and attacker_str != "&#10003;": 
-                    attacker_str = "&#10005;"
-
+                # if even one packet reaches the reflector, it is considered an attacker succes
+                elif outcome == Outcomes.FALSE_NEGATIVE.value and attacker_str not in ["&#8869;"]:
+                    attacker_str = "&#10004;"
+                elif outcome == Outcomes.TRUE_POSITIVE.value and attacker_str not in ["&#8869;", "&#10004;"]: 
+                    attacker_str = "&#10006;"
                 # Victim behaves as normal, should only have one of these two outcomes (excluding disconnected)
-                elif outcome == Outcomes.TRUE_NEGATIVE.value:
+                elif outcome == Outcomes.TRUE_NEGATIVE.value and victim_str not in ["&#8869;"]:
+                    victim_str = "&#10004;"
+                elif outcome == Outcomes.FALSE_POSITIVE.value and victim_str not in ["&#8869;", "&#10004;"]:
+                    victim_str = "&#10006;"
+                
+                elif outcome == Outcomes.FORWARD.value and origin in scenario.attacker_asns and attacker_str not in ["&#8869;", "&#10004;", "&#10006;"]:
+                    attacker_str = "&#10003;"
+                elif outcome == Outcomes.FORWARD.value and origin in scenario.victim_asns and victim_str not in ["&#8869;", "&#10004;", "&#10006;"]:
                     victim_str = "&#10003;"
-                elif outcome == Outcomes.FALSE_POSITIVE.value:
-                    victim_str = "&#10005;"
+
+                elif outcome == Outcomes.FILTERED_ON_PATH.value and origin in scenario.attacker_asns and attacker_str not in ["&#8869;", "&#10004;", "&#10006;"]:
+                    attacker_str = "&#10005;"
+                elif outcome == Outcomes.FILTERED_ON_PATH.value and origin in scenario.victim_asns and victim_str not in ["&#8869;", "&#10004;", "&#10006;"]:
+                    victim_str ="&#10005;"
 
         return attacker_str, victim_str
 
@@ -206,7 +241,7 @@ class SAVDiagram(Diagram):
         elif as_obj.asn in scenario.reflector_asns:
             asn_str = "&#128526;" + asn_str + "&#128526;"
         
-
+        # make the SAV policy bold (or at least stand out more)
         if as_obj.asn in scenario.sav_policy_asn_dict:
             sav_policy_str = scenario.sav_policy_asn_dict.get(as_obj.asn).name
         else:
@@ -217,13 +252,13 @@ class SAVDiagram(Diagram):
         victim_str = ""
 
         if as_obj.asn in scenario.attacker_asns:
-            attacker_str = "&#10003;"
+            attacker_str = "O"
             victim_str = ""
         elif as_obj.asn in scenario.victim_asns:
-            victim_str = "&#10003;"
+            victim_str = "O"
             attacker_str = ""          
         else:
-            attacker_str, victim_str = self._get_outcome_html(traceback, as_obj)
+            attacker_str, victim_str = self._get_outcome_html(traceback, scenario, as_obj)
         
 
         html = f"""<
@@ -309,8 +344,8 @@ class SAVDiagram(Diagram):
         # As obj is the victim
         elif as_obj.asn in scenario.victim_asns:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGP, BGPFull):
-                kwargs["shape"] = "doubleoctagon"
+            # if as_obj.policy.__class__ not in (BGP, BGPFull):
+            #     kwargs["shape"] = "doubleoctagon"
         # obj is the reflector
         elif as_obj.asn in scenario.reflector_asns:
             kwargs.update({"fillcolor": "#99d9ea", "shape": "doublecircle"})
@@ -330,32 +365,30 @@ class SAVDiagram(Diagram):
         # NOTE: since this does not track visted ASes
         #       multiple attackers will cause multiple
         #       traffic lines over same edge
-        for asn, origin_dict in traceback.items():
-            for origin, prev_hop_dict in origin_dict.items():
-                if origin in scenario.attacker_asns:
-                    color = 'red'
-                    for prev_hop, outcome in prev_hop_dict.items():
-                        # if outcome in [Outcomes.FALSE_NEGATIVE.value, Outcomes.TRUE_POSITIVE.value]:
-                        if prev_hop not in [None, -1]:
-                            self.dot.edge(str(prev_hop), 
-                                            str(asn), 
-                                            constraint='false', 
-                                            color=color, 
-                                            style="dotted", 
-                                            penwidth='3',
-                            )
-                elif origin in scenario.victim_asns:
-                    color = '#22B14C'
-                    for prev_hop, outcome in prev_hop_dict.items():
-                        # if outcome in [Outcomes.TRUE_NEGATIVE.value, Outcomes.FALSE_POSITIVE]:
-                        if prev_hop not in [None, -1]:
-                            self.dot.edge(str(prev_hop), 
-                                                str(asn), 
-                                                constraint='false', 
-                                                color=color, 
-                                                style="dotted", 
-                                                penwidth='3',
-                            )
+        for key, outcome in traceback.items():
+            asn, _, prev_hop, origin = key
+            if origin in scenario.attacker_asns:
+                color = 'red'
+                    # if outcome in [Outcomes.FALSE_NEGATIVE.value, Outcomes.TRUE_POSITIVE.value]:
+                if prev_hop not in [None, -1]:
+                    self.dot.edge(str(prev_hop), 
+                                    str(asn), 
+                                    constraint='false', 
+                                    color=color, 
+                                    style="dotted", 
+                                    penwidth='3',
+                    )
+            elif origin in scenario.victim_asns:
+                color = '#22B14C'
+                # if outcome in [Outcomes.TRUE_NEGATIVE.value, Outcomes.FALSE_POSITIVE]:
+                if prev_hop not in [None, -1]:
+                    self.dot.edge(str(prev_hop), 
+                                        str(asn), 
+                                        constraint='false', 
+                                        color=color, 
+                                        style="dotted", 
+                                        penwidth='3',
+                    )
 
 
     def _add_edges(self, engine: BaseSimulationEngine):
@@ -410,7 +443,3 @@ class SAVDiagram(Diagram):
             )
         # https://stackoverflow.com/a/57461245/8903959
         self.dot.attr(label=description)
-
-
-    def _render(self, path: Optional[Path] = None, view: bool = False) -> None:
-        self.dot.render(path, view=view)
