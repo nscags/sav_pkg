@@ -1,12 +1,16 @@
-from frozendict import frozendict
-from bgpy.simulation_engine.policies import BGPFull
 from .as_graph_info_007 import as_graph_info_007 
+
+from frozendict import frozendict
+
+from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
+
 from sav_pkg.enums import ASNs
 from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer, MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import RFC8704
+
 
 config_700 = EngineTestConfig(
     name="config_700",

@@ -20,12 +20,6 @@ as_graph_info_007 = ASGraphInfo(
             CPLink(provider_asn=ASNs.REFLECTOR.value, customer_asn=2),
         ]
     ),
-    asn_groups={
-        "stubs": {ASNs.ATTACKER.value, ASNs.VICTIM.value},  # ATTACKER=666, VICTIM=777
-        "peers": {1, 2, 3},  # Peering ASNs
-        "providers": {4, 5},  # Providers
-        "reflectors": {ASNs.REFLECTOR.value},  # Reflector
-    },
     diagram_ranks=(
         (ASNs.ATTACKER.value, ASNs.VICTIM.value),  # Stub ASNs
         (4, 5),  # Providers
