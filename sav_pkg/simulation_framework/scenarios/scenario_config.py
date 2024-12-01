@@ -5,7 +5,8 @@ from frozendict import frozendict
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 
 from sav_pkg.enums import ASGroups, Prefixes
-from sav_pkg.simulation_engine import BaseSAVPolicy 
+from sav_pkg.simulation_engine import BaseSAVPolicy
+
 
 @dataclass(frozen=True)
 class SAVScenarioConfig(ScenarioConfig):

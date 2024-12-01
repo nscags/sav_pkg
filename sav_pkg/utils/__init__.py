@@ -1,5 +1,3 @@
 from .diagram import SAVDiagram
 
-__all__ = [
-    "SAVDiagram"
-]
+__all__ = ["SAVDiagram"]

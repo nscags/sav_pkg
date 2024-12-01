@@ -4,9 +4,12 @@ from .scenarios import BARSAVScenario
 
 from .as_graph_analyzers import SAVASGraphAnalyzer
 
+from .metric_tracker import MetricTracker
+
 __all__ = [
     "SAVScenario",
     "SAVScenarioConfig",
-    "SAVASGraphAnalyzer",
     "BARSAVScenario",
+    "SAVASGraphAnalyzer",
+    "MetricTracker",
 ]

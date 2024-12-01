@@ -1,18 +1,12 @@
 .ruff_cache/
 
 # Test generates these automatically
-*.metric_guess.csv
-*.metric_guess.pickle
-*.metrics_guess.csv
-*.metrics_guess.pickle
+*guess.csv
+*guess.pickle
 *.gv
 *.pdf
 *.gv.png
 *guess.yaml
-outcomes_gt.yaml
-engine_gt.yaml
-metrics_gt.csv
-metrics_gt.pickle
 
 # For whatever reason, git is not ignoring these
 #

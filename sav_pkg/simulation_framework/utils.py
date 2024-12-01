@@ -12,6 +12,7 @@ from sav_pkg.enums import Outcomes
 #             for outcome in [Outcomes.FALSE_NEGATIVE, Outcomes.TRUE_POSITIVE]:
 #                 yield MetricKey(plane=plane, outcome=outcome, as_group=as_group)
 
+
 # TODO: add additional metrics
 def get_metric_keys() -> Iterable[MetricKey]:
     metric_keys = [
@@ -19,11 +20,13 @@ def get_metric_keys() -> Iterable[MetricKey]:
         for plane in [Plane.DATA]
         for as_group in [ASGroups.ALL_WOUT_IXPS]
         for outcome in [
-            Outcomes.FALSE_NEGATIVE, 
+            Outcomes.FALSE_NEGATIVE,
             Outcomes.FALSE_POSITIVE,
             Outcomes.TRUE_NEGATIVE,
             Outcomes.TRUE_POSITIVE,
-        ]        
+            Outcomes.FILTERED_ON_PATH,
+            Outcomes.DISCONNECTED,
+            Outcomes.FORWARD,
+        ]
     ]
     return metric_keys
-

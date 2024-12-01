@@ -15,12 +15,10 @@ if TYPE_CHECKING:
 
 class BARSAVScenario(SAVScenario):
     """
+    Victim does not announce anything but has a ROA for it's prefix
     """
 
     def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
-        """
-        """
-
         anns = list()
 
         for attacker_asn in self.attacker_asns:
@@ -40,7 +38,6 @@ class BARSAVScenario(SAVScenario):
                     timestamp=Timestamps.VICTIM.value,
                 )
             )
-
 
         return tuple(anns)
 

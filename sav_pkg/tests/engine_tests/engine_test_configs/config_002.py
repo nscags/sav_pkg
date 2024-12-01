@@ -1,4 +1,3 @@
-from frozendict import frozendict
 from .as_graph_info_000 import as_graph_info_000
 
 from bgpy.simulation_engine.policies import BGPFull
@@ -10,6 +9,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
+from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import FeasiblePathuRPF
 
@@ -30,4 +30,5 @@ config_002 = EngineTestConfig(
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
+    MetricTrackerCls=MetricTracker,
 )

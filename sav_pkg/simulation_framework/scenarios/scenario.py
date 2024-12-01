@@ -16,6 +16,7 @@ from bgpy.enums import (
 )
 
 from sav_pkg.enums import Prefixes
+from sav_pkg.simulation_framework.scenarios.scenario_config import SAVScenarioConfig
 
 
 if TYPE_CHECKING:
@@ -24,15 +25,14 @@ if TYPE_CHECKING:
 
 
 class SAVScenario(Scenario):
-
     def __init__(
         self,
         *,
-        scenario_config: ScenarioConfig,
+        scenario_config: SAVScenarioConfig,
         percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
         engine: Optional[BaseSimulationEngine] = None,
-        prev_scenario: Optional["Scenario"] = None,
-        preprocess_anns_func = noop,
+        prev_scenario: Optional["SAVScenario"] = None,
+        preprocess_anns_func=noop,
     ):
         """inits attrs
 
@@ -60,22 +60,20 @@ class SAVScenario(Scenario):
         self.reflector_asns: frozenset[int] = self._get_reflector_asns(
             scenario_config.override_reflector_asns, engine, prev_scenario
         )
-        
+
         self.sav_policy_asn_dict = self._get_sav_policies_asn_dict(engine)
- 
-        self.non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
-            self._get_non_default_asn_cls_dict(
-                scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
-            )
+
+        self.non_default_asn_cls_dict: frozendict[
+            int, type[Policy]
+        ] = self._get_non_default_asn_cls_dict(
+            scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
         )
 
         if self.scenario_config.override_announcements:
-            self.announcements: tuple["Ann", ...] = (
-                self.scenario_config.override_announcements
-            )
-            self.roa_infos: tuple[ROA, ...] = (
-                self.scenario_config.override_roa_infos
-            )
+            self.announcements: tuple[
+                "Ann", ...
+            ] = self.scenario_config.override_announcements
+            self.roa_infos: tuple[ROA, ...] = self.scenario_config.override_roa_infos
         else:
             anns = self._get_announcements(engine=engine, prev_scenario=prev_scenario)
             self.roa_infos = self._get_roa_infos(
@@ -86,9 +84,9 @@ class SAVScenario(Scenario):
             )
             self.announcements = preprocess_anns_func(self, anns, engine, prev_scenario)
 
-        self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (
-            self._get_ordered_prefix_subprefix_dict()
-        )
+        self.ordered_prefix_subprefix_dict: dict[
+            str, list[str]
+        ] = self._get_ordered_prefix_subprefix_dict()
 
         self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
 
@@ -98,26 +96,23 @@ class SAVScenario(Scenario):
 
     def _get_reflector_asns(
         self,
-        override_reflector_asns: frozenset[int] | None,
-        prev_reflector_asns: frozenset[int] | None,
-        engine: BaseSimulationEngine | None,
+        override_reflector_asns: Optional[frozenset[int]],
+        engine: Optional[BaseSimulationEngine],
+        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
-        """Returns victim ASN at random"""
+        """Returns reflector ASN at random"""
 
         # This is coming from YAML, do not recalculate
         if override_reflector_asns is not None:
             reflector_asns = override_reflector_asns
-        # Reuse the victim from the last scenario for comparability
-        elif (
-            prev_reflector_asns
-            and len(prev_reflector_asns) == self.scenario_config.num_victims
-        ):
-            reflector_asns = prev_reflector_asns
+        # Reuse the reflectors from the last scenario for comparability
+        elif prev_scenario:
+            reflector_asns = prev_scenario.reflector_asns
         # This is being initialized for the first time
         else:
             assert engine
             possible_reflector_asns = self._get_possible_reflector_asns(
-                engine, self.percent_adoption
+                engine, self.percent_adoption, prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
             reflector_asns = frozenset(
@@ -126,7 +121,7 @@ class SAVScenario(Scenario):
                 )
             )
 
-        err = "Number of reflector is different from reflector length"
+        err = "Number of reflectors is different from reflectors length"
         assert len(reflector_asns) == self.scenario_config.num_reflectors, err
 
         return reflector_asns
@@ -134,9 +129,10 @@ class SAVScenario(Scenario):
     def _get_possible_reflector_asns(
         self,
         engine: BaseSimulationEngine,
-        percent_adoption: float | SpecialPercentAdoptions,
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
-        """Returns possible reflector ASNs, defaulted from config"""
+        """Returns possible reflectors ASNs, defaulted from config"""
 
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.reflector_subcategory_attr
@@ -144,13 +140,14 @@ class SAVScenario(Scenario):
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
-        # Remove attackers from possible victims
-        possible_asns = possible_asns.difference(self.attacker_asns).difference(self.victim_asns)
+        # Remove attackers and victims from possible reflectors
+        possible_asns = possible_asns.difference(self.attacker_asns)
+        possible_asns = possible_asns.difference(self.victim_asns)
         return possible_asns
-    
 
     def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """
+        All victims, attackers, and reflectors announce a unique prefix
         """
 
         anns = list()
@@ -183,13 +180,12 @@ class SAVScenario(Scenario):
             )
 
         return tuple(anns)
-    
+
     #####################
     # Get Adopting ASNs #
     #####################
 
     def _get_sav_policies_asn_dict(self, engine):
-
         sav_policy_asn_dict = dict()
 
         # Override SAV asns
@@ -200,7 +196,6 @@ class SAVScenario(Scenario):
             sav_policy_asn_dict = self._get_randomized_sav_asn_dict(engine)
 
         return frozendict(sav_policy_asn_dict)
-    
 
     def _get_randomized_sav_asn_dict(
         self,
@@ -251,17 +246,15 @@ class SAVScenario(Scenario):
             except ValueError:
                 raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
         return asn_sav_cls_dict
-    
 
     @property
     def _default_sav_adopters(self) -> frozenset[int]:
         """Reflectors adopt by default if set in Scenario Config"""
 
         if self.scenario_config.reflector_default_adopters:
-            return self.reflector_asns 
+            return self.reflector_asns
         else:
             return frozenset
-        
 
     @property
     def _preset_sav_asns(self) -> frozenset[int]:
@@ -270,4 +263,9 @@ class SAVScenario(Scenario):
         # Returns the union of default adopters and non adopters
         hardcoded_asns = set(self.scenario_config.hardcoded_asn_sav_dict)
         # reflectors (if set in config), victims, attackers, AS w/ hardcoded policies
-        return self._default_sav_adopters | self._default_adopters | self._default_non_adopters | hardcoded_asns
+        return (
+            self._default_sav_adopters
+            | self._default_adopters
+            | self._default_non_adopters
+            | hardcoded_asns
+        )

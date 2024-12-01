@@ -1,16 +1,17 @@
 from bgpy.enums import YamlAbleEnum
 
+
 class Outcomes(YamlAbleEnum):
     """Outcomes for traceback"""
-    
+
     ORIGIN: int = 1
-    DISCONNECTED: int = 2     # Not on path
-    FALSE_NEGATIVE: int = 3   # Incorrectly allows spoofed packet
-    TRUE_NEGATIVE: int = 4    # Correctly allows legitimate packet
-    FALSE_POSITIVE: int = 5   # Incorrectly block legitimate packet
-    TRUE_POSITIVE: int = 6    # Correctly blocks spoofed packet
+    DISCONNECTED: int = 2  # Not on path
+    FALSE_NEGATIVE: int = 3  # Incorrectly allows spoofed packet
+    TRUE_NEGATIVE: int = 4  # Correctly allows legitimate packet
+    FALSE_POSITIVE: int = 5  # Incorrectly block legitimate packet
+    TRUE_POSITIVE: int = 6  # Correctly blocks spoofed packet
     FORWARD: int = 7
-    FILTERED_ON_PATH: int = 8 # Filtered on path from attacker/victim -> reflector
+    FILTERED_ON_PATH: int = 8  # Filtered on path from attacker/victim -> reflector
 
 
 class Prefixes(YamlAbleEnum):
@@ -18,6 +19,7 @@ class Prefixes(YamlAbleEnum):
 
     prefix always belongs to the victim
     """
+
     VICTIM: str = "7.7.7.0/24"
     ATTACKER: str = "6.6.6.0/24"
     REFLECTOR: str = "1.2.0.0/24"
@@ -29,6 +31,7 @@ class ASNs(YamlAbleEnum):
     ATTACKER: int = 666
     VICTIM: int = 777
     REFLECTOR: int = 555
+
 
 class ASGroups(YamlAbleEnum):
     """AS types"""

@@ -1,8 +1,7 @@
-
 from abc import ABC, abstractmethod
 
-class BaseSAVPolicy(ABC):
 
+class BaseSAVPolicy(ABC):
     @staticmethod
     @abstractmethod
     def validate(self, *args, **kwargs) -> bool:
