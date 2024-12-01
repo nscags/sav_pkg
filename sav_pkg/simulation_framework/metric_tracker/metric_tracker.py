@@ -52,7 +52,7 @@ class MetricTracker(MetricTracker):
         This gets called when we need to merge all the MetricTrackers
         from the various processes that were spawned
         """
-        print("Adding metrics", flush=True)
+        # print("Adding metrics", flush=True)
         if isinstance(other, MetricTracker):
             # Deepcopy is slow, but fine here since it's only called once after sims
             # For BGPy __main__ using 100 trials, 3 percent adoptions, 1 scenario
@@ -69,7 +69,7 @@ class MetricTracker(MetricTracker):
                 for k, v in obj.data.items():
                     new_data[k].extend(v)
 
-            print("All done adding metrics", flush=True)
+            # print("All done adding metrics", flush=True)
             return self.__class__(data=new_data)
         else:
             return NotImplemented
@@ -87,6 +87,7 @@ class MetricTracker(MetricTracker):
         pickle_path: Path,
     ) -> None:
         """Writes data to CSV and pickles it"""
+        # print("Writing data...", flush=True)
 
         with csv_path.open("w") as f:
             rows = self.get_csv_rows()
@@ -96,6 +97,8 @@ class MetricTracker(MetricTracker):
 
         with pickle_path.open("wb") as f:
             pickle.dump(self.get_pickle_data(), f)
+
+        # print("...done", flush=True)
 
 
     def get_csv_rows(self) -> list[dict[str, Any]]:
@@ -179,7 +182,8 @@ class MetricTracker(MetricTracker):
         The reason we don't simply save the engine to track metrics later
         is because the engines are very large and this would take a lot longer
         """
-        print(f"\nTracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}\n", flush=True)
+        # if scenario.scenario_config.BaseSAVPolicyCls:
+        #     print(f"\nTracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}\n", flush=True)
         self._track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,

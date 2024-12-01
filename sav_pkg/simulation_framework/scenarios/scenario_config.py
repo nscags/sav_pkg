@@ -16,7 +16,7 @@ class SAVScenarioConfig(ScenarioConfig):
 
     victim_source_prefix = Prefixes.VICTIM.value
 
-    BaseSAVPolicyCls: Optional[BaseSAVPolicy] = None
+    BaseSAVPolicyCls: Optional[BaseSAVPolicy] = BaseSAVPolicy
     reflector_default_adopters: Optional[bool] = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt
     override_sav_asns: Optional[frozenset[int]] = None

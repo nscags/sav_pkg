@@ -281,45 +281,46 @@ class SAVDiagram(Diagram):
                 <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{sav_policy_str}</TD>
             </TR>"""
 
-        # local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
-        # local_rib_anns = tuple(
-        #     sorted(
-        #         local_rib_anns,
-        #         key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,
-        #         reverse=True,
-        #     )
-        # )
-        # if len(local_rib_anns) > 0:
-        #     html += f"""<TR>
-        #                 <TD COLSPAN="{colspan}" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
-        #               </TR>"""
+        local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
+        local_rib_anns = tuple(
+            sorted(
+                local_rib_anns,
+                key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,
+                reverse=True,
+            )
+        )
+        if len(local_rib_anns) > 0:
+            html += f"""<TR>
+                        <TD COLSPAN="{colspan}" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR>"""
 
-        #     for ann in local_rib_anns:
-        #         # if (ann.as_path[-1] in scenario.attacker_asns or
-        #         #     ann.as_path[-1] in scenario.victim_asns):
-        #             mask = "/" + ann.prefix.split("/")[-1]
-        #             path = ", ".join(str(x) for x in ann.as_path)
-        #             ann_help = ""
-        #             if getattr(ann, "blackhole", False):
-        #                 ann_help = "&#10041;"
-        #             elif getattr(ann, "preventive", False):
-        #                 ann_help = "&#128737;"
-        #             elif any(x in ann.as_path for x in scenario.attacker_asns):
-        #                 ann_help = "&#128520;"
-        #             elif any(x == ann.origin for x in scenario.victim_asns):
-        #                 ann_help = "&#128519;"
-        #             elif any(x == ann.origin for x in scenario.reflector_asns):
-        #                 ann_help = "&#128526;"
-        #             else:
-        #                 raise Exception(f"Not valid ann for rib? {ann}")
+            for ann in local_rib_anns:
+                if (ann.origin in scenario.attacker_asns or
+                    ann.origin in scenario.victim_asns):
+                    # print(f"\nDIAG: \nAnn: \n{ann}")
+                    mask = "/" + ann.prefix.split("/")[-1]
+                    path = ", ".join(str(x) for x in ann.as_path)
+                    ann_help = ""
+                    if getattr(ann, "blackhole", False):
+                        ann_help = "&#10041;"
+                    elif getattr(ann, "preventive", False):
+                        ann_help = "&#128737;"
+                    elif any(x in ann.as_path for x in scenario.attacker_asns):
+                        ann_help = "&#128520;"
+                    elif any(x == ann.origin for x in scenario.victim_asns):
+                        ann_help = "&#128519;"
+                    elif any(x == ann.origin for x in scenario.reflector_asns):
+                        ann_help = "&#128526;"
+                    else:
+                        raise Exception(f"Not valid ann for rib? {ann}")
 
-        #             html += f"""<TR>
-        #                         <TD>{mask}</TD>
-        #                         <TD>{path}</TD>
-        #                         <TD>{ann_help}</TD>"""
-        #             if display_next_hop_asn:
-        #                 html += f"""<TD>{ann.next_hop_asn}</TD>"""
-        #             html += """</TR>"""
+                    html += f"""<TR>
+                                <TD>{mask}</TD>
+                                <TD>{path}</TD>
+                                <TD>{ann_help}</TD>"""
+                    if display_next_hop_asn:
+                        html += f"""<TD>{ann.next_hop_asn}</TD>"""
+                    html += """</TR>"""
 
         html += "</TABLE>>"
         return html

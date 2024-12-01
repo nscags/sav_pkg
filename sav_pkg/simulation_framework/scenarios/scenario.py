@@ -254,7 +254,7 @@ class SAVScenario(Scenario):
         if self.scenario_config.reflector_default_adopters:
             return self.reflector_asns
         else:
-            return frozenset
+            return frozenset()
 
     @property
     def _preset_sav_asns(self) -> frozenset[int]:

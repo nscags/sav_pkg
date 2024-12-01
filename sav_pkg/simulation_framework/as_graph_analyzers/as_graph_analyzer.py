@@ -57,15 +57,14 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         origin = as_obj.asn
         prev_hop = None
 
-        for reflector_asn in self.scenario.reflector_asns:
-            self._propagate_packet(
-                as_obj, source_prefix, prev_hop, origin, reflector_asn
-            )
-
         # for reflector_asn in self.scenario.reflector_asns:
-        #     for neighbor_as_obj in as_obj.neighbors:
-        #         if neighbor_as_obj.asn == 4:
-        #             self._propagate_packet(neighbor_as_obj, source_prefix, as_obj, origin, reflector_asn)
+        #     self._propagate_packet(
+        #         as_obj, source_prefix, prev_hop, origin, reflector_asn
+        #     )
+
+        for reflector_asn in self.scenario.reflector_asns:
+            for neighbor_as_obj in as_obj.neighbors:
+                self._propagate_packet(neighbor_as_obj, source_prefix, as_obj, origin, reflector_asn)
 
     def _get_attacker_outcome_data_plane(self, as_obj):
         """
