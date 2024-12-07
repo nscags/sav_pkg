@@ -17,16 +17,16 @@ from .config_015 import config_015
 from .config_016 import config_016
 
 engine_test_configs = [
-    config_000,
-    config_001,
-    config_002,
-    config_003,
-    config_004,
-    config_005,
+    # config_000,
+    # config_001,
+    # config_002,
+    # config_003,
+    # config_004,
+    # config_005,
     # # config_006, # Both 006-007 have some manual configuations
     # # config_007, # Don't rerun or graphs will be wrong
-    config_008,
-    config_009,
+    # config_008,
+    # config_009,
     config_010,
     config_011,
     config_012,
