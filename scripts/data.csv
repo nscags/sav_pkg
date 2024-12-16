@@ -1,0 +1,540 @@
+scenario_cls,BaseSAVPolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.0,0,100.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.0,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.0,0,100.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.0,0,2.727272727272727,7.643148500995154,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.0,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.0,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.0,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.0,0,100.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.0,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.0,0,100.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.0,0,2.727272727272727,7.643148500995154,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.0,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.0,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.0,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.0,0,100.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.0,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.0,0,100.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.0,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.0,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.0,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.0,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.0,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.0,0,100.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.0,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.0,0,100.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.0,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.0,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.0,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.0,0,100.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.0,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.0,0,100.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.0,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.0,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.0,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.0,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.0,0,100.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.0,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.0,0,100.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.0,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.0,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.0,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.0,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.0,0,100.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.0,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.0,0,100.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.0,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.0,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.0,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.0,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.1,0,96.36363636363636,10.9259021981242,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.1,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.1,0,96.36363636363636,7.968533156181069,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.1,0,0.9090909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.1,0,6.363636363636363,13.238321533517508,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.1,0,1.8181818181818181,4.781119893708641,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.1,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.1,0,94.54545454545455,12.241492913870045,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.1,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.1,0,98.18181818181819,4.781119893708641,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.1,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.1,0,8.181818181818182,19.648534948434065,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.1,0,1.8181818181818181,4.781119893708641,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.1,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.1,0,89.0909090909091,35.24218358916246,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.1,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.1,0,98.18181818181819,4.781119893708641,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.1,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.1,0,9.090909090909092,35.63636363636364,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.1,0,1.8181818181818181,4.781119893708641,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.1,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.1,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.1,0,87.27272727272727,11.926208378231184,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.1,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.1,0,79.0909090909091,37.54523882834794,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.1,0,30.0,30.820819409790342,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.1,0,1.8181818181818181,4.781119893708641,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.1,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.1,0,97.27272727272727,5.520761715321117,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.1,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.1,0,98.18181818181819,4.781119893708641,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.1,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.1,0,0.9090909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.1,0,1.8181818181818181,4.781119893708641,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.1,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.1,0,98.18181818181819,4.781119893708641,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.1,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.1,0,98.18181818181819,4.781119893708641,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.1,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.1,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.1,0,1.8181818181818181,4.781119893708641,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.1,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.1,0,98.18181818181819,4.781119893708641,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.1,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.1,0,98.18181818181819,4.781119893708641,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.1,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.1,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.1,0,1.8181818181818181,4.781119893708641,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.1,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.2,0,60.0,39.90636312897754,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.2,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.2,0,84.54545454545455,20.718186206070776,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.2,0,0.9090909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.2,0,50.90909090909091,37.9154832195054,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.2,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.2,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.2,0,90.0,18.31029516667902,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.2,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.2,0,100.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.2,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.2,0,11.818181818181818,19.648534948434065,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.2,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.2,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.2,0,81.81818181818181,47.81119893708641,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.2,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.2,0,100.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.2,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.2,0,22.727272727272727,46.10745050136189,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.2,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.2,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.2,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.2,0,80.9090909090909,12.34479848303636,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.2,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.2,0,78.18181818181819,19.648534948434065,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.2,0,33.63636363636363,20.656798852750033,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.2,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.2,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.2,0,93.63636363636364,16.94133387276308,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.2,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.2,0,100.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.2,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.2,0,10.0,17.530772943598354,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.2,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.2,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.2,0,79.0909090909091,47.4110981881348,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.2,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.2,0,100.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.2,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.2,0,28.181818181818183,46.02474648769071,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.2,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.2,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.2,0,88.18181818181819,36.166959031965,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.2,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.2,0,100.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.2,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.2,0,18.181818181818183,35.38602983435718,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.2,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.2,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.3,0,61.81818181818182,45.72021850522248,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.3,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.3,0,76.36363636363636,39.29706989686813,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.3,0,2.727272727272727,5.520761715321117,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.3,0,58.18181818181818,44.794214502461834,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.3,0,0.9090909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.3,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.3,0,83.63636363636364,35.56501949346082,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.3,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.3,0,99.0909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.3,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.3,0,21.818181818181817,38.04922431632976,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.3,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.3,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.3,0,99.0909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.3,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.3,0,99.0909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.3,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.3,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.3,0,0.9090909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.3,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.3,0,1.8181818181818181,4.781119893708641,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.3,0,61.81818181818182,14.779427291826304,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.3,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.3,0,40.90909090909091,40.065163450484626,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.3,0,70.9090909090909,23.905599468543205,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.3,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.3,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.3,0,99.0909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.3,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.3,0,99.0909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.3,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.3,0,3.6363636363636362,9.562239787417282,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.3,0,0.9090909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.3,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.3,0,61.81818181818182,58.09929602281862,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.3,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.3,0,99.0909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.3,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.3,0,43.63636363636363,54.74562060299081,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.3,0,0.9090909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.3,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.3,0,90.0,35.457734122345,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.3,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.3,0,99.0909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.3,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.3,0,10.909090909090908,35.63636363636364,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.3,0,0.9090909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.3,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.4,0,33.63636363636363,43.35350748867094,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.4,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.4,0,74.54545454545455,38.61245634667609,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.4,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.4,0,76.36363636363636,30.489403117793877,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.4,0,1.8181818181818181,4.781119893708641,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.4,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.4,0,32.72727272727273,38.87468317215637,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.4,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.4,0,98.18181818181819,4.781119893708641,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.4,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.4,0,68.18181818181819,36.55116735086232,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.4,0,1.8181818181818181,4.781119893708641,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.4,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.4,0,68.18181818181819,51.469569281114744,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.4,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.4,0,98.18181818181819,4.781119893708641,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.4,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.4,0,34.54545454545455,48.83612265560256,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.4,0,1.8181818181818181,4.781119893708641,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.4,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.4,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.4,0,67.27272727272727,16.79074125033011,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.4,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.4,0,40.90909090909091,36.41192430241718,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.4,0,66.36363636363636,26.572399774052514,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.4,0,1.8181818181818181,4.781119893708641,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.4,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.4,0,51.81818181818182,59.52446264261915,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.4,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.4,0,98.18181818181819,4.781119893708641,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.4,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.4,0,54.54545454545455,48.26063673275809,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.4,0,1.8181818181818181,4.781119893708641,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.4,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.4,0,82.72727272727273,42.97101233187841,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.4,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.4,0,98.18181818181819,4.781119893708641,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.4,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.4,0,24.545454545454547,38.61245634667609,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.4,0,1.8181818181818181,4.781119893708641,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.4,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.4,0,70.0,53.644269371141924,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.4,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.4,0,98.18181818181819,4.781119893708641,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.4,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.4,0,39.09090909090909,48.862120061040166,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.4,0,1.8181818181818181,4.781119893708641,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.4,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.5,0,51.81818181818182,55.39133685286091,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.5,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.5,0,67.27272727272727,31.754379667994993,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.5,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.5,0,70.0,34.6608293453733,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.5,0,0.9090909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.5,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.5,0,66.36363636363636,44.30963031715538,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.5,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.5,0,99.0909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.5,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.5,0,37.27272727272727,41.313597705500065,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.5,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.5,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.5,0,58.18181818181818,56.142826127830745,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.5,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.5,0,99.0909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.5,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.5,0,44.54545454545455,53.998205051282305,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.5,0,0.9090909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.5,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.5,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.5,0,40.90909090909091,21.441129857980357,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.5,0,2.727272727272727,5.520761715321117,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.5,0,30.90909090909091,41.43637241214155,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.5,0,80.9090909090909,25.598718976213252,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.5,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.5,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.5,0,43.63636363636363,59.39631510400191,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.5,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.5,0,99.0909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.5,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.5,0,56.36363636363637,59.39631510400191,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.5,0,0.9090909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.5,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.5,0,78.18181818181819,43.20679469062727,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.5,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.5,0,99.0909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.5,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.5,0,25.454545454545453,47.38430468602987,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.5,0,0.9090909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.5,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.5,0,67.27272727272727,53.92760375059318,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.5,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.5,0,99.0909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.5,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.5,0,36.36363636363637,51.59279083472518,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.5,0,0.9090909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.5,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.6,0,37.27272727272727,52.350291228755715,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.6,0,0.9090909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.6,0,70.0,31.27078218052465,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.6,0,1.8181818181818181,4.781119893708641,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.6,0,76.36363636363636,37.47752869420279,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.6,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.6,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.6,0,49.09090909090909,53.50203950696607,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.6,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.6,0,100.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.6,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.6,0,56.36363636363637,45.858891005970925,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.6,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.6,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.6,0,72.72727272727273,55.20761715321118,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.6,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.6,0,100.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.6,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.6,0,28.181818181818183,54.629510990621,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.6,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.6,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.6,0,3.6363636363636362,9.562239787417282,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.6,0,42.72727272727273,17.603065097489306,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.6,0,2.727272727272727,5.520761715321117,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.6,0,22.727272727272727,46.4094376266988,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.6,0,89.0909090909091,23.905599468543205,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.6,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.6,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.6,0,56.36363636363637,56.7502797167898,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.6,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.6,0,100.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.6,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.6,0,54.54545454545455,48.54923240322291,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.6,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.6,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.6,0,59.09090909090909,56.548520232592004,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.6,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.6,0,100.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.6,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.6,0,40.90909090909091,56.548520232592004,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.6,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.6,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.6,0,57.27272727272727,58.88093603280415,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.6,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.6,0,100.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.6,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.6,0,45.45454545454545,56.77265317703877,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.6,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.6,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.7,0,32.72727272727273,42.315837255626036,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.7,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.7,0,66.36363636363636,31.39237997764994,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.7,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.7,0,75.45454545454545,36.75904296454712,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.7,0,0.9090909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.7,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.7,0,23.636363636363637,46.76381733317168,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.7,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.7,0,99.0909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.7,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.7,0,75.45454545454545,46.19000643228875,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.7,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.7,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.7,0,56.36363636363637,59.631041891155924,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.7,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.7,0,99.0909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.7,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.7,0,45.45454545454545,55.5287277299398,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.7,0,0.9090909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.7,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.7,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.7,0,44.54545454545455,19.32266600362391,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.7,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.7,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.7,0,99.0909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.7,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.7,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.7,0,39.09090909090909,55.55159317366363,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.7,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.7,0,99.0909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.7,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.7,0,62.72727272727273,50.723954273992504,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.7,0,0.9090909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.7,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.7,0,37.27272727272727,56.95132443913751,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.7,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.7,0,99.0909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.7,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.7,0,71.81818181818181,40.88098266678106,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.7,0,0.9090909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.7,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.7,0,44.54545454545455,60.581818181818186,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.7,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.7,0,99.0909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.7,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.7,0,58.18181818181818,55.39133685286091,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.7,0,0.9090909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.7,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.8,0,14.545454545454545,38.248959149669126,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.8,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.8,0,59.09090909090909,31.47318417818651,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.8,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.8,0,98.18181818181819,4.781119893708641,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.8,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.8,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.8,0,30.0,49.30197856992243,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.8,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.8,0,100.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.8,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.8,0,80.0,39.90636312897754,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.8,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.8,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.8,0,72.72727272727273,55.20761715321118,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.8,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.8,0,100.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.8,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.8,0,32.72727272727273,51.54353756255783,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.8,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.8,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.8,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.8,0,24.545454545454547,15.286297001990308,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.8,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.8,0,19.09090909090909,41.772142245384,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.8,0,95.45454545454545,8.126341211615674,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.8,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.8,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.8,0,40.0,56.68310634972774,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.8,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.8,0,100.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.8,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.8,0,66.36363636363636,47.9438238768445,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.8,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.8,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.8,0,36.36363636363637,59.631041891155924,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.8,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.8,0,100.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.8,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.8,0,70.0,49.30197856992243,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.8,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.8,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.8,0,36.36363636363637,59.631041891155924,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.8,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.8,0,100.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.8,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.8,0,65.45454545454545,56.77265317703877,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.8,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.8,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.9,0,1.8181818181818181,7.127272727272729,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.9,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.9,0,61.81818181818182,36.93137885053377,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.9,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.9,0,99.0909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.9,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.9,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.9,0,3.6363636363636362,9.562239787417282,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.9,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.9,0,100.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.9,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.9,0,97.27272727272727,7.643148500995154,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.9,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.9,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.9,0,18.181818181818183,47.81119893708641,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.9,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.9,0,100.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.9,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.9,0,84.54545454545455,41.40571286490839,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.9,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.9,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.9,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.9,0,26.363636363636363,17.746765972405758,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.9,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.9,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.9,0,99.0909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.9,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.9,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.9,0,24.545454545454547,49.967214374994875,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.9,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.9,0,100.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.9,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.9,0,80.9090909090909,41.09785942828138,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.9,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.9,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.9,0,16.363636363636363,43.35350748867094,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.9,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.9,0,100.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.9,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.9,0,84.54545454545455,41.40571286490839,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.9,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.9,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.9,0,9.090909090909092,35.63636363636364,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.9,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.9,0,100.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.9,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.9,0,90.9090909090909,35.63636363636364,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.9,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.9,0,0.0,0.0,,rfc8704
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.99,0,2.727272727272727,10.69090909090909,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.99,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.99,0,79.0909090909091,20.77939220708507,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.99,0,0.0,0.0,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.99,0,98.18181818181819,7.127272727272729,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,DISCONNECTED,0.99,0,0.9090909090909091,3.5636363636363644,,strict
+SAVScenario,Strict uRPF,DATA,all_wout_ixps,FORWARD,0.99,0,0.0,0.0,,strict
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.99,0,2.727272727272727,10.69090909090909,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.99,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.99,0,99.0909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.99,0,0.0,0.0,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.99,0,98.18181818181819,7.127272727272729,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,DISCONNECTED,0.99,0,0.9090909090909091,3.5636363636363644,,feasible
+SAVScenario,Feasible-Path uRPF,DATA,all_wout_ixps,FORWARD,0.99,0,0.0,0.0,,feasible
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_NEGATIVE,0.99,0,35.45454545454545,58.23029798400301,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FALSE_POSITIVE,0.99,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_NEGATIVE,0.99,0,99.0909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,TRUE_POSITIVE,0.99,0,0.0,0.0,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FILTERED_ON_PATH,0.99,0,70.0,49.86544804863293,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,DISCONNECTED,0.99,0,0.9090909090909091,3.5636363636363644,,enhanced
+SAVScenario,EFP uRPF,DATA,all_wout_ixps,FORWARD,0.99,0,0.0,0.0,,enhanced
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0.99,0,0.0,0.0,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FALSE_POSITIVE,0.99,0,21.818181818181817,12.749653049889709,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0.99,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,TRUE_POSITIVE,0.99,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0.99,0,99.0909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,DISCONNECTED,0.99,0,0.9090909090909091,3.5636363636363644,,bar_sav
+SAVScenario,BAR SAV,DATA,all_wout_ixps,FORWARD,0.99,0,0.0,0.0,,bar_sav
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0.99,0,9.090909090909092,35.63636363636364,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0.99,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0.99,0,99.0909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0.99,0,0.0,0.0,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0.99,0,90.9090909090909,35.63636363636364,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,DISCONNECTED,0.99,0,0.9090909090909091,3.5636363636363644,,efp_alg_a
+SAVScenario,EFP uRPF Alg A,DATA,all_wout_ixps,FORWARD,0.99,0,0.0,0.0,,efp_alg_a
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_NEGATIVE,0.99,0,9.090909090909092,35.63636363636364,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FALSE_POSITIVE,0.99,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_NEGATIVE,0.99,0,99.0909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,TRUE_POSITIVE,0.99,0,0.0,0.0,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FILTERED_ON_PATH,0.99,0,90.9090909090909,35.63636363636364,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,DISCONNECTED,0.99,0,0.9090909090909091,3.5636363636363644,,fp_only_customers
+SAVScenario,FP uRPF Only Customers,DATA,all_wout_ixps,FORWARD,0.99,0,0.0,0.0,,fp_only_customers
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_NEGATIVE,0.99,0,35.45454545454545,58.23029798400301,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FALSE_POSITIVE,0.99,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_NEGATIVE,0.99,0,99.0909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,TRUE_POSITIVE,0.99,0,0.0,0.0,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FILTERED_ON_PATH,0.99,0,70.0,49.86544804863293,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,DISCONNECTED,0.99,0,0.9090909090909091,3.5636363636363644,,rfc8704
+SAVScenario,RFC8704,DATA,all_wout_ixps,FORWARD,0.99,0,0.0,0.0,,rfc8704

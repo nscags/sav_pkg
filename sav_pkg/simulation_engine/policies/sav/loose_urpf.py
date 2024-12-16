@@ -9,3 +9,4 @@ class LooseuRPF(BaseSAVPolicy):
         for ann in as_obj.policy._local_rib.data.values():
             if ann.prefix == source_prefix:
                 return True
+        return False

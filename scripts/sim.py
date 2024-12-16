@@ -10,8 +10,22 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from sav_pkg.simulation_framework import SAVScenarioConfig, SAVScenario, SAVASGraphAnalyzer, MetricTracker
-from sav_pkg.simulation_engine import FeasiblePathuRPF, StrictuRPF, EnhancedFeasiblePathuRPF, BAR_SAV, EnhancedFeasiblePathuRPFAlgA, FeasiblePathuRPFOnlyCustomers, RFC8704
+from sav_pkg.simulation_framework import (
+    SAVScenarioConfig, 
+    SAVScenario, 
+    SAVASGraphAnalyzer, 
+    MetricTracker
+)
+from sav_pkg.simulation_engine import (
+    FeasiblePathuRPF, 
+    StrictuRPF, 
+    EnhancedFeasiblePathuRPF, 
+    BAR_SAV, 
+    EnhancedFeasiblePathuRPFAlgA, 
+    FeasiblePathuRPFOnlyCustomers, 
+    RFC8704,
+    LooseuRPF,
+)
 from sav_pkg.simulation_framework.utils import get_metric_keys
 
 
@@ -32,6 +46,14 @@ def main():
             0.99,
         ),
         scenario_configs=(
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGP,
+                num_reflectors=10,
+                BaseSAVPolicyCls=LooseuRPF,
+                reflector_default_adopters=True,
+                scenario_label="loose"
+            ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
@@ -91,7 +113,7 @@ def main():
         ),
         output_dir=Path(f"~/sav/results").expanduser(),
         num_trials=100,
-        parse_cpus=8,
+        parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,
         metric_keys=get_metric_keys(),

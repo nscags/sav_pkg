@@ -16,7 +16,7 @@ class BAR_SAV(BaseSAVPolicy):
         # Loose uRPF is applied to provider interfaces
         # BAR SAV is applied to only customer and lateral peer interfaces
         if prev_hop.asn in as_obj.provider_asns:
-            LooseuRPF.validate(
+            return LooseuRPF.validate(
                 as_obj=as_obj,
                 source_prefix=source_prefix,
                 prev_hop=prev_hop,

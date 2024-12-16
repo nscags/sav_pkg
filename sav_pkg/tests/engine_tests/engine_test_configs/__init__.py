@@ -15,6 +15,11 @@ from .config_013 import config_013
 from .config_014 import config_014
 from .config_015 import config_015
 from .config_016 import config_016
+from .config_017 import config_017
+from .config_018 import config_018
+from .config_019 import config_019
+from .config_020 import config_020
+
 
 engine_test_configs = [
     # config_000,
@@ -24,16 +29,20 @@ engine_test_configs = [
     # config_004,
     # config_005,
     # # config_006, # Both 006-007 have some manual configuations
-    # # config_007, # Don't rerun or graphs will be wrong
+    config_007, # Don't rerun or graphs will be wrong
     # config_008,
     # config_009,
-    config_010,
-    config_011,
-    config_012,
-    config_013,
-    config_014,
-    config_015,
+    # config_010,
+    # config_011,
+    # config_012,
+    # config_013,
+    # config_014,
+    # config_015,
     # config_016, # Don't run
+    config_017,
+    config_018,
+    config_019,
+    config_020,
 ]
 
 __all__ = ["engine_test_configs"]

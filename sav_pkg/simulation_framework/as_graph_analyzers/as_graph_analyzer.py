@@ -137,6 +137,9 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Call AS SAV policy's validation function, determine outcome
         """
+
+        # TODO: This seems slightly wrong in terms of enumeration and
+        #       priority of certain outcomes
         if filtered:
             return Outcomes.FILTERED_ON_PATH.value
         if as_obj.asn == origin:
