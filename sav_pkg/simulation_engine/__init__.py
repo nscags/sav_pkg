@@ -7,6 +7,8 @@ from .policies import EnhancedFeasiblePathuRPF
 from .policies import EnhancedFeasiblePathuRPFAlgA
 from .policies import RFC8704
 from .policies import BAR_SAV
+from .policies import BGPExport2Some
+from .policies import BGPFullExport2Some
 
 
 __all__ = [
@@ -19,4 +21,6 @@ __all__ = [
     "EnhancedFeasiblePathuRPFAlgA",
     "RFC8704",
     "BAR_SAV",
+    "BGPExport2Some",
+    "BGPFullExport2Some",
 ]

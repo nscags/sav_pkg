@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import BaseSimulationEngine
 
 
-class BARSAVScenario(SAVScenario):
+class SAVScenarioNoAnnouncements(SAVScenario):
     """
     Victim does not announce anything but has a ROA for it's prefix
     """

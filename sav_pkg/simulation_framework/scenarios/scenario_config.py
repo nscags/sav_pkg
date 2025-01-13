@@ -26,3 +26,4 @@ class SAVScenarioConfig(ScenarioConfig):
         # Mypy doesn't understand frozendict typing, just ignore it
         default_factory=frozendict  # type: ignore
     )
+    special_percent_adoption: float = None

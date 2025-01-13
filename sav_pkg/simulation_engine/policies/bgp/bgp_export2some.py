@@ -1,5 +1,6 @@
 from bgpy.simulation_engine.policies.bgp import BGP
-from bgpy.shared.enums import Relationships
+from bgpy.enums import Relationships
+
 
 class BGPExport2Some(BGP):
     name: str = "BGP Export2Some"
@@ -15,7 +16,10 @@ class BGPExport2Some(BGP):
         """
 
         # percent of providers to export to 
-        percent = 0.5 
+        # Measurement of routes from RIPE route collectors showed that
+        # on average an AS which does not export to all will export to
+        # 56.22% of their providers 
+        percent = 0.5622 
 
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers
@@ -23,7 +27,7 @@ class BGPExport2Some(BGP):
             num = max(1, int(len(neighbors) * percent))
             some_neighbors = sorted(neighbors, key=lambda n: n.asn)[:num]
 
-            for _prefix, unprocessed_ann in self.local_rib.items():
+            for _prefix, unprocessed_ann in self._local_rib.items():
                 if neighbors and unprocessed_ann.recv_relationship in send_rels:
                     ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
                 else:

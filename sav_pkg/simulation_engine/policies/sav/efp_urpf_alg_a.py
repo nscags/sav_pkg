@@ -51,6 +51,6 @@ class EnhancedFeasiblePathuRPFAlgA(BaseSAVPolicy):
                         if prefix in xi:
                             rpf_list.update(xi)
 
-            print(rpf_list)
+            # print(rpf_list)
             return source_prefix in rpf_list
                 
