@@ -105,9 +105,9 @@ def main():
                 scenario_label="bar_sav_aspa_99"
             ),
         ),
-        output_dir=Path(f"~/sav/results/1_1_bar_sav_roa").expanduser(),
-        num_trials=100,
-        parse_cpus=10,
+        output_dir=Path(f"~/sav/results/50_10_bar_sav_roa").expanduser(),
+        num_trials=50,
+        parse_cpus=2,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,
         metric_keys=get_metric_keys(),

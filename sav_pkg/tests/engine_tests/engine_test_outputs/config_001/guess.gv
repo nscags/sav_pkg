@@ -45,7 +45,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>1, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>1, 8, 2, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	2 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -58,7 +66,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>2, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>2, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	3 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -71,7 +87,12 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>3, 9, 4, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	4 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -84,7 +105,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>4, 9, 8, 1, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>4, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	5 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -97,7 +126,12 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>5, 1, 666</TD>
+                                <TD>&#128520;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	8 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -110,7 +144,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>8, 1, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>8, 2, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	9 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -123,7 +165,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>9, 8, 1, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>9, 4, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	10 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -136,7 +186,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>10, 555, 8, 1, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>10, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	12 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -149,7 +207,12 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>12, 10, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="grey:white" gradientangle=270 style=filled]
 	555 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -162,7 +225,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">Strict uRPF</TD>
-            </TR></TABLE>> color=black fillcolor="#99d9ea" gradientangle=270 shape=doublecircle style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>555, 8, 1, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>555, 10, 777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="#99d9ea" gradientangle=270 shape=doublecircle style=filled]
 	666 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -175,7 +246,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="#FF7F7F" gradientangle=270 shape=doublecircle style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>666, 2, 777</TD>
+                                <TD>&#128520;</TD></TR></TABLE>> color=black fillcolor="#FF7F7F" gradientangle=270 shape=doublecircle style=filled]
 	777 [label=<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
@@ -188,7 +267,15 @@ digraph {
             </TR>
             <TR>
                 <TD COLSPAN="4" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">No SAV</TD>
-            </TR></TABLE>> color=black fillcolor="#90ee90" gradientangle=270 shape=doublecircle style=filled]
+            </TR><TR>
+                        <TD COLSPAN="4" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
+                      </TR><TR>
+                                <TD>/24</TD>
+                                <TD>777, 2, 666</TD>
+                                <TD>&#128520;</TD></TR><TR>
+                                <TD>/24</TD>
+                                <TD>777</TD>
+                                <TD>&#128519;</TD></TR></TABLE>> color=black fillcolor="#90ee90" gradientangle=270 shape=doublecircle style=filled]
 	1 -> 666
 	2 -> 666
 	2 -> 777

@@ -32,7 +32,7 @@ from sav_pkg.simulation_framework.utils import get_metric_keys
 def main():
     # Simulation for the paper
     sim = Simulation(
-        percent_adoptions = (
+        percent_adoptions=(
             0.0,
             0.1,
             0.2,
