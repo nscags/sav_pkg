@@ -19,10 +19,9 @@ from sav_pkg.simulation_framework import (
 from sav_pkg.simulation_engine import (
     FeasiblePathuRPF, 
     StrictuRPF, 
-    EnhancedFeasiblePathuRPF, 
+    EnhancedFeasiblePathuRPFAlgB, 
     BAR_SAV, 
     EnhancedFeasiblePathuRPFAlgA, 
-    FeasiblePathuRPFOnlyCustomers, 
     RFC8704,
     LooseuRPF,
 )
@@ -36,13 +35,8 @@ def main():
             0.0,
             0.1,
             0.2,
-            0.3,
-            0.4,
             0.5,
-            0.6,
-            0.7,
             0.8,
-            0.9,
             0.99,
         ),
         scenario_configs=(
@@ -74,7 +68,7 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 num_reflectors=10,
-                BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
+                BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
                 scenario_label="enhanced"
             ),
@@ -93,14 +87,6 @@ def main():
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
                 scenario_label="efp_alg_a"
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                num_reflectors=10,
-                BaseSAVPolicyCls=FeasiblePathuRPFOnlyCustomers,
-                reflector_default_adopters=True,
-                scenario_label="fp_only_customers"
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,

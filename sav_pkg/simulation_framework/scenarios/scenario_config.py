@@ -27,3 +27,4 @@ class SAVScenarioConfig(ScenarioConfig):
         default_factory=frozendict  # type: ignore
     )
     special_percent_adoption: float = None
+    override_default_interface_dict: frozendict[type[BaseSAVPolicy], frozenset] = None

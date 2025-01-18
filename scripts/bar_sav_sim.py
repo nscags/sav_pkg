@@ -40,7 +40,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
-                num_reflectors=10,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 scenario_label="bar_sav_bgp"
@@ -48,7 +48,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
-                num_reflectors=10,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 hardcoded_asn_cls_dict=rov_dict,
@@ -59,7 +59,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=ASPAFull,
                 special_percent_adoption = 0.1,
-                num_reflectors=10,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 scenario_label="bar_sav_aspa_10"
@@ -69,7 +69,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=ASPAFull,
                 special_percent_adoption= 0.2,
-                num_reflectors=10,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 scenario_label="bar_sav_aspa_20"
@@ -79,7 +79,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=ASPAFull,
                 special_percent_adoption = 0.5,
-                num_reflectors=10,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 scenario_label="bar_sav_aspa_50"
@@ -89,7 +89,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=ASPAFull,
                 special_percent_adoption = 0.8,
-                num_reflectors=10,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 scenario_label="bar_sav_aspa_80"
@@ -99,15 +99,15 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=ASPAFull,
                 special_percent_adoption = 0.99,
-                num_reflectors=10,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 scenario_label="bar_sav_aspa_99"
             ),
         ),
-        output_dir=Path(f"~/sav/results/50_10_bar_sav").expanduser(),
-        num_trials=50,
-        parse_cpus=2,
+        output_dir=Path(f"~/sav/results/300_5_bar_sav").expanduser(),
+        num_trials=300,
+        parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,
         metric_keys=get_metric_keys(),

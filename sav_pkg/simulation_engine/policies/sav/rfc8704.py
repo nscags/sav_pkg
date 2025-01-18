@@ -1,5 +1,5 @@
 from .base_sav_policy import BaseSAVPolicy
-from .efp_urpf import EnhancedFeasiblePathuRPF
+from .efp_urpf_alg_b import EnhancedFeasiblePathuRPFAlgB
 from .strict_urpf import StrictuRPF
 from .loose_urpf import LooseuRPF
 
@@ -26,7 +26,7 @@ class RFC8704(BaseSAVPolicy):
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         elif prev_hop.asn in as_obj.customer_asns:
-            return EnhancedFeasiblePathuRPF.validate(
+            return EnhancedFeasiblePathuRPFAlgB.validate(
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         elif prev_hop.asn in (as_obj.peer_asns | as_obj.provider_asns):

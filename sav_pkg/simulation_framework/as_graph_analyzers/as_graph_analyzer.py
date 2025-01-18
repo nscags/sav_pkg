@@ -153,7 +153,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         if as_obj.asn in self.scenario.sav_policy_asn_dict:
             sav_policy = self.scenario.sav_policy_asn_dict[as_obj.asn]
 
-            validated = sav_policy.validate(
+            validated = sav_policy.validation(
                 as_obj, source_prefix, prev_hop, self.engine, self.scenario
             )
             if validated:

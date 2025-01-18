@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
 from .base_sav_policy import BaseSAVPolicy
+from sav_pkg.utils.utils import get_applied_interfaces
+from sav_pkg.enums import Interfaces
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS

@@ -11,7 +11,7 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
+from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPFAlgB
 
 desc = "Single reflector running EFP uRPF"
 
@@ -25,7 +25,7 @@ config_003 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
-        BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
+        BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,

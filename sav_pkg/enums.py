@@ -49,3 +49,10 @@ class ASGroups(YamlAbleEnum):
     ALL_WOUT_IXPS: str = "all_wout_ixps"
 
     REFLECTORS: str = "reflectors"
+
+
+class Interfaces(YamlAbleEnum):
+    """Interfaces to apply SAV policy"""
+    CUSTOMER: int = 0
+    PROVIDER: int = 1
+    PEER: int = 3

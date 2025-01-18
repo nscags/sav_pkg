@@ -15,7 +15,7 @@ from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine.policies.bgp.bgpfull_export2some import BGPFullExport2Some  
-from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
+from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPFAlgB
 
 
 desc = ""
@@ -33,7 +33,7 @@ config_015 = EngineTestConfig(
         override_victim_asns=frozenset({1}),
         override_reflector_asns=frozenset({2, 3}),
         override_sav_asns=frozenset({2, 3}),
-        BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
+        BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
     ),
     as_graph_info=as_graph_info_002,
     DiagramCls=SAVDiagram,

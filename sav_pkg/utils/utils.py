@@ -5,7 +5,9 @@ from pathlib import Path
 
 from bgpy.simulation_engine import ROVFull
 from frozendict import frozendict
-from rov_collector import rov_collector_classes
+# from rov_collector import rov_collector_classes
+
+from sav_pkg.enums import Interfaces
 
 
 def get_real_world_rov_asn_cls_dict(
@@ -13,11 +15,12 @@ def get_real_world_rov_asn_cls_dict(
     requests_cache_db_path: Path | None = None,
 ) -> frozendict[int, type[ROVFull]]:
     if not json_path.exists():
-        for CollectorCls in rov_collector_classes:
-            CollectorCls(
-                json_path=json_path,
-                requests_cache_db_path=requests_cache_db_path,
-            ).run()
+        print("oh no")
+        # for CollectorCls in rov_collector_classes:
+        #     CollectorCls(
+        #         json_path=json_path,
+        #         requests_cache_db_path=requests_cache_db_path,
+        #     ).run()
 
     python_hash_seed = os.environ.get("PYTHONHASHSEED")
     if python_hash_seed:
@@ -36,3 +39,60 @@ def get_real_world_rov_asn_cls_dict(
             if random.random() * 100 < max_percent:
                 hardcoded_dict[int(asn)] = ROVFull
     return frozendict(hardcoded_dict)
+
+
+from sav_pkg.enums import Interfaces
+
+default_sav_policy_interface_dict: frozendict[str, frozenset] = {
+    "NoSAV": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+        Interfaces.PROVIDER.value,
+    ]),
+    "Loose uRPF": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+        Interfaces.PROVIDER.value,
+    ]),
+    "Strict uRPF": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+    ]),
+    "Feasible-Path uRPF": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+    ]),
+    "EFP uRPF Alg A": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+    ]),
+    "EFP uRPF Alg B": frozenset([
+        Interfaces.CUSTOMER.value, 
+    ]),
+    "BAR SAV": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+    ]),
+    "RFC8704": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+        Interfaces.PROVIDER.value,
+    ]),
+}
+
+def get_applied_interfaces(as_obj, scenario, sav_policy):
+    
+    if scenario.scenario_config.override_default_interface_dict is not None:
+        interfaces = scenario.scenario_config.override_default_interface_dict[sav_policy.name]
+    else:
+        interfaces = default_sav_policy_interface_dict[sav_policy.name]
+    
+    applied_interfaces = set()
+    if Interfaces.CUSTOMER.value in interfaces:
+        applied_interfaces.add(as_obj.customer_asns)
+    if Interfaces.PEER.value in interfaces:
+        applied_interfaces.add(as_obj.peer_asns)
+    if Interfaces.PROVIDER.value in interfaces:
+        applied_interfaces.add(as_obj.provider_asns)
+
+    return applied_interfaces
