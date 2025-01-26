@@ -13,7 +13,6 @@ class RFC8704(BaseSAVPolicy):
         """
         Validates packets based on security recommendations listed in RFC 8704
         
-
         "For a directly connected single-homed stub AS (customer), 
         the AS under consideration SHOULD perform SAV based on the strict uRPF method.
         

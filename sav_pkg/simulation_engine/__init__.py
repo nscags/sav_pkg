@@ -4,10 +4,14 @@ from .policies import StrictuRPF
 from .policies import FeasiblePathuRPF
 from .policies import EnhancedFeasiblePathuRPFAlgB
 from .policies import EnhancedFeasiblePathuRPFAlgA
+from .policies import EnhancedFeasiblePathuRPFAlgAwPeers
 from .policies import RFC8704
 from .policies import BAR_SAV
+from .policies import ProcedureX
 from .policies import BGPExport2Some
 from .policies import BGPFullExport2Some
+from .policies import BGPExport2Some_wReplacement
+from .policies import BGPFullExport2Some_wReplacement
 
 
 __all__ = [
@@ -17,8 +21,12 @@ __all__ = [
     "FeasiblePathuRPF",
     "EnhancedFeasiblePathuRPFAlgB",
     "EnhancedFeasiblePathuRPFAlgA",
+    "EnhancedFeasiblePathuRPFAlgAwPeers",
     "RFC8704",
     "BAR_SAV",
+    "ProcedureX",
     "BGPExport2Some",
     "BGPFullExport2Some",
+    "BGPExport2Some_wReplacement",
+    "BGPFullExport2Some_wReplacement",
 ]

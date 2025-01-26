@@ -20,6 +20,7 @@ class BaseSAVPolicy(ABC):
         scenario: "SAVScenario",
     ):
         """
+        Applies SAV policy to specificed interfaces.
         """
         sav_policy = scenario.sav_policy_asn_dict[as_obj.asn]
         applied_interfaces = get_applied_interfaces(as_obj, scenario, sav_policy)

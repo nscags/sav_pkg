@@ -63,20 +63,27 @@ default_sav_policy_interface_dict: frozendict[str, frozenset] = {
         Interfaces.PEER.value, 
     ]),
     "EFP uRPF Alg A": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
+        Interfaces.CUSTOMER.value,
+    ]),
+    "EFP uRPF Alg A w Peers": frozenset([
+        Interfaces.CUSTOMER.value,
+        Interfaces.PEER.value,
     ]),
     "EFP uRPF Alg B": frozenset([
         Interfaces.CUSTOMER.value, 
-    ]),
-    "BAR SAV": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
     ]),
     "RFC8704": frozenset([
         Interfaces.CUSTOMER.value, 
         Interfaces.PEER.value, 
         Interfaces.PROVIDER.value,
+    ]),
+    "BAR SAV": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
+    ]),
+    "Procedure X": frozenset([
+        Interfaces.CUSTOMER.value, 
+        Interfaces.PEER.value, 
     ]),
 }
 

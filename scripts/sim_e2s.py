@@ -12,20 +12,19 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
-    SAVScenario, 
     SAVScenarioCPPPercentAdoption,
     SAVASGraphAnalyzer, 
     MetricTracker
 )
 from sav_pkg.simulation_engine import (
-    FeasiblePathuRPF, 
-    StrictuRPF, 
-    EnhancedFeasiblePathuRPF, 
-    BAR_SAV, 
-    EnhancedFeasiblePathuRPFAlgA, 
-    FeasiblePathuRPFOnlyCustomers, 
-    RFC8704,
     LooseuRPF,
+    StrictuRPF,
+    FeasiblePathuRPF,
+    EnhancedFeasiblePathuRPFAlgB,
+    EnhancedFeasiblePathuRPFAlgA,
+    EnhancedFeasiblePathuRPFAlgAwPeers,
+    RFC8704,
+    BAR_SAV,
     BGPExport2Some,
     BGPFullExport2Some,
 )
@@ -49,9 +48,9 @@ def main():
                 BasePolicyCls=BGP,
                 AdoptPolicyCls=BGPExport2Some,
                 special_percent_adoption = 0.4043,
-                num_reflectors=10,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
+                num_reflectors=5,
                 scenario_label="loose"
             ),
             SAVScenarioConfig(
@@ -59,9 +58,9 @@ def main():
                 BasePolicyCls=BGP,
                 AdoptPolicyCls=BGPExport2Some,
                 special_percent_adoption = 0.4043,
-                num_reflectors=10,
                 BaseSAVPolicyCls=StrictuRPF,
                 reflector_default_adopters=True,
+                num_reflectors=5,
                 scenario_label="strict"
             ),
             SAVScenarioConfig(
@@ -69,9 +68,9 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
-                num_reflectors=10,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
+                num_reflectors=5,
                 scenario_label="feasible"
             ),
             SAVScenarioConfig(
@@ -79,29 +78,19 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
-                num_reflectors=10,
-                BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
+                BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
-                scenario_label="enhanced"
+                num_reflectors=5,
+                scenario_label="efp_alg_b"
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
-                num_reflectors=10,
-                BaseSAVPolicyCls=BAR_SAV,
-                reflector_default_adopters=True,
-                scenario_label="bar_sav"
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdoption,
-                BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullExport2Some,
-                special_percent_adoption = 0.4043,
-                num_reflectors=10,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
+                num_reflectors=5,
                 scenario_label="efp_alg_a"
             ),
             SAVScenarioConfig(
@@ -109,23 +98,33 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
-                num_reflectors=10,
-                BaseSAVPolicyCls=FeasiblePathuRPFOnlyCustomers,
+                BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwPeers,
                 reflector_default_adopters=True,
-                scenario_label="fp_only_customers"
+                num_reflectors=5,
+                scenario_label="efp_alg_a_w_peers"
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
-                num_reflectors=10,
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
+                num_reflectors=5,
                 scenario_label="rfc8704"
             ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenarioCPPPercentAdoption,
+                BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullExport2Some,
+                special_percent_adoption = 0.4043,
+                BaseSAVPolicyCls=BAR_SAV,
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav"
+            ),
         ),
-        output_dir=Path(f"~/sav/results/1_1_e2s").expanduser(),
+        output_dir=Path(f"~/sav/results/100_5_rda_e2s").expanduser(),
         num_trials=100,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

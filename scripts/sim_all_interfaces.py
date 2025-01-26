@@ -1,7 +1,6 @@
 from pathlib import Path
 from time import time
 from frozendict import frozendict
-from multiprocessing import cpu_count
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -18,13 +17,14 @@ from sav_pkg.simulation_framework import (
     MetricTracker
 )
 from sav_pkg.simulation_engine import (
-    FeasiblePathuRPF, 
-    StrictuRPF, 
-    EnhancedFeasiblePathuRPFAlgB, 
-    BAR_SAV, 
-    EnhancedFeasiblePathuRPFAlgA, 
-    RFC8704,
     LooseuRPF,
+    StrictuRPF,
+    FeasiblePathuRPF,
+    EnhancedFeasiblePathuRPFAlgB,
+    EnhancedFeasiblePathuRPFAlgA,
+    EnhancedFeasiblePathuRPFAlgAwPeers,
+    RFC8704,
+    BAR_SAV,
 )
 from sav_pkg.simulation_framework.utils import get_metric_keys
 from sav_pkg.enums import Interfaces
@@ -114,11 +114,11 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 num_reflectors=5,
-                BaseSAVPolicyCls=BAR_SAV,
+                BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwPeers,
                 reflector_default_adopters=True,
-                scenario_label="bar_sav",
+                scenario_label="efp_alg_a_w_peers",
                 override_default_interface_dict=frozendict({
-                    BAR_SAV.name: frozenset([
+                    EnhancedFeasiblePathuRPFAlgA.name: frozenset([
                         Interfaces.CUSTOMER.value,
                         Interfaces.PEER.value,
                         Interfaces.PROVIDER.value,
@@ -133,9 +133,24 @@ def main():
                 reflector_default_adopters=True,
                 scenario_label="rfc8704",
             ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                num_reflectors=5,
+                BaseSAVPolicyCls=BAR_SAV,
+                reflector_default_adopters=True,
+                scenario_label="bar_sav",
+                override_default_interface_dict=frozendict({
+                    BAR_SAV.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                        Interfaces.PEER.value,
+                        Interfaces.PROVIDER.value,
+                    ])
+                })
+            ),
         ),
-        output_dir=Path(f"~/sav/results/300_5_all_interfaces").expanduser(),
-        num_trials=300,
+        output_dir=Path(f"~/sav/results/100_5_all_interfaces_rda").expanduser(),
+        num_trials=100,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,

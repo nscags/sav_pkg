@@ -19,11 +19,9 @@ class EnhancedFeasiblePathuRPFAlgB(BaseSAVPolicy):
         engine: "SimulationEngine", 
         scenario: "SAVScenario",
     ):
-        # The EFP-uRPF method with Algorithm B SHOULD be applied on customer interfaces.
-        # if prev_hop.asn in (as_obj.peer_asns | as_obj.provider_asns):
-        #     return True
-        # else:
-        
+        """
+        Validates incoming packets based on Enhanced Feasible-Path uRPF Algorithm B.
+        """
         # Create the set of all directly connected customer interfaces.
         # Call it Set I = {I1, I2, ..., Ik}.
         I = as_obj.customer_asns

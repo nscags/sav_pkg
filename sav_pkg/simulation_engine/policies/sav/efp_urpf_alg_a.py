@@ -22,10 +22,6 @@ class EnhancedFeasiblePathuRPFAlgA(BaseSAVPolicy):
         """
         Validates incoming packets based on Enhanced Feasible-Path uRPF Algorithm A.
         """
-        # EFP algorithm A is only applied to customer interfaces
-        # if prev_hop.asn not in as_obj.customer_asns: 
-        #     return True
-        # else:
         # Create the set of unique origin ASes considering only the routes in the Adj-RIBs-In of customer interfaces. 
         # Call it Set A = {AS1, AS2, ..., ASn}.
         A = set()
