@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 from .base_sav_policy import BaseSAVPolicy
 
+from bgpy.simulation_engine import ASPA
+
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
     from bgpy.simulation_engine import SimulationEngine
@@ -37,8 +39,7 @@ class BAR_SAV(BaseSAVPolicy):
             for asn in z_i[i - 1]:
                 tmp_as_obj = engine.as_graph.as_dict[asn]
                 for customer_asn in tmp_as_obj.customer_asns:
-                    customer_as_obj = engine.as_graph.as_dict[customer_asn]
-                    if customer_as_obj.policy.name in ["ASPA", "ASPA Full", "PseudoASPAFull"]:
+                    if isinstance(engine.as_graph.as_dict[customer_asn].policy, ASPA):
                         a_i.add(customer_asn)
 
             # "Create AS-set B(i) of all customer ASNs each of which is a
@@ -52,9 +53,10 @@ class BAR_SAV(BaseSAVPolicy):
                         ann_info.unprocessed_ann, ann_info.recv_relationship
                     ):
                         ann = ann_info.unprocessed_ann
-                        for j, asn in enumerate(ann.as_path):
-                            if asn in z_i[i - 1] and j + 1 != len(ann.as_path):
-                                b_i.add(ann.as_path[j + 1])
+                        as_path = ann.as_path
+                        for j in range(len(as_path) - 1):
+                            if as_path[j] in z_i[i - 1] and as_path[j + 1] in engine.as_graph.as_dict[as_path[j]].customer_asns:
+                                b_i.add(as_path[j + 1])
 
             # "Form the union of AS-sets A(i) and B(i) and call it AS-set C.
             # From AS-set C, remove any ASNs that are present in Z(j), for j=1

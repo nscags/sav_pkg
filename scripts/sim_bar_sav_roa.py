@@ -62,6 +62,7 @@ def main():
                 num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
+                hardcoded_asn_cls_dict=rov_dict,
                 scenario_label="bar_sav_aspa_10"
             ),
             SAVScenarioConfig(
@@ -72,6 +73,7 @@ def main():
                 num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
+                hardcoded_asn_cls_dict=rov_dict,
                 scenario_label="bar_sav_aspa_20"
             ),
             SAVScenarioConfig(
@@ -82,6 +84,7 @@ def main():
                 num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
+                hardcoded_asn_cls_dict=rov_dict,
                 scenario_label="bar_sav_aspa_50"
             ),
             SAVScenarioConfig(
@@ -92,6 +95,7 @@ def main():
                 num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
+                hardcoded_asn_cls_dict=rov_dict,
                 scenario_label="bar_sav_aspa_80"
             ),
             SAVScenarioConfig(
@@ -102,11 +106,12 @@ def main():
                 num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
+                hardcoded_asn_cls_dict=rov_dict,
                 scenario_label="bar_sav_aspa_99"
             ),
         ),
-        output_dir=Path(f"~/sav/results/100_5_bar_sav_roa").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/300_5_bar_sav_roa").expanduser(),
+        num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,

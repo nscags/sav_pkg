@@ -3,7 +3,7 @@ from bgpy.enums import Relationships
 
 
 class BGPExport2Some(BGP):
-    name: str = "BGP Export2Some"
+    name: str = "BGP E2S"
         
     def _propagate(
         self: "BGPExport2Some",
@@ -20,7 +20,8 @@ class BGPExport2Some(BGP):
         # on average an AS which does not export to all will export to
         # 56.22% of their providers 
         # NOTE: this measurement is not entirely accurate
-        percent = 0.5622
+        # percent = 0.5622
+        percent = 0.5
 
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers

@@ -28,7 +28,6 @@ class EnhancedFeasiblePathuRPFAlgB(BaseSAVPolicy):
 
         # Create the set of all unique prefixes for which routes exist in Adj-RIBs-In
         # for the interfaces in Set I. Call it Set P = {P1, P2, ..., Pm}.
-
         # Create the set of all unique origin ASes seen in the routes that exist in Adj-RIBs-In
         # for the interfaces in Set I. Call it Set A = {AS1, AS2, ..., ASn}.
         P = set()
@@ -47,19 +46,9 @@ class EnhancedFeasiblePathuRPFAlgB(BaseSAVPolicy):
         # of all lateral peer and transit provider interfaces such that each of the routes
         # has its origin AS belonging in Set A. Call it Set Q = {Q1, Q2, ..., Qj}.
         Q = set()
-        for peer_asn in as_obj.peer_asns:
+        for asn in (as_obj.peer_asns | as_obj.provider_asns):
             for prefix, ann_info in as_obj.policy._ribs_in.data.get(
-                peer_asn, {}
-            ).items():
-                if as_obj.policy._valid_ann(
-                    ann_info.unprocessed_ann, ann_info.recv_relationship
-                ):
-                    if ann_info.unprocessed_ann.origin in A:
-                        Q.add(prefix)
-
-        for provider_asn in as_obj.provider_asns:
-            for prefix, ann_info in as_obj.policy._ribs_in.data.get(
-                provider_asn, {}
+                asn, {}
             ).items():
                 if as_obj.policy._valid_ann(
                     ann_info.unprocessed_ann, ann_info.recv_relationship

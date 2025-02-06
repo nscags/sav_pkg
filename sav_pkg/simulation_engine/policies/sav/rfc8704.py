@@ -5,6 +5,7 @@ from .loose_urpf import LooseuRPF
 
 from sav_pkg.enums import ASGroups
 
+
 class RFC8704(BaseSAVPolicy):
     name: str = "RFC8704"
 

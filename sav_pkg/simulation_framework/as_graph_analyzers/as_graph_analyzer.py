@@ -39,11 +39,18 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
 
         # if self.data_plane_tracking:
-        for as_obj in self.engine.as_graph:
-            if as_obj.asn in self.scenario.attacker_asns:
-                self._get_attacker_outcome_data_plane(as_obj)
-            elif as_obj.asn in self.scenario.victim_asns:
-                self._get_victim_outcome_data_plane(as_obj)
+        # for as_obj in self.engine.as_graph:
+        #     if as_obj.asn in self.scenario.attacker_asns:
+        #         self._get_attacker_outcome_data_plane(as_obj)
+        #     elif as_obj.asn in self.scenario.victim_asns:
+        #         self._get_victim_outcome_data_plane(as_obj)
+
+        for victim_asn in self.scenario.victim_asns:
+            victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
+            self._get_victim_outcome_data_plane(victim_as_obj)
+        for attacker_asn in self.scenario.attacker_asns:
+            attacker_as_obj = self.engine.as_graph.as_dict[attacker_asn]
+            self._get_attacker_outcome_data_plane(attacker_as_obj)
 
         self._handle_outcomes()
 
@@ -51,7 +58,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
 
     def _get_victim_outcome_data_plane(self, as_obj):
         """
-        Victim routes packet to reflector
+        Victim sends packet to each reflector
         """
         source_prefix = self.scenario.scenario_config.victim_source_prefix
         origin = as_obj.asn
@@ -68,7 +75,8 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
 
     def _get_attacker_outcome_data_plane(self, as_obj):
         """
-        For each reflector, the attacker will send a packet to each of its neighbors
+        Attacker will send packets to each of its neighbors for every reflector
+        This provides attacker with greater opportunity for success
         """
         source_prefix = self.scenario.scenario_config.victim_source_prefix
         origin = as_obj.asn
@@ -106,13 +114,15 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             if outcome_int != new_outcome_int:
                 # this has to do with how outcomes are enumerated
                 # disconnections, forwarding, and validating packets outcomes are favored over filtering
-                # this is mostly for attackers which send multiple packets
+                # this is mainly for attackers which send multiple packets and therefore can have multiple
+                # outcomes at a given AS
                 self._data_plane_outcomes[
                     (as_obj.asn, source_prefix, prev_hop_asn, origin)
                 ] = min(outcome_int, new_outcome_int)
 
         for ann in as_obj.policy._local_rib.data.values():
             # route by prefix (i don't think is matters for our simulations but it would still be better)
+            # NOTE: this might be the issue
             if ann.origin == dst:
                 dst_ann = ann
 

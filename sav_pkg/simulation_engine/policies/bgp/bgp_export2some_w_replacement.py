@@ -3,7 +3,7 @@ from bgpy.enums import Relationships
 
 
 class BGPExport2Some_wReplacement(BGP):
-    name: str = "BGP Export2Some"
+    name: str = "BGP E2S wR"
         
     def _propagate(
         self: "BGPExport2Some_wReplacement",
@@ -42,10 +42,13 @@ class BGPExport2Some_wReplacement(BGP):
                 
                 if ann.recv_relationship == Relationships.ORIGIN:
                     for neighbor in (n for n in neighbors if n not in some_neighbors):
-                        new_ann = ann.copy({"prefix": "1.1.0.0/16"})
+                        # AS propagates a new announcement with random prefix to all providers which
+                        # did not recieve the original announcement
+                        # some policies use route info from any prefix (but same origin AS) to create rpf list
+                        new_ann = ann.copy({"prefix": "9.9.0.0/16"})
                         if ann.recv_relationship in send_rels and not self._prev_sent(
                             neighbor, new_ann
-                        ):  
+                        ):
                             self._process_outgoing_ann(neighbor, new_ann, propagate_to, send_rels)
         else:
             super()._propagate(propagate_to, send_rels)

@@ -43,55 +43,60 @@ def get_real_world_rov_asn_cls_dict(
 
 from sav_pkg.enums import Interfaces
 
-default_sav_policy_interface_dict: frozendict[str, frozenset] = {
-    "NoSAV": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
-        Interfaces.PROVIDER.value,
-    ]),
-    "Loose uRPF": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
-        Interfaces.PROVIDER.value,
-    ]),
-    "Strict uRPF": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
-    ]),
-    "Feasible-Path uRPF": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
-    ]),
-    "EFP uRPF Alg A": frozenset([
-        Interfaces.CUSTOMER.value,
-    ]),
-    "EFP uRPF Alg A w Peers": frozenset([
-        Interfaces.CUSTOMER.value,
-        Interfaces.PEER.value,
-    ]),
-    "EFP uRPF Alg B": frozenset([
-        Interfaces.CUSTOMER.value, 
-    ]),
-    "RFC8704": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
-        Interfaces.PROVIDER.value,
-    ]),
-    "BAR SAV": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
-    ]),
-    "Procedure X": frozenset([
-        Interfaces.CUSTOMER.value, 
-        Interfaces.PEER.value, 
-    ]),
-}
+def _get_default_sav_policy_interface_dict():
+    
+    default_sav_policy_interface_dict: frozendict[str, frozenset] = {
+        "NoSAV": frozenset([
+            Interfaces.CUSTOMER.value, 
+            Interfaces.PEER.value, 
+            Interfaces.PROVIDER.value,
+        ]),
+        "Loose uRPF": frozenset([
+            Interfaces.CUSTOMER.value, 
+            Interfaces.PEER.value, 
+            Interfaces.PROVIDER.value,
+        ]),
+        "Strict uRPF": frozenset([
+            Interfaces.CUSTOMER.value, 
+            Interfaces.PEER.value, 
+        ]),
+        "Feasible-Path uRPF": frozenset([
+            Interfaces.CUSTOMER.value, 
+            Interfaces.PEER.value, 
+        ]),
+        "EFP uRPF Alg A": frozenset([
+            Interfaces.CUSTOMER.value,
+        ]),
+        "EFP uRPF Alg A w Peers": frozenset([
+            Interfaces.CUSTOMER.value,
+            Interfaces.PEER.value,
+        ]),
+        "EFP uRPF Alg B": frozenset([
+            Interfaces.CUSTOMER.value, 
+        ]),
+        "RFC8704": frozenset([
+            Interfaces.CUSTOMER.value, 
+            Interfaces.PEER.value, 
+            Interfaces.PROVIDER.value,
+        ]),
+        "BAR SAV": frozenset([
+            Interfaces.CUSTOMER.value, 
+            Interfaces.PEER.value, 
+        ]),
+        "Procedure X": frozenset([
+            Interfaces.CUSTOMER.value, 
+            Interfaces.PEER.value, 
+        ]),
+    }
+
+    return default_sav_policy_interface_dict
 
 def get_applied_interfaces(as_obj, scenario, sav_policy):
     
     if scenario.scenario_config.override_default_interface_dict is not None:
         interfaces = scenario.scenario_config.override_default_interface_dict[sav_policy.name]
     else:
+        default_sav_policy_interface_dict = _get_default_sav_policy_interface_dict()
         interfaces = default_sav_policy_interface_dict[sav_policy.name]
     
     applied_interfaces = set()

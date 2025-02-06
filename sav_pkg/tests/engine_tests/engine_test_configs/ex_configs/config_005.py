@@ -13,7 +13,7 @@ from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import StrictuRPF
 
-desc = "Mulitple reflector and immediate providers deploying Strict uRPF"
+desc = "Mulitple reflector and transit providers deploying Strict uRPF"
 
 config_005 = EngineTestConfig(
     name="config_005",

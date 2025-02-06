@@ -34,6 +34,8 @@ class BaseSAVPolicy(ABC):
                 scenario,
             )
         else:
+            # Also considered applying Loose uRPF here since most policies/RFCs
+            # recomment Loose uRPF for provider interfaces
             return True
                 
 

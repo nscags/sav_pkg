@@ -134,6 +134,9 @@ class SAVScenario(Scenario):
     ) -> frozenset[int]:
         """Returns possible reflectors ASNs, defaulted from config"""
 
+        # NOTE: may change to combine stubs/mh, input_clique, etc AS groups
+        #       this filters IXPs, which seems to be done for adotpion as well 
+
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.reflector_subcategory_attr
         ]

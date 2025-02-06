@@ -13,6 +13,7 @@ from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import BAR_SAV
 
+
 desc = "Single reflector running BAR SAV"
 
 config_004 = EngineTestConfig(

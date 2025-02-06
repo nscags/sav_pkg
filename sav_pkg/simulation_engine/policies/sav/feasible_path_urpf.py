@@ -22,10 +22,6 @@ class FeasiblePathuRPF(BaseSAVPolicy):
         """
         Validates incoming packets based on Feasible-Path uRPF.
         """
-        # Feasible-Path uRPF is applied to only customer and peer interfaces
-        # if prev_hop.asn in as_obj.provider_asns:
-        #     return True
-        # else:
         for ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).values():
             if (
                 as_obj.policy._valid_ann(

@@ -28,6 +28,8 @@ from .config_035 import config_035
 from .config_036 import config_036
 from .config_037 import config_037
 from .config_038 import config_038
+from .config_039 import config_039
+from .config_040 import config_040
 
 
 ex_configs = [
@@ -60,5 +62,7 @@ ex_configs = [
     config_035,
     config_036,
     config_037, # export 2 some
-    config_038, # export 2 some
+    config_038, # export 2 some w replacement
+    config_039, 
+    config_040, # all interfaces
 ]

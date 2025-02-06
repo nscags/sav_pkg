@@ -125,18 +125,18 @@ class SAVDiagram(Diagram):
 
         # ROAs takes up the least space right underneath the legend
         # which is why we have this here instead of a separate node
-        # html += """
-        #       <TR>
-        #         <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
-        #       </TR>
-        #       """
-        # for roa_info in scenario.roa_infos:
-        #     html += f"""
-        #       <TR>
-        #         <TD>{roa_info.prefix}</TD>
-        #         <TD>{roa_info.origin}</TD>
-        #         <TD>{roa_info.max_length}</TD>
-        #       </TR>"""
+        html += """
+              <TR>
+                <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
+              </TR>
+              """
+        for roa_info in scenario.roa_infos:
+            html += f"""
+              <TR>
+                <TD>{roa_info.prefix}</TD>
+                <TD>{roa_info.origin}</TD>
+                <TD>{roa_info.max_length}</TD>
+              </TR>"""
         html += """</TABLE>>"""
 
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
@@ -295,8 +295,7 @@ class SAVDiagram(Diagram):
                       </TR>"""
 
             for ann in local_rib_anns:
-                if (ann.origin in scenario.attacker_asns or
-                    ann.origin in scenario.victim_asns):
+                if ann.origin in (scenario.attacker_asns | scenario.victim_asns):
                     # print(f"\nDIAG: \nAnn: \n{ann}")
                     mask = "/" + ann.prefix.split("/")[-1]
                     path = ", ".join(str(x) for x in ann.as_path)

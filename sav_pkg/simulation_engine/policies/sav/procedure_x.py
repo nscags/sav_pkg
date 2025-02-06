@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import SimulationEngine
     from sav_pkg.simulation_framework import SAVScenario
 
+
 class ProcedureX(BaseSAVPolicy):
     name: str = "Procedure X"
 
