@@ -135,7 +135,7 @@ class SAVScenario(Scenario):
         """Returns possible reflectors ASNs, defaulted from config"""
 
         # NOTE: may change to combine stubs/mh, input_clique, etc AS groups
-        #       this filters IXPs, which seems to be done for adotpion as well 
+        #       this filters IXPs, which seems to be done for adoption as well 
 
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.reflector_subcategory_attr
@@ -172,7 +172,7 @@ class SAVScenario(Scenario):
                 )
             )
 
-        # NOTE: with this logic, we are limited to 254 reflectors
+        # NOTE: with this logic, we are limited to 256 reflectors
         for i, reflector_asn in enumerate(self.reflector_asns):
             anns.append(
                 self.scenario_config.AnnCls(

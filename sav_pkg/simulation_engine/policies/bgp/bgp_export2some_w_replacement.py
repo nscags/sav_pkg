@@ -40,6 +40,9 @@ class BGPExport2Some_wReplacement(BGP):
                     ):
                         self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
                 
+                # this doesn't work currently
+                # reflectors and attackers are both origins, but only the victim should
+                # replace and routes with new route, but don't have that data
                 if ann.recv_relationship == Relationships.ORIGIN:
                     for neighbor in (n for n in neighbors if n not in some_neighbors):
                         # AS propagates a new announcement with random prefix to all providers which

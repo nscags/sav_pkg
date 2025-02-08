@@ -15,10 +15,7 @@ class Outcomes(YamlAbleEnum):
 
 
 class Prefixes(YamlAbleEnum):
-    """Prefixes to use for attacks
-
-    prefix always belongs to the victim
-    """
+    """Default Prefixes"""
 
     VICTIM: str = "7.7.7.0/24"
     ATTACKER: str = "6.6.6.0/24"
@@ -47,8 +44,6 @@ class ASGroups(YamlAbleEnum):
     # not stubs or multihomed
     TRANSIT: str = "transit"
     ALL_WOUT_IXPS: str = "all_wout_ixps"
-
-    REFLECTORS: str = "reflectors"
 
 
 class Interfaces(YamlAbleEnum):

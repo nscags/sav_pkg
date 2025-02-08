@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from time import time
 
 from bgpy.simulation_framework import BaseASGraphAnalyzer
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -37,13 +36,6 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Analyzes as graph to perform data plane traceback
         """
-
-        # if self.data_plane_tracking:
-        # for as_obj in self.engine.as_graph:
-        #     if as_obj.asn in self.scenario.attacker_asns:
-        #         self._get_attacker_outcome_data_plane(as_obj)
-        #     elif as_obj.asn in self.scenario.victim_asns:
-        #         self._get_victim_outcome_data_plane(as_obj)
 
         for victim_asn in self.scenario.victim_asns:
             victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
