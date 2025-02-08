@@ -9,7 +9,7 @@ as_graph: !yamlable/CAIDAASGraph
       input_clique: false
       ixp: false
       peers: !!python/tuple []
-      policy: !yamlable/BGPFull%20Export2Some
+      policy: !yamlable/BGPFull%20E2S
         _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/24: !yamlable/Announcement
             as_path: !!python/tuple
