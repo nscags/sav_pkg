@@ -2,13 +2,14 @@ from typing import TYPE_CHECKING
 
 from bgpy.simulation_framework import BaseASGraphAnalyzer
 from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.enums import Plane
+from bgpy.enums import Plane, Relationships
 
 from sav_pkg.enums import Outcomes
 from sav_pkg.simulation_framework import SAVScenario
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.scenarios import Scenario
+    from bgpy.as_graphs import AS
 
 
 class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
@@ -44,11 +45,14 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             attacker_as_obj = self.engine.as_graph.as_dict[attacker_asn]
             self._get_attacker_outcome_data_plane(attacker_as_obj)
 
-        self._handle_outcomes()
+        self._handle_disconnections()
 
         return self.outcomes
 
-    def _get_victim_outcome_data_plane(self, as_obj):
+    def _get_victim_outcome_data_plane(
+        self, 
+        as_obj: "AS"
+    ) -> None:
         """
         Victim sends packet to each reflector
         """
@@ -56,16 +60,29 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         origin = as_obj.asn
         prev_hop = None
 
-        for reflector_asn in self.scenario.reflector_asns:
-            self._propagate_packet(
-                as_obj, source_prefix, prev_hop, origin, reflector_asn
-            )
+        for ann in as_obj.policy._local_rib.data.values():
+            if ann.origin in self.scenario.reflector_asns:
+                dst = ann.prefix
 
-        # for reflector_asn in self.scenario.reflector_asns:
-        #     for neighbor_as_obj in as_obj.neighbors:
-        #         self._propagate_packet(neighbor_as_obj, source_prefix, as_obj, origin, reflector_asn)
+                self._propagate_packet(
+                    as_obj, source_prefix, prev_hop, origin, dst
+                )
 
-    def _get_attacker_outcome_data_plane(self, as_obj):
+        # Manual config for fp_004 (false positive e2a)
+        # we need AS to select unfavorable route, since this is
+        # only used for this one config, it can remain manual for now
+        # for ann in as_obj.policy._local_rib.data.values():
+        #     if ann.origin in self.scenario.reflector_asns:
+        #         dst = ann.prefix
+        #         next_as = self.engine.as_graph.as_dict[4]
+        #         self._propagate_packet(
+        #             next_as, source_prefix, as_obj, origin, dst
+        #         )
+
+    def _get_attacker_outcome_data_plane(
+        self,
+        as_obj: "AS"
+    ) -> None:
         """
         Attacker will send packets to each of its neighbors for every reflector
         This provides attacker with greater opportunity for success
@@ -73,88 +90,95 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         source_prefix = self.scenario.scenario_config.victim_source_prefix
         origin = as_obj.asn
 
-        for reflector_asn in self.scenario.reflector_asns:
-            for neighbor_as_obj in as_obj.neighbors:
-                # propagate packet to neighbor with prev_hop = attacker
-                self._propagate_packet(
-                    neighbor_as_obj, source_prefix, as_obj, origin, reflector_asn
-                )
+        for ann in as_obj.policy._local_rib.data.values():
+            if ann.origin in self.scenario.reflector_asns:
+                dst = ann.prefix
+                for neighbor_as_obj in as_obj.neighbors:
+                    # propagate packet to neighbor with prev_hop = attacker
+                    self._propagate_packet(
+                        neighbor_as_obj, source_prefix, as_obj, origin, dst
+                    )
 
     def _propagate_packet(
-        self, as_obj, source_prefix, prev_hop, origin, dst, filtered=False
+        self, 
+        as_obj: "AS", 
+        source_prefix: str, 
+        prev_hop: "AS", 
+        origin: int, 
+        dst: str, 
+        filtered: bool = False
     ):
         """
         Recursively propagates packet along AS path
         Validates packets at all ASes adopting a SAV policy
         """
         prev_hop_asn = prev_hop.asn if prev_hop is not None else None
-        outcome_int = self._data_plane_outcomes.get(
-            (as_obj.asn, source_prefix, prev_hop_asn, origin)
-        )
-
-        if outcome_int is None:
-            outcome_int = self._determine_as_outcome_data_plane(
-                as_obj, source_prefix, prev_hop, origin, filtered
-            )
-            self._data_plane_outcomes[
-                (as_obj.asn, source_prefix, prev_hop_asn, origin)
-            ] = outcome_int
+        
+        if filtered:
+            if self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin)) is None:
+                self._data_plane_outcomes[
+                    (as_obj.asn, source_prefix, prev_hop_asn, origin)
+                ] = Outcomes.FILTERED_ON_PATH.value
         else:
-            new_outcome_int = self._determine_as_outcome_data_plane(
-                as_obj, source_prefix, prev_hop, origin, filtered
-            )
-            if outcome_int != new_outcome_int:
-                # this has to do with how outcomes are enumerated
-                # disconnections, forwarding, and validating packets outcomes are favored over filtering
-                # this is mainly for attackers which send multiple packets and therefore can have multiple
-                # outcomes at a given AS
+            # check if outcome was previously determined 
+            outcome_int = self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin))
+        
+            if outcome_int is None:
+                outcome_int = self._determine_as_outcome_data_plane(
+                    as_obj, source_prefix, prev_hop, origin, filtered
+                )
+                self._data_plane_outcomes[(as_obj.asn, source_prefix, prev_hop_asn, origin)] = outcome_int
+
+                if outcome_int in (Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value):
+                    # If the packet was invalidated & filtered, we will propagate the remaining path
+                    # assigning each remaining AS the outcome filtered_on_path
+                    filtered = True
+
+            elif outcome_int == Outcomes.FILTERED_ON_PATH.value:
+                new_outcome_int = self._determine_as_outcome_data_plane(
+                    as_obj, source_prefix, prev_hop, origin, filtered
+                )
+                # We use the min of the two outcomes due to how outcomes are enumerated
+                # filtered_on_path > all other outcomes
                 self._data_plane_outcomes[
                     (as_obj.asn, source_prefix, prev_hop_asn, origin)
                 ] = min(outcome_int, new_outcome_int)
 
-        for ann in as_obj.policy._local_rib.data.values():
-            # route by prefix (i don't think is matters for our simulations but it would still be better)
-            # NOTE: this might be the issue
-            if ann.origin == dst:
-                dst_ann = ann
-
-                # recursively propagate the packet until dst reached, packet is filtered, or the AS does not have
-                # a path to the destination
-                if outcome_int in [
-                    Outcomes.FALSE_POSITIVE.value,
-                    Outcomes.TRUE_POSITIVE.value,
-                ]:
-                    filtered = True
-
-                if as_obj.asn != dst and dst_ann is not None:
-                    prev_hop = as_obj
-                    as_obj = self.engine.as_graph.as_dict[dst_ann.next_hop_asn]
-                    self._propagate_packet(
-                        as_obj, source_prefix, prev_hop, origin, dst, filtered
-                    )
+        # route packet to dst
+        dst_ann = as_obj.policy._local_rib.get(dst)
+        if dst_ann and (dst_ann.recv_relationship.value != Relationships.ORIGIN.value):
+            prev_hop = as_obj
+            as_obj = self.engine.as_graph.as_dict[dst_ann.next_hop_asn]
+            self._propagate_packet(
+                as_obj, source_prefix, prev_hop, origin, dst, filtered
+            )
 
     def _determine_as_outcome_data_plane(
-        self, as_obj, source_prefix, prev_hop, origin, filtered=False
+        self, 
+        as_obj: "AS", 
+        source_prefix: str, 
+        prev_hop: "AS", 
+        origin: int, 
+        dst: str, 
+        filtered: bool = False
     ):
         """
         Call AS SAV policy's validation function, determine outcome
         """
 
-        # TODO: This seems slightly wrong in terms of enumeration and
-        #       priority of certain outcomes
-        if filtered:
-            return Outcomes.FILTERED_ON_PATH.value
+        # Origins do not validate their own packets
         if as_obj.asn == origin:
             return Outcomes.ORIGIN.value
-
-        if origin in self.scenario.attacker_asns:
-            spoofed_packet = True
-        elif origin in self.scenario.victim_asns:
+        
+        if origin in self.scenario.victim_asns:
             spoofed_packet = False
+        elif origin in self.scenario.attacker_asns:
+            spoofed_packet = True
+        else:
+            raise ValueError(f"Origin must be in victim_asns or attacker_asns.")
 
-        if as_obj.asn in self.scenario.sav_policy_asn_dict:
-            sav_policy = self.scenario.sav_policy_asn_dict[as_obj.asn]
-
+        sav_policy = self.scenario.sav_policy_asn_dict.get(as_obj.asn)
+        if sav_policy:
             validated = sav_policy.validation(
                 as_obj, source_prefix, prev_hop, self.engine, self.scenario
             )
@@ -164,18 +188,23 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     if spoofed_packet
                     else Outcomes.TRUE_NEGATIVE.value
                 )
-            else:
+            elif not validated:
                 return (
                     Outcomes.TRUE_POSITIVE.value
                     if spoofed_packet
                     else Outcomes.FALSE_POSITIVE.value
                 )
-
+            else:
+                raise ValueError("Packet did not recieve outcome?")
         # Not adopting SAV, no validation, forward packet
         else:
             return Outcomes.FORWARD.value
 
-    def _has_outcome(self, asn, origin):
+    def _has_outcome(
+        self, 
+        asn: int, 
+        origin: int
+    ):
         """
         check if AS has an outcome for a given origin
         """
@@ -184,7 +213,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                 return True
         return False
 
-    def _handle_outcomes(self):
+    def _handle_disconnections(self):
         """
         Handle disconnections
         """

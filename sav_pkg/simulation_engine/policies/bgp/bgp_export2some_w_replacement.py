@@ -4,7 +4,7 @@ from bgpy.enums import Relationships
 
 class BGPExport2Some_wReplacement(BGP):
     name: str = "BGP E2S wR"
-        
+    
     def _propagate(
         self: "BGPExport2Some_wReplacement",
         propagate_to: Relationships,
@@ -40,10 +40,10 @@ class BGPExport2Some_wReplacement(BGP):
                     ):
                         self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
                 
-                # this doesn't work currently
-                # reflectors and attackers are both origins, but only the victim should
-                # replace and routes with new route, but don't have that data
-                if ann.recv_relationship == Relationships.ORIGIN:
+                # This method is just a patch
+                # next iteration will use the ann seeded in the scenario but use same e2s class
+                # if victim has another ann, propagate to remaining providers, ow no export
+                if ann.recv_relationship == Relationships.ORIGIN and ann.prefix[0] not in ('1', '6'):
                     for neighbor in (n for n in neighbors if n not in some_neighbors):
                         # AS propagates a new announcement with random prefix to all providers which
                         # did not recieve the original announcement
@@ -53,5 +53,13 @@ class BGPExport2Some_wReplacement(BGP):
                             neighbor, new_ann
                         ):
                             self._process_outgoing_ann(neighbor, new_ann, propagate_to, send_rels)
+                # not the cleanest fix but will work for now, reflectors originate their prefixes to all
+                # attacker not originating doesn't really matter (should attacker even send ann?)
+                elif ann.recv_relationship == Relationships.ORIGIN and ann.prefix[0] in ('1', '6'):
+                    for neighbor in (n for n in neighbors if n not in some_neighbors):
+                        if ann.recv_relationship in send_rels and not self._prev_sent(
+                            neighbor, ann
+                        ):
+                            self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
         else:
             super()._propagate(propagate_to, send_rels)

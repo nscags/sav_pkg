@@ -155,6 +155,8 @@ class MetricTracker(MetricTracker):
     def _get_yerr(self, trial_data: list[float]) -> float:
         """Returns 90% confidence interval for graphing"""
 
+        # NOTE: make 95% confidence interval
+
         if len(trial_data) > 1:
             yerr_num = 1.96 * 2 * stdev(trial_data)
             yerr_denom = sqrt(len(trial_data))

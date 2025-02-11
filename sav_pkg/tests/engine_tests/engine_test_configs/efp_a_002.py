@@ -16,7 +16,7 @@ from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine.policies.sav import EnhancedFeasiblePathuRPFAlgA
 from sav_pkg.simulation_engine.policies.bgp import BGPFullExport2Some_wReplacement
 
-desc = "Export 2 some passing for EFP Alg A"
+desc = "Export 2 some (with replacement) passing for EFP Alg A"
 
 efp_a_002 = EngineTestConfig(
     name="efp_a_002",

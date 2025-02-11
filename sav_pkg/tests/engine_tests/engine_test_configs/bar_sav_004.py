@@ -13,7 +13,7 @@ from sav_pkg.utils import SAVDiagram
 from sav_pkg.simulation_engine import BAR_SAV
 
 
-desc = ""
+desc = "bar sav default not on provider interfaces"
 
 bar_sav_004 = EngineTestConfig(
     name="bar_sav_004",

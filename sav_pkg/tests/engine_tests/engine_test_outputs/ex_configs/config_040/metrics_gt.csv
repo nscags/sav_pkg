@@ -1,8 +1,0 @@
-scenario_cls,BaseSAVPolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
-SAVScenario,EFP uRPF Alg A w Peers,DATA,all_wout_ixps,FALSE_NEGATIVE,0,0,33.33333333333333,0.0,,PseudoBGPFull
-SAVScenario,EFP uRPF Alg A w Peers,DATA,all_wout_ixps,FALSE_POSITIVE,0,0,33.33333333333333,0.0,,PseudoBGPFull
-SAVScenario,EFP uRPF Alg A w Peers,DATA,all_wout_ixps,TRUE_NEGATIVE,0,0,66.66666666666666,0.0,,PseudoBGPFull
-SAVScenario,EFP uRPF Alg A w Peers,DATA,all_wout_ixps,TRUE_POSITIVE,0,0,66.66666666666666,0.0,,PseudoBGPFull
-SAVScenario,EFP uRPF Alg A w Peers,DATA,all_wout_ixps,FILTERED_ON_PATH,0,0,0.0,0.0,,PseudoBGPFull
-SAVScenario,EFP uRPF Alg A w Peers,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,,PseudoBGPFull
-SAVScenario,EFP uRPF Alg A w Peers,DATA,all_wout_ixps,FORWARD,0,0,0.0,0.0,,PseudoBGPFull

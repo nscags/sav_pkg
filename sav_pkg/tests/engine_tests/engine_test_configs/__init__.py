@@ -1,5 +1,7 @@
 from .ex_configs import ex_configs
 
+from .e2s_wr_000 import e2s_wr_000
+
 from .loose_000 import loose_000
 
 from .strict_000 import strict_000
@@ -41,37 +43,38 @@ from .bar_sav_009 import bar_sav_009
 
 
 engine_test_configs = [
-    # loose_000,
-    # strict_000,
+    # e2s_wr_000,
+    loose_000,
+    strict_000,
     # strict_001,
     # strict_002,
     # strict_003,
-    # strict_004,
+    strict_004,
     # strict_005,
     # strict_006,
     # strict_007,
-    # fp_000,
+    fp_000,
     # fp_001,
     # fp_002,
     # fp_003,
     # fp_004, # don't run, needs manual config
-    # efp_b_000,
-    # efp_b_001,
+    efp_b_000,
+    efp_b_001,
     # efp_b_002,
-    # efp_a_000,
-    # efp_a_001,
-    # efp_a_002,
+    efp_a_000,
+    efp_a_001,
+    efp_a_002,
     # efp_a_003,
     # efp_a_w_peers_000,
-    # bar_sav_000,
-    # bar_sav_001,
+    bar_sav_000,
+    bar_sav_001,
     # bar_sav_002,
     # bar_sav_003,
     # bar_sav_004,
-    # bar_sav_005,
-    # bar_sav_006,
-    # bar_sav_007,
-    # bar_sav_008,
+    bar_sav_005,
+    bar_sav_006,
+    bar_sav_007,
+    bar_sav_008,
     # bar_sav_009,
 ] # + ex_configs
 
