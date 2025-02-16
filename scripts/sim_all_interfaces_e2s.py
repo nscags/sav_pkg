@@ -26,7 +26,7 @@ from sav_pkg.simulation_engine import (
     RFC8704,
     BAR_SAV,
     BGPExport2Some,
-    BGPFullExport2Some
+    BGPFullExport2Some,
 )
 from sav_pkg.simulation_framework.utils import get_metric_keys
 from sav_pkg.enums import Interfaces
@@ -49,9 +49,9 @@ def main():
                 BasePolicyCls=BGP,
                 AdoptPolicyCls=BGPExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="loose",
             ),
             SAVScenarioConfig(
@@ -59,9 +59,9 @@ def main():
                 BasePolicyCls=BGP,
                 AdoptPolicyCls=BGPExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=StrictuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="strict",
                 override_default_interface_dict=frozendict({
                     StrictuRPF.name: frozenset([
@@ -76,9 +76,9 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="feasible",
                 override_default_interface_dict=frozendict({
                     FeasiblePathuRPF.name: frozenset([
@@ -93,9 +93,9 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="efp_alg_b",
                 override_default_interface_dict=frozendict({
                     EnhancedFeasiblePathuRPFAlgB.name: frozenset([
@@ -110,9 +110,9 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="efp_alg_a",
                 override_default_interface_dict=frozendict({
                     EnhancedFeasiblePathuRPFAlgA.name: frozenset([
@@ -127,12 +127,12 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwPeers,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="efp_alg_a_w_peers",
                 override_default_interface_dict=frozendict({
-                    EnhancedFeasiblePathuRPFAlgA.name: frozenset([
+                    EnhancedFeasiblePathuRPFAlgAwPeers.name: frozenset([
                         Interfaces.CUSTOMER.value,
                         Interfaces.PEER.value,
                         Interfaces.PROVIDER.value,
@@ -144,9 +144,9 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="rfc8704",
             ),
             SAVScenarioConfig(
@@ -154,9 +154,9 @@ def main():
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
-                num_reflectors=5,
                 scenario_label="bar_sav",
                 override_default_interface_dict=frozendict({
                     BAR_SAV.name: frozenset([
@@ -167,8 +167,8 @@ def main():
                 })
             ),
         ),
-        output_dir=Path(f"~/sav/results/100_5_all_interfaces_rda_e2s").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/300_5_all_interfaces_rda_e2s").expanduser(),
+        num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,

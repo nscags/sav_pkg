@@ -1,5 +1,6 @@
 from pathlib import Path
 from time import time
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -26,6 +27,7 @@ from sav_pkg.simulation_engine import (
     BAR_SAV,
 )
 from sav_pkg.simulation_framework.utils import get_metric_keys
+from sav_pkg.enums import Interfaces
 
 
 def main():
@@ -43,62 +45,94 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
-                BaseSAVPolicyCls=LooseuRPF,
                 num_reflectors=5,
-                scenario_label="loose"
+                BaseSAVPolicyCls=LooseuRPF,
+                reflector_default_adopters=True,
+                scenario_label="loose",
+                override_default_interface_dict=frozendict({
+                    LooseuRPF.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                        Interfaces.PEER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
+                num_reflectors=5,
                 BaseSAVPolicyCls=StrictuRPF,
-                num_reflectors=5,
-                scenario_label="strict"
+                reflector_default_adopters=True,
+                scenario_label="strict",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                num_reflectors=5,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
-                num_reflectors=5,
-                scenario_label="feasible"
+                reflector_default_adopters=True,
+                scenario_label="feasible",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
-                num_reflectors=5,
-                scenario_label="enhanced"
+                reflector_default_adopters=True,
+                scenario_label="efp_alg_b",
+                override_default_interface_dict=frozendict({
+                    EnhancedFeasiblePathuRPFAlgB.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                        Interfaces.PEER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
-                num_reflectors=5,
-                scenario_label="efp_alg_a"
+                reflector_default_adopters=True,
+                scenario_label="efp_alg_a",
+                override_default_interface_dict=frozendict({
+                    EnhancedFeasiblePathuRPFAlgA.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                        Interfaces.PEER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwPeers,
-                num_reflectors=5,
-                scenario_label="efp_alg_a_w_peers"
+                reflector_default_adopters=True,
+                scenario_label="efp_alg_a_w_peers",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                num_reflectors=5,
                 BaseSAVPolicyCls=RFC8704,
-                num_reflectors=5,
-                scenario_label="rfc8704"
+                reflector_default_adopters=True,
+                scenario_label="rfc8704",
+                override_default_interface_dict=frozendict({
+                    RFC8704.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                        Interfaces.PEER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV,
                 num_reflectors=5,
-                scenario_label="bar_sav"
+                BaseSAVPolicyCls=BAR_SAV,
+                reflector_default_adopters=True,
+                scenario_label="bar_sav",
             ),
         ),
-        output_dir=Path(f"~/sav/results/100_5_nrda").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/300_5_no_providers_rda").expanduser(),
+        num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,

@@ -49,6 +49,11 @@ def main():
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
                 scenario_label="loose",
+                override_default_interface_dict=frozendict({
+                    LooseuRPF.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -60,8 +65,6 @@ def main():
                 override_default_interface_dict=frozendict({
                     StrictuRPF.name: frozenset([
                         Interfaces.CUSTOMER.value,
-                        Interfaces.PEER.value,
-                        Interfaces.PROVIDER.value,
                     ])
                 })
             ),
@@ -75,8 +78,6 @@ def main():
                 override_default_interface_dict=frozendict({
                     FeasiblePathuRPF.name: frozenset([
                         Interfaces.CUSTOMER.value,
-                        Interfaces.PEER.value,
-                        Interfaces.PROVIDER.value,
                     ])
                 })
             ),
@@ -87,13 +88,6 @@ def main():
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
                 scenario_label="efp_alg_b",
-                override_default_interface_dict=frozendict({
-                    EnhancedFeasiblePathuRPFAlgB.name: frozenset([
-                        Interfaces.CUSTOMER.value,
-                        Interfaces.PEER.value,
-                        Interfaces.PROVIDER.value,
-                    ])
-                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -102,13 +96,6 @@ def main():
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
                 scenario_label="efp_alg_a",
-                override_default_interface_dict=frozendict({
-                    EnhancedFeasiblePathuRPFAlgA.name: frozenset([
-                        Interfaces.CUSTOMER.value,
-                        Interfaces.PEER.value,
-                        Interfaces.PROVIDER.value,
-                    ])
-                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -120,8 +107,6 @@ def main():
                 override_default_interface_dict=frozendict({
                     EnhancedFeasiblePathuRPFAlgAwPeers.name: frozenset([
                         Interfaces.CUSTOMER.value,
-                        Interfaces.PEER.value,
-                        Interfaces.PROVIDER.value,
                     ])
                 })
             ),
@@ -132,6 +117,11 @@ def main():
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
                 scenario_label="rfc8704",
+                override_default_interface_dict=frozendict({
+                    RFC8704.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -143,13 +133,11 @@ def main():
                 override_default_interface_dict=frozendict({
                     BAR_SAV.name: frozenset([
                         Interfaces.CUSTOMER.value,
-                        Interfaces.PEER.value,
-                        Interfaces.PROVIDER.value,
                     ])
                 })
             ),
         ),
-        output_dir=Path(f"~/sav/results/300_5_all_interfaces_rda").expanduser(),
+        output_dir=Path(f"~/sav/results/300_5_only_customers_rda").expanduser(),
         num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

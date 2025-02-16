@@ -21,7 +21,7 @@ class BGPExport2Some(BGP):
         # 56.22% of their providers 
         # NOTE: this measurement is not entirely accurate
         # percent = 0.5622
-        percent = 0.5
+        percent = 0.5622
 
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers

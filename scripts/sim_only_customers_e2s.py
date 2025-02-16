@@ -1,6 +1,6 @@
 from pathlib import Path
 from time import time
-from multiprocessing import cpu_count
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
-    SAVScenarioCPPPercentAdoption,
+    SAVScenarioCPPPercentAdoption, 
     SAVASGraphAnalyzer, 
     MetricTracker
 )
@@ -29,12 +29,13 @@ from sav_pkg.simulation_engine import (
     BGPFullExport2Some,
 )
 from sav_pkg.simulation_framework.utils import get_metric_keys
+from sav_pkg.enums import Interfaces
 
 
 def main():
     # Simulation for the paper
     sim = Simulation(
-        percent_adoptions = (
+        percent_adoptions=(
             0.0,
             0.1,
             0.2,
@@ -48,76 +49,114 @@ def main():
                 BasePolicyCls=BGP,
                 AdoptPolicyCls=BGPExport2Some,
                 special_percent_adoption = 0.4043,
-                BaseSAVPolicyCls=LooseuRPF,
                 num_reflectors=5,
-                scenario_label="loose"
+                BaseSAVPolicyCls=LooseuRPF,
+                reflector_default_adopters=True,
+                scenario_label="loose",
+                override_default_interface_dict=frozendict({
+                    LooseuRPF.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGP,
                 AdoptPolicyCls=BGPExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=StrictuRPF,
-                num_reflectors=5,
-                scenario_label="strict"
+                reflector_default_adopters=True,
+                scenario_label="strict",
+                override_default_interface_dict=frozendict({
+                    StrictuRPF.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
-                num_reflectors=5,
-                scenario_label="feasible"
+                reflector_default_adopters=True,
+                scenario_label="feasible",
+                override_default_interface_dict=frozendict({
+                    FeasiblePathuRPF.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
-                num_reflectors=5,
-                scenario_label="efp_alg_b"
+                reflector_default_adopters=True,
+                scenario_label="efp_alg_b",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
-                num_reflectors=5,
-                scenario_label="efp_alg_a"
+                reflector_default_adopters=True,
+                scenario_label="efp_alg_a",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwPeers,
-                num_reflectors=5,
-                scenario_label="efp_alg_a_w_peers"
+                reflector_default_adopters=True,
+                scenario_label="efp_alg_a_w_peers",
+                override_default_interface_dict=frozendict({
+                    EnhancedFeasiblePathuRPFAlgAwPeers.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
+                num_reflectors=5,
                 BaseSAVPolicyCls=RFC8704,
-                num_reflectors=5,
-                scenario_label="rfc8704"
+                reflector_default_adopters=True,
+                scenario_label="rfc8704",
+                override_default_interface_dict=frozendict({
+                    RFC8704.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullExport2Some,
                 special_percent_adoption = 0.4043,
-                BaseSAVPolicyCls=BAR_SAV,
                 num_reflectors=5,
-                scenario_label="bar_sav"
+                BaseSAVPolicyCls=BAR_SAV,
+                reflector_default_adopters=True,
+                scenario_label="bar_sav",
+                override_default_interface_dict=frozendict({
+                    BAR_SAV.name: frozenset([
+                        Interfaces.CUSTOMER.value,
+                    ])
+                })
             ),
         ),
-        output_dir=Path(f"~/sav/results/100_5_nrda_e2s").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/300_5_only_customers_rda_e2s").expanduser(),
+        num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,

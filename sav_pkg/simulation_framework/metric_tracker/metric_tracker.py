@@ -87,7 +87,6 @@ class MetricTracker(MetricTracker):
         pickle_path: Path,
     ) -> None:
         """Writes data to CSV and pickles it"""
-        # print("Writing data...", flush=True)
 
         with csv_path.open("w") as f:
             rows = self.get_csv_rows()
@@ -97,9 +96,6 @@ class MetricTracker(MetricTracker):
 
         with pickle_path.open("wb") as f:
             pickle.dump(self.get_pickle_data(), f)
-
-        # print("...done", flush=True)
-
 
     def get_csv_rows(self) -> list[dict[str, Any]]:
         """Returns rows for a CSV"""
@@ -152,14 +148,12 @@ class MetricTracker(MetricTracker):
                 agg_data.append(row)
         return agg_data
 
-    def _get_yerr(self, trial_data: list[float]) -> float:
+    def _get_yerr(self, percent_list: list[float]) -> float:
         """Returns 90% confidence interval for graphing"""
 
-        # NOTE: make 95% confidence interval
-
-        if len(trial_data) > 1:
-            yerr_num = 1.96 * 2 * stdev(trial_data)
-            yerr_denom = sqrt(len(trial_data))
+        if len(percent_list) > 1:
+            yerr_num = 1.645 * 2 * stdev(percent_list)
+            yerr_denom = sqrt(len(percent_list))
             return float(yerr_num / yerr_denom)
         else:
             return 0
@@ -250,9 +244,6 @@ class MetricTracker(MetricTracker):
             as_obj = engine.as_graph.as_dict[reflector_asn]
             for metric in metrics:
 
-                # we are now passing in the entire outcome dict to the add_data func
-                # TODO: I don't think we HAVE to pass the whole dict, could get the
-                #       {origin: {prev_hop: outcome}} dict and pass that into the Metric
                 metric.add_data(
                     as_obj=as_obj,
                     engine=engine,

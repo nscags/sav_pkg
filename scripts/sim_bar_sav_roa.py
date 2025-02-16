@@ -52,7 +52,7 @@ def main():
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 hardcoded_asn_cls_dict=rov_dict,
-                scenario_label="bar_sav_rov"
+                scenario_label="bar_sav_aspa_0"
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario_CPPPA_ROA,

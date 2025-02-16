@@ -124,8 +124,8 @@ def main():
                 scenario_label="bar_sav"
             ),
         ),
-        output_dir=Path(f"~/sav/results/100_5_rda_e2s_wr").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/300_5_rda_e2s_wr").expanduser(),
+        num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,

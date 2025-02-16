@@ -70,7 +70,7 @@ def main():
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
                 num_reflectors=5,
-                scenario_label="enhanced"
+                scenario_label="efp_alg_b"
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -105,8 +105,8 @@ def main():
                 scenario_label="bar_sav"
             ),
         ),
-        output_dir=Path(f"~/sav/results/100_5_rda").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/300_5_rda").expanduser(),
+        num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=MetricTracker,
