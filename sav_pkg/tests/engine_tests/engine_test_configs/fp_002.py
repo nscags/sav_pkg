@@ -11,7 +11,7 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer, MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine.policies.bgp import BGPFullExport2Some_wReplacement  
+from sav_pkg.simulation_engine.policies.bgp import BGPFullExport2SomePrefixSpecific  
 from sav_pkg.simulation_engine import FeasiblePathuRPF
 
 
@@ -23,7 +23,7 @@ fp_002 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
-        override_non_default_asn_cls_dict=frozendict({1: BGPFullExport2Some_wReplacement}),
+        override_non_default_asn_cls_dict=frozendict({1: BGPFullExport2SomePrefixSpecific}),
         num_attackers=0,
         num_reflectors=2,
         override_attacker_asns=frozenset(),

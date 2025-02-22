@@ -11,8 +11,8 @@ from .sav import ProcedureX
 
 from .bgp import BGPExport2Some
 from .bgp import BGPFullExport2Some
-from .bgp import BGPExport2Some_wReplacement
-from .bgp import BGPFullExport2Some_wReplacement
+from .bgp import BGPExport2SomePrefixSpecific
+from .bgp import BGPFullExport2SomePrefixSpecific
 
 
 __all__ = [
@@ -28,6 +28,6 @@ __all__ = [
     "ProcedureX",
     "BGPExport2Some",
     "BGPFullExport2Some",
-    "BGPExport2Some_wReplacement",
-    "BGPFullExport2Some_wReplacement",
+    "BGPExport2SomePrefixSpecific",
+    "BGPFullExport2SomePrefixSpecific",
 ]

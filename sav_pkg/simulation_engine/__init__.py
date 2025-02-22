@@ -10,8 +10,8 @@ from .policies import BAR_SAV
 from .policies import ProcedureX
 from .policies import BGPExport2Some
 from .policies import BGPFullExport2Some
-from .policies import BGPExport2Some_wReplacement
-from .policies import BGPFullExport2Some_wReplacement
+from .policies import BGPExport2SomePrefixSpecific
+from .policies import BGPFullExport2SomePrefixSpecific
 
 
 __all__ = [
@@ -27,6 +27,6 @@ __all__ = [
     "ProcedureX",
     "BGPExport2Some",
     "BGPFullExport2Some",
-    "BGPExport2Some_wReplacement",
-    "BGPFullExport2Some_wReplacement",
+    "BGPExport2SomePrefixSpecific",
+    "BGPFullExport2SomePrefixSpecific",
 ]
