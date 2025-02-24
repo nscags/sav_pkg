@@ -25,8 +25,8 @@ from sav_pkg.simulation_engine import (
     EnhancedFeasiblePathuRPFAlgAwPeers,
     RFC8704,
     BAR_SAV,
-    BGPExport2Some_wReplacement,
-    BGPFullExport2Some_wReplacement,
+    BGPExport2SomePrefixSpecific,
+    BGPFullExport2SomePrefixSpecific,
 )
 from sav_pkg.simulation_framework.utils import get_metric_keys
 
@@ -46,7 +46,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGP,
-                AdoptPolicyCls=BGPExport2Some_wReplacement,
+                AdoptPolicyCls=BGPExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
@@ -56,7 +56,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGP,
-                AdoptPolicyCls=BGPExport2Some_wReplacement,
+                AdoptPolicyCls=BGPExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=StrictuRPF,
                 reflector_default_adopters=True,
@@ -66,7 +66,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullExport2Some_wReplacement,
+                AdoptPolicyCls=BGPFullExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
@@ -76,7 +76,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullExport2Some_wReplacement,
+                AdoptPolicyCls=BGPFullExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
@@ -86,7 +86,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullExport2Some_wReplacement,
+                AdoptPolicyCls=BGPFullExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
@@ -96,7 +96,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullExport2Some_wReplacement,
+                AdoptPolicyCls=BGPFullExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwPeers,
                 reflector_default_adopters=True,
@@ -106,7 +106,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullExport2Some_wReplacement,
+                AdoptPolicyCls=BGPFullExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
@@ -116,7 +116,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioCPPPercentAdoption,
                 BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullExport2Some_wReplacement,
+                AdoptPolicyCls=BGPFullExport2SomePrefixSpecific,
                 special_percent_adoption = 0.4043,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
