@@ -10,7 +10,11 @@ r"""
 """
 
 as_graph_info_011 = ASGraphInfo(
-    peer_links=frozenset(),
+    peer_links=frozenset(
+        [
+            PeerLink(3, 5),
+        ]
+    ),
     customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=3),
@@ -20,6 +24,11 @@ as_graph_info_011 = ASGraphInfo(
             CPLink(provider_asn=3, customer_asn=7),
             CPLink(provider_asn=5, customer_asn=7),
         ]
+    ),
+    diagram_ranks=(
+        (6, 7),
+        (4, 3, 5),
+        (1, 2),
     ),
 )
 

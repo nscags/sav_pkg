@@ -1,6 +1,7 @@
 from pathlib import Path
 from time import time
 from frozendict import frozendict
+import random
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -32,6 +33,7 @@ from sav_pkg.enums import Interfaces
 
 def main():
     # Simulation for the paper
+    random.seed(os.environ['JOB_COMPLETION_INDEX'])
     sim = Simulation(
         percent_adoptions=(
             0.0,

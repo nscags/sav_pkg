@@ -1,5 +1,6 @@
 from pathlib import Path
 from time import time
+import random
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGPFull, ASPAFull
@@ -26,6 +27,7 @@ from sav_pkg.utils.utils import get_real_world_rov_asn_cls_dict
 def main():
     # Simulation for the paper
     rov_dict = get_real_world_rov_asn_cls_dict()
+    random.seed(os.environ['JOB_COMPLETION_INDEX'])
     
     sim = Simulation(
         percent_adoptions = (

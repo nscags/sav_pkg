@@ -10,6 +10,8 @@ from frozendict import frozendict
 from sav_pkg.enums import Interfaces
 
 
+# NOTE: for BAR SAV ROV adoption doesn't actually matter
+#       Only ROA adoption (for Victim/Legit Sender) has an impact 
 def get_real_world_rov_asn_cls_dict(
     json_path: Path = Path.home() / "rov_info.json",
     requests_cache_db_path: Path | None = None,
@@ -43,68 +45,34 @@ def get_real_world_rov_asn_cls_dict(
 
 from sav_pkg.enums import Interfaces
 
-def _get_default_sav_policy_interface_dict():
-    
-    default_sav_policy_interface_dict: frozendict[str, frozenset] = {
-        "NoSAV": frozenset([
-            Interfaces.CUSTOMER.value, 
-            Interfaces.PEER.value, 
-            Interfaces.PROVIDER.value,
-        ]),
-        "Loose uRPF": frozenset([
-            Interfaces.CUSTOMER.value, 
-            Interfaces.PEER.value, 
-            Interfaces.PROVIDER.value,
-        ]),
-        "Strict uRPF": frozenset([
-            Interfaces.CUSTOMER.value, 
-            Interfaces.PEER.value, 
-        ]),
-        "Feasible-Path uRPF": frozenset([
-            Interfaces.CUSTOMER.value, 
-            Interfaces.PEER.value, 
-        ]),
-        "EFP uRPF Alg A": frozenset([
-            Interfaces.CUSTOMER.value,
-        ]),
-        "EFP uRPF Alg A w Peers": frozenset([
-            Interfaces.CUSTOMER.value,
-            Interfaces.PEER.value,
-        ]),
-        "EFP uRPF Alg B": frozenset([
-            Interfaces.CUSTOMER.value, 
-        ]),
-        "RFC8704": frozenset([
-            Interfaces.CUSTOMER.value, 
-            Interfaces.PEER.value, 
-            Interfaces.PROVIDER.value,
-        ]),
-        "BAR SAV": frozenset([
-            Interfaces.CUSTOMER.value, 
-            Interfaces.PEER.value, 
-        ]),
-        "Procedure X": frozenset([
-            Interfaces.CUSTOMER.value, 
-            Interfaces.PEER.value, 
-        ]),
-    }
-
-    return default_sav_policy_interface_dict
+DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
+    "NoSAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "EFP uRPF Alg A": frozenset([Interfaces.CUSTOMER.value]),
+    "EFP uRPF Alg A w Peers": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "EFP uRPF Alg B": frozenset([Interfaces.CUSTOMER.value]),
+    "RFC8704": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "BAR SAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+})
 
 def get_applied_interfaces(as_obj, scenario, sav_policy):
+    """Gets the applied interfaces based on the given SAV policy."""
     
-    if scenario.scenario_config.override_default_interface_dict is not None:
-        interfaces = scenario.scenario_config.override_default_interface_dict[sav_policy.name]
-    else:
-        default_sav_policy_interface_dict = _get_default_sav_policy_interface_dict()
-        interfaces = default_sav_policy_interface_dict[sav_policy.name]
-    
-    applied_interfaces = set()
-    if Interfaces.CUSTOMER.value in interfaces:
-        applied_interfaces.add(as_obj.customer_asns)
-    if Interfaces.PEER.value in interfaces:
-        applied_interfaces.add(as_obj.peer_asns)
-    if Interfaces.PROVIDER.value in interfaces:
-        applied_interfaces.add(as_obj.provider_asns)
+    interfaces = (
+        scenario.scenario_config.override_default_interface_dict.get(sav_policy.name) 
+        if scenario.scenario_config.override_default_interface_dict 
+        else DEFAULT_SAV_POLICY_INTERFACE_DICT[sav_policy.name]
+    )
 
+    interface_map = {
+        Interfaces.CUSTOMER.value: as_obj.customer_asns,
+        Interfaces.PEER.value: as_obj.peer_asns,
+        Interfaces.PROVIDER.value: as_obj.provider_asns,
+    }
+    
+    applied_interfaces = {interface_map[i] for i in interfaces if i in interface_map}
+    
     return applied_interfaces

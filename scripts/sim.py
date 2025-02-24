@@ -1,5 +1,6 @@
 from pathlib import Path
 from time import time
+import random
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -27,9 +28,9 @@ from sav_pkg.simulation_engine import (
 )
 from sav_pkg.simulation_framework.utils import get_metric_keys
 
-
 def main():
     # Simulation for the paper
+    random.seed(os.environ['JOB_COMPLETION_INDEX'])
     sim = Simulation(
         percent_adoptions=(
             0.0,

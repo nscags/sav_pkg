@@ -22,6 +22,8 @@ from .fp_004 import fp_004
 from .efp_b_000 import efp_b_000
 from .efp_b_001 import efp_b_001
 from .efp_b_002 import efp_b_002
+from .efp_b_003 import efp_b_003
+from .efp_b_004 import efp_b_004
 
 from .efp_a_000 import efp_a_000
 from .efp_a_001 import efp_a_001
@@ -43,7 +45,7 @@ from .bar_sav_009 import bar_sav_009
 
 
 engine_test_configs = [
-    e2s_ps_000,
+    # e2s_ps_000,
     # loose_000,
     # strict_000,
     # strict_001,
@@ -61,6 +63,8 @@ engine_test_configs = [
     # efp_b_000,
     # efp_b_001,
     # efp_b_002,
+    # efp_b_003,
+    efp_b_004,
     # efp_a_000,
     # efp_a_001,
     # efp_a_002,
