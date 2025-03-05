@@ -229,3 +229,10 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     self._data_plane_outcomes[
                         (reflector_asn, None, None, victim_asn)
                     ] = Outcomes.DISCONNECTED.value
+
+        # Alterantively, look at the victim and attacker asns,
+        # all instances in which an AS does not contain a reflector's
+        # ann in their local_rib, said reflector in disconnected
+        # we can compare this result with the current disconnection reate and compare
+        # if the same, fine
+        # if different, i have no idea but def need to fix then

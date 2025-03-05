@@ -6,7 +6,7 @@ from .sav import EnhancedFeasiblePathuRPFAlgB
 from .sav import EnhancedFeasiblePathuRPFAlgA
 from .sav import EnhancedFeasiblePathuRPFAlgAwPeers
 from .sav import RFC8704
-from .sav import BAR_SAV
+from .sav import RefinedAlgA
 from .sav import ProcedureX
 
 from .bgp import BGPExport2Some
@@ -24,7 +24,7 @@ __all__ = [
     "EnhancedFeasiblePathuRPFAlgA",
     "EnhancedFeasiblePathuRPFAlgAwPeers",
     "RFC8704",
-    "BAR_SAV",
+    "RefinedAlgA",
     "ProcedureX",
     "BGPExport2Some",
     "BGPFullExport2Some",

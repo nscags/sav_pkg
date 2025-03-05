@@ -12,7 +12,7 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import BAR_SAV, BGPFullExport2Some
+from sav_pkg.simulation_engine import RefinedAlgA, BGPFullExport2Some
 
 
 desc = "BAR SAV False Positive Test with ROA"
@@ -29,7 +29,7 @@ bar_sav_007 = EngineTestConfig(
         override_reflector_asns=frozenset({6}),
         override_sav_asns=frozenset({6, 2, 3}),
         override_non_default_asn_cls_dict=frozendict({4: BGPFullExport2Some}),
-        BaseSAVPolicyCls=BAR_SAV,
+        BaseSAVPolicyCls=RefinedAlgA,
     ),
     as_graph_info=as_graph_info_010,
     DiagramCls=SAVDiagram,

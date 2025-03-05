@@ -12,7 +12,7 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import BAR_SAV
+from sav_pkg.simulation_engine import RefinedAlgA
 from sav_pkg.simulation_engine.policies.aspa.aspafull_e2s import ASPAFullExport2Some
 
 
@@ -35,7 +35,7 @@ bar_sav_008 = EngineTestConfig(
                 2: ASPAFull,
             }
         ),
-        BaseSAVPolicyCls=BAR_SAV,
+        BaseSAVPolicyCls=RefinedAlgA,
     ),
     as_graph_info=as_graph_info_010,
     DiagramCls=SAVDiagram,

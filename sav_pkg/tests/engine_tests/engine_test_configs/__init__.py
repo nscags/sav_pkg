@@ -3,6 +3,7 @@ from .ex_configs import ex_configs
 from .e2s_ps_000 import e2s_ps_000
 
 from .loose_000 import loose_000
+from .loose_001 import loose_001
 
 from .strict_000 import strict_000
 from .strict_001 import strict_001
@@ -29,6 +30,7 @@ from .efp_a_000 import efp_a_000
 from .efp_a_001 import efp_a_001
 from .efp_a_002 import efp_a_002
 from .efp_a_003 import efp_a_003
+from .efp_a_004 import efp_a_004
 
 from .efp_a_w_peers_000 import efp_a_w_peers_000
 
@@ -42,11 +44,13 @@ from .bar_sav_006 import bar_sav_006
 from .bar_sav_007 import bar_sav_007
 from .bar_sav_008 import bar_sav_008
 from .bar_sav_009 import bar_sav_009
+from .bar_sav_010 import bar_sav_010
 
 
 engine_test_configs = [
     # e2s_ps_000,
     # loose_000,
+    # loose_001,
     # strict_000,
     # strict_001,
     # strict_002,
@@ -64,11 +68,12 @@ engine_test_configs = [
     # efp_b_001,
     # efp_b_002,
     # efp_b_003,
-    efp_b_004,
+    # efp_b_004,
     # efp_a_000,
     # efp_a_001,
     # efp_a_002,
     # efp_a_003,
+    efp_a_004,
     # efp_a_w_peers_000,
     # bar_sav_000,
     # bar_sav_001,
@@ -80,6 +85,7 @@ engine_test_configs = [
     # bar_sav_007,
     # bar_sav_008,
     # bar_sav_009,
+    bar_sav_010,
 ] # + ex_configs
 
 __all__ = ["engine_test_configs"]

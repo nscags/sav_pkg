@@ -13,7 +13,7 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import BAR_SAV
+from sav_pkg.simulation_engine import RefinedAlgA
 
 desc = "Single reflector running BAR SAV, victim does not announce prefix"
 
@@ -30,7 +30,7 @@ bar_sav_001 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
-        BaseSAVPolicyCls=BAR_SAV,
+        BaseSAVPolicyCls=RefinedAlgA,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,

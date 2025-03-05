@@ -11,7 +11,7 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework import MetricTracker
 from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import BAR_SAV
+from sav_pkg.simulation_engine import RefinedAlgA
 
 
 desc = ""
@@ -26,7 +26,7 @@ bar_sav_002 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({9}),
         override_sav_asns=frozenset({9}),
-        BaseSAVPolicyCls=BAR_SAV,
+        BaseSAVPolicyCls=RefinedAlgA,
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
