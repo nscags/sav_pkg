@@ -2,18 +2,46 @@ import json
 import os
 import random
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
+from frozendict import frozendict
 
 from bgpy.simulation_engine import ROVFull
-from frozendict import frozendict
+from bgpy.enums import Plane, ASGroups
 # from rov_collector import rov_collector_classes
 
+from sav_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
 from sav_pkg.enums import Interfaces
+from sav_pkg.enums import Outcomes
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
     from sav_pkg.policies.sav.base_sav_policy import BaseSAVPolicy
+
+
+# First attempt, didn't work with pickle (idk why?)
+# def get_metric_keys() -> Iterable[MetricKey]:
+#     for plane in [Plane.DATA]:
+#         for as_group in [ASGroups.ALL_WOUT_IXPS]:
+#             for outcome in [Outcomes.FALSE_NEGATIVE, Outcomes.TRUE_POSITIVE]:
+#                 yield MetricKey(plane=plane, outcome=outcome, as_group=as_group)
+
+def get_metric_keys() -> Iterable[MetricKey]:
+    metric_keys = [
+        MetricKey(plane=plane, outcome=outcome, as_group=as_group)
+        for plane in [Plane.DATA]
+        for as_group in [ASGroups.ALL_WOUT_IXPS]
+        for outcome in [
+            Outcomes.FALSE_NEGATIVE,
+            Outcomes.FALSE_POSITIVE,
+            Outcomes.TRUE_NEGATIVE,
+            Outcomes.TRUE_POSITIVE,
+            Outcomes.FILTERED_ON_PATH,
+            Outcomes.DISCONNECTED,
+            Outcomes.FORWARD,
+        ]
+    ]
+    return metric_keys
 
 
 # NOTE: for BAR SAV ROV adoption doesn't actually matter
