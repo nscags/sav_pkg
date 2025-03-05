@@ -2,6 +2,7 @@ import json
 import os
 import random
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from bgpy.simulation_engine import ROVFull
 from frozendict import frozendict
@@ -9,9 +10,15 @@ from frozendict import frozendict
 
 from sav_pkg.enums import Interfaces
 
+if TYPE_CHECKING:
+    from bgpy.as_graphs.base import AS
+    from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
+    from sav_pkg.policies.sav.base_sav_policy import BaseSAVPolicy
+
 
 # NOTE: for BAR SAV ROV adoption doesn't actually matter
 #       Only ROA adoption (for Victim/Legit Sender) has an impact 
+#       Leaving here for now, may be useful for SAV attacks paper
 def get_real_world_rov_asn_cls_dict(
     json_path: Path = Path.home() / "rov_info.json",
     requests_cache_db_path: Path | None = None,
@@ -43,13 +50,11 @@ def get_real_world_rov_asn_cls_dict(
     return frozendict(hardcoded_dict)
 
 
-from sav_pkg.enums import Interfaces
-
 DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
     "NoSAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "EFP uRPF Alg A": frozenset([Interfaces.CUSTOMER.value]),
     "EFP uRPF Alg A w Peers": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "EFP uRPF Alg B": frozenset([Interfaces.CUSTOMER.value]),
@@ -58,7 +63,11 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
     "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
 })
 
-def get_applied_interfaces(as_obj, scenario, sav_policy):
+def get_applied_interfaces(
+        as_obj: AS, 
+        scenario: SAVScenario, 
+        sav_policy: "BaseSAVPolicy"
+    ):
     """Gets the applied interfaces based on the given SAV policy."""
     
     interfaces = (
