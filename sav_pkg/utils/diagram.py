@@ -296,7 +296,7 @@ class SAVDiagram(Diagram):
 
             for ann in local_rib_anns:
                 if ann.origin in (scenario.attacker_asns | scenario.victim_asns):
-                    print(f"\nDIAG: \nAnn: \n{ann}")
+                    # print(f"\nDIAG: \nAnn: \n{ann}")
                     mask = "/" + ann.prefix.split("/")[-1]
                     path = ", ".join(str(x) for x in ann.as_path)
                     ann_help = ""

@@ -12,7 +12,7 @@ class FeasiblePathuRPF(BaseSAVPolicy):
     name: str = "Feasible-Path uRPF"
 
     @staticmethod
-    def validate(
+    def _validate(
         as_obj: "AS", 
         source_prefix: str, 
         prev_hop: "AS", 

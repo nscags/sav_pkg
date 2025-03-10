@@ -5,7 +5,7 @@ from .efp_urpf_alg_b import EnhancedFeasiblePathuRPFAlgB
 from .strict_urpf import StrictuRPF
 from .loose_urpf import LooseuRPF
 
-from sav_pkg.enums import ASGroups
+from bgpy.enums import ASGroups
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
@@ -16,7 +16,7 @@ class RFC8704(BaseSAVPolicy):
     name: str = "RFC8704"
 
     @staticmethod
-    def validate(
+    def _validate(
         as_obj: "AS", 
         source_prefix: str, 
         prev_hop: "AS", 

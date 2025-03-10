@@ -6,7 +6,7 @@ from sav_pkg.utils.utils import get_applied_interfaces
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
     from bgpy.simulation_engine import SimulationEngine
-    from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
+
 
 class BaseSAVPolicy(ABC):
     name: str = "NoSAV"
@@ -17,7 +17,7 @@ class BaseSAVPolicy(ABC):
         source_prefix: str, 
         prev_hop: "AS", 
         engine: "SimulationEngine", 
-        scenario: "SAVScenario",
+        scenario,
     ):
         """
         Applies SAV policy to specificed interfaces.
@@ -34,9 +34,6 @@ class BaseSAVPolicy(ABC):
                 scenario,
             )
         else:
-            # Also considered applying Loose uRPF here since most policies/RFCs
-            # recommended Loose uRPF for provider interfaces
-            # However impact should be _extremely_ minimal
             return True
                 
 

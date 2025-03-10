@@ -15,8 +15,6 @@ from sav_pkg.enums import Outcomes
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
-    from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
-    from sav_pkg.policies.sav.base_sav_policy import BaseSAVPolicy
 
 
 # First attempt, didn't work with pickle (idk why?)
@@ -79,7 +77,7 @@ def get_real_world_rov_asn_cls_dict(
 
 
 DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
-    "NoSAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "NoSAV": frozenset(),
     "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
@@ -92,9 +90,9 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
 })
 
 def get_applied_interfaces(
-        as_obj: AS, 
-        scenario: SAVScenario, 
-        sav_policy: "BaseSAVPolicy"
+        as_obj: "AS", 
+        scenario, 
+        sav_policy
     ):
     """Gets the applied interfaces based on the given SAV policy."""
     

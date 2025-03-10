@@ -12,7 +12,7 @@ class EnhancedFeasiblePathuRPFAlgAwoPeers(BaseSAVPolicy):
     name: str = "EFP uRPF Alg A wo Peers"
     
     @staticmethod
-    def validate(
+    def _validate(
         as_obj: "AS", 
         source_prefix: str, 
         prev_hop: "AS", 

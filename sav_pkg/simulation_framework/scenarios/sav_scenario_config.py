@@ -6,7 +6,7 @@ from bgpy.simulation_framework.scenarios import ScenarioConfig
 from bgpy.enums import ASGroups
 
 from sav_pkg.enums import Prefixes
-from sav_pkg.policies.sav import BaseSAVPolicy
+from sav_pkg.policies.sav.base_sav_policy import BaseSAVPolicy
 
 
 @dataclass(frozen=True)

@@ -12,7 +12,7 @@ class LooseuRPF(BaseSAVPolicy):
     name: str = "Loose uRPF"
 
     @staticmethod
-    def validate(
+    def _validate(
         as_obj: "AS", 
         source_prefix: str, 
         prev_hop: "AS", 

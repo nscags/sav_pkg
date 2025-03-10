@@ -1,0 +1,8 @@
+scenario_cls,BaseSAVPolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
+SAVScenario,NoSAV,DATA,all_wout_ixps,FALSE_NEGATIVE,0,0,100.0,0.0,,PseudoBGP
+SAVScenario,NoSAV,DATA,all_wout_ixps,FALSE_POSITIVE,0,0,0.0,0.0,,PseudoBGP
+SAVScenario,NoSAV,DATA,all_wout_ixps,TRUE_NEGATIVE,0,0,100.0,0.0,,PseudoBGP
+SAVScenario,NoSAV,DATA,all_wout_ixps,TRUE_POSITIVE,0,0,0.0,0.0,,PseudoBGP
+SAVScenario,NoSAV,DATA,all_wout_ixps,FILTERED_ON_PATH,0,0,0.0,0.0,,PseudoBGP
+SAVScenario,NoSAV,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,,PseudoBGP
+SAVScenario,NoSAV,DATA,all_wout_ixps,FORWARD,0,0,0.0,0.0,,PseudoBGP

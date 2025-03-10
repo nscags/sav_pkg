@@ -1,0 +1,32 @@
+from .bgp_export2some import BGPExport2Some
+
+from bgpy.enums import Relationships
+from bgpy.simulation_engine import Announcement as Ann
+
+# from sav_pkg.enums import Prefixes
+
+
+class BGPExport2SomePathPrepending(BGPExport2Some):
+    name: str = "BGP E2S Path Prepending"
+
+    def _other_propagate(
+        self: "BGPExport2Some",
+        propagate_to: Relationships,
+        send_rels: set[Relationships],
+        other_neighbors: set,
+        ann: Ann,
+    ):
+        # NOTE: using this method means victim MUST use dedicated prefix
+        # if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
+        as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
+        other_ann = ann.copy({"as_path": as_path})
+        # else:
+        #     other_ann = ann
+        
+        for neighbor in other_neighbors:
+            # Victim/Legit Sender AS propagates a new announcement with path prepending to all providers which
+            # did not recieve the original announcement
+            if ann.recv_relationship in send_rels and not self._prev_sent(
+                neighbor, other_ann
+            ):
+                self._process_outgoing_ann(neighbor, other_ann, propagate_to, send_rels)

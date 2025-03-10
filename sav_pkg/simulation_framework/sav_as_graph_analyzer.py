@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
-    """Performs data plane traceback, outputs outcomes"""
+    """Performs data plane traceback, outputs outcome dict"""
 
     def __init__(
         self,
@@ -179,7 +179,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
 
         sav_policy = self.scenario.sav_policy_asn_dict.get(as_obj.asn)
         if sav_policy:
-            validated = sav_policy.validation(
+            validated = sav_policy.validate(
                 as_obj, source_prefix, prev_hop, self.engine, self.scenario
             )
             if validated:
@@ -230,6 +230,15 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                         (reflector_asn, None, None, victim_asn)
                     ] = Outcomes.DISCONNECTED.value
 
+
+        connected_reflectors = []
+        for victim_asn in self.scenario.victim_asns:
+            victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
+            for prefix, ann_info in victim_as_obj.policy._local_rib.data.items():
+                for reflector_asn in self.scenario.reflector_asns:
+                    if reflector_asn == ann_info.origin:
+                        connected_reflectors.append(reflector_asn)
+        
         # Alterantively, look at the victim and attacker asns,
         # all instances in which an AS does not contain a reflector's
         # ann in their local_rib, said reflector in disconnected
