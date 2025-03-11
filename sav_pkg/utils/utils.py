@@ -82,10 +82,10 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
     "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "EFP uRPF Alg A": frozenset([Interfaces.CUSTOMER.value]),
-    "EFP uRPF Alg A w Peers": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "EFP uRPF Alg A wo Peers": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "EFP uRPF Alg B": frozenset([Interfaces.CUSTOMER.value]),
     "RFC8704": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
-    "BAR SAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "Refined Alg A": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
 })
 
@@ -119,6 +119,7 @@ def get_export_to_some_dict(
 ):
     if not json_path.exists():
         print("oh no")
+        raise FileNotFoundError(f"File: 'export_to_some.json' not found in {json_path}.")
 
     with open(json_path, 'r') as f:
         export2some_asns = json.load(f)

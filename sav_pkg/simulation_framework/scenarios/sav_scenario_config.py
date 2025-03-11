@@ -27,5 +27,7 @@ class SAVScenarioConfig(ScenarioConfig):
         # Mypy doesn't understand frozendict typing, just ignore it
         default_factory=frozendict  # type: ignore
     )
+    # Special percent adoption for control plane policies
+    # I hijacked the default percent_adopt for SAV policies
     special_percent_adoption: float = None
     override_default_interface_dict: frozendict[str, frozenset] = None
