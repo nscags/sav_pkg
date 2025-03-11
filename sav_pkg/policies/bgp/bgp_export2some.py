@@ -1,4 +1,5 @@
 import random
+import math
 
 from bgpy.simulation_engine.policies.bgp import BGP
 from bgpy.enums import Relationships
@@ -29,7 +30,7 @@ class BGPExport2Some(BGP):
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers
 
-            num = max(1, int(len(neighbors) * percent))
+            num = math.ceil(len(neighbors) * percent)
             some_neighbors = random.sample(neighbors, num)
 
             for _prefix, unprocessed_ann in self._local_rib.items():

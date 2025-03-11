@@ -68,6 +68,15 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     as_obj, source_prefix, prev_hop, origin, dst
                 )
 
+        # send packets to all neighbors, typically used for testing
+        # for ann in as_obj.policy._local_rib.data.values():
+        #     if ann.origin in self.scenario.reflector_asns:
+        #         dst = ann.prefix
+        #         for neighbor_as_obj in as_obj.neighbors:
+        #             self._propagate_packet(
+        #                 neighbor_as_obj, source_prefix, as_obj, origin, dst
+        #             )
+
         # Manual config for fp_004 (false positive e2a)
         # we need AS to select unfavorable route, since this is
         # only used for this one config, it can remain manual for now
@@ -94,7 +103,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             if ann.origin in self.scenario.reflector_asns:
                 dst = ann.prefix
                 for neighbor_as_obj in as_obj.neighbors:
-                    # propagate packet to neighbor with prev_hop = attacker
+                    # propagate packet to all neighbors with prev_hop = attacker
                     self._propagate_packet(
                         neighbor_as_obj, source_prefix, as_obj, origin, dst
                     )

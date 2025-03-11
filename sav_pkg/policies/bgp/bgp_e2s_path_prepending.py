@@ -16,12 +16,9 @@ class BGPExport2SomePathPrepending(BGPExport2Some):
         other_neighbors: set,
         ann: Ann,
     ):
-        # NOTE: using this method means victim MUST use dedicated prefix
-        # if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
+        # path prepending can be done by transit ASes
         as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
         other_ann = ann.copy({"as_path": as_path})
-        # else:
-        #     other_ann = ann
         
         for neighbor in other_neighbors:
             # Victim/Legit Sender AS propagates a new announcement with path prepending to all providers which

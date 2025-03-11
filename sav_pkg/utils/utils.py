@@ -90,10 +90,10 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
 })
 
 def get_applied_interfaces(
-        as_obj: "AS", 
-        scenario, 
-        sav_policy
-    ):
+    as_obj: "AS", 
+    scenario, 
+    sav_policy
+):
     """Gets the applied interfaces based on the given SAV policy."""
     
     interfaces = (
@@ -111,3 +111,18 @@ def get_applied_interfaces(
     applied_interfaces = {interface_map[i] for i in interfaces if i in interface_map}
     
     return applied_interfaces
+
+
+def get_export_to_some_dict(
+    e2s_policy,
+    json_path: Path = Path.home() / "export_to_some.json",
+):
+    if not json_path.exists():
+        print("oh no")
+
+    with open(json_path, 'r') as f:
+        export2some_asns = json.load(f)
+
+    export2some_asn_cls_dict = frozendict({asn: e2s_policy for asn in export2some_asns})
+
+    return export2some_asn_cls_dict
