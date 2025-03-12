@@ -34,15 +34,15 @@ class RFC8704(BaseSAVPolicy):
         - The loose uRPF method SHOULD be applied on lateral peer and transit provider interfaces."
         """
         if prev_hop.asn in engine.as_graph.asn_groups[ASGroups.STUBS.value]:
-            return StrictuRPF.validate(
+            return StrictuRPF._validate(
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         elif prev_hop.asn in as_obj.customer_asns:
-            return EnhancedFeasiblePathuRPFAlgB.validate(
+            return EnhancedFeasiblePathuRPFAlgB._validate(
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         elif prev_hop.asn in (as_obj.peer_asns | as_obj.provider_asns):
-            return LooseuRPF.validate(
+            return LooseuRPF._validate(
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         else:

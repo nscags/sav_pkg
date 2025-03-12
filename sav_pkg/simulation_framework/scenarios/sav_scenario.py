@@ -46,7 +46,7 @@ class SAVScenario(Scenario):
             f"{self.__class__.__name__}"
         )
 
-        self.scenario_config: ScenarioConfig = scenario_config
+        self.scenario_config: SAVScenarioConfig = scenario_config
         self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
         self.attacker_asns: frozenset[int] = self._get_attacker_asns(

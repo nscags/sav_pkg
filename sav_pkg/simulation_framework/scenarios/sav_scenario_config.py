@@ -29,5 +29,5 @@ class SAVScenarioConfig(ScenarioConfig):
     )
     # Special percent adoption for control plane policies
     # I hijacked the default percent_adopt for SAV policies
-    special_percent_adoption: float = None
+    special_percent_adoption: float = 0.0
     override_default_interface_dict: frozendict[str, frozenset] = None

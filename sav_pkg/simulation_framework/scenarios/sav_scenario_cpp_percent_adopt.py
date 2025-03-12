@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class SAVScenarioCPPPercentAdopt(SAVScenario):
 
     def _get_randomized_non_default_asn_cls_dict(
-        self,
+        self: "SAVScenarioCPPPercentAdopt",
         engine: "BaseSimulationEngine",
     ) -> dict[int, type["Policy"]]:
         """Get adopting ASNs and non default ASNs
