@@ -19,6 +19,10 @@ from .bgp import BGPExport2SomePathPrepending
 from .bgp import BGPFullExport2SomePathPrepending
 
 
+from .aspa import ASPAExport2Some
+from .aspa import ASPAFullExport2Some
+
+
 __all__ = [
     "LooseuRPF",
     "StrictuRPF",
@@ -37,4 +41,6 @@ __all__ = [
     "BGPFullExport2SomePrefixSpecific",
     "BGPExport2SomePathPrepending",
     "BGPFullExport2SomePathPrepending",
+    "ASPAFullExport2Some",
+    "ASPAExport2Some",
 ]

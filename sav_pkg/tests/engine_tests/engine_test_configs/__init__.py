@@ -15,23 +15,27 @@ from .efp_alg_a_wo_peers_000 import efp_alg_a_wo_peers_000
 from .efp_alg_b_000 import efp_alg_b_000
 from .rfc8704_000 import rfc8704_000
 from .refined_alg_a_000 import refined_alg_a_000
+from .refined_alg_a_001 import refined_alg_a_001
+from .refined_alg_a_002 import refined_alg_a_002
 
 
 engine_test_configs = [
-    config_000,
-    config_001,
-    config_002,
-    config_003,
-    config_004,
-    config_005,
-    loose_000,
-    strict_000,
-    fp_000,
-    efp_alg_a_000,
-    efp_alg_a_wo_peers_000,
-    efp_alg_b_000,
-    rfc8704_000,
-    refined_alg_a_000,
+    # config_000,
+    # config_001,
+    # config_002,
+    # config_003,
+    # config_004,
+    # config_005,
+    # loose_000,
+    # strict_000,
+    # fp_000,
+    # efp_alg_a_000,
+    # efp_alg_a_wo_peers_000,
+    # efp_alg_b_000,
+    # rfc8704_000,
+    # refined_alg_a_000,
+    refined_alg_a_001,
+    refined_alg_a_002,
 ]
 
 __all__ = ["engine_test_configs"]

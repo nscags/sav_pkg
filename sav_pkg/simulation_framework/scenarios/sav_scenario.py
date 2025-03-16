@@ -6,7 +6,6 @@ from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.simulation_framework.scenarios import Scenario
-from bgpy.simulation_framework import ScenarioConfig
 from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_engine import Policy

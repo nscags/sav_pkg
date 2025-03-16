@@ -31,7 +31,8 @@ class BGPExport2Some(BGP):
             neighbors = self.as_.providers
 
             num = math.ceil(len(neighbors) * percent)
-            some_neighbors = random.sample(neighbors, num)
+            # https://stackoverflow.com/a/15837796/8903959
+            some_neighbors = random.sample(tuple(neighbors), num)
 
             for _prefix, unprocessed_ann in self._local_rib.items():
                 if neighbors and unprocessed_ann.recv_relationship in send_rels:
