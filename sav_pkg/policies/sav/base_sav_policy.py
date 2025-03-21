@@ -18,7 +18,7 @@ class BaseSAVPolicy(ABC):
         prev_hop: "AS", 
         engine: "SimulationEngine", 
         scenario,
-    ):
+    ) -> bool:
         """
         Applies SAV policy to specificed interfaces.
         """

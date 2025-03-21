@@ -12,11 +12,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
-    SAVScenario,
+    SAVScenarioROA,
     SAVScenarioCPPPercentAdoptROA,
     SAVASGraphAnalyzer, 
-    MetricTracker,
 )
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
     RefinedAlgA,
 )
@@ -38,7 +38,7 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioROA,
                 BasePolicyCls=BGPFull,
                 num_reflectors=5,
                 BaseSAVPolicyCls=RefinedAlgA,
@@ -100,7 +100,7 @@ def main():
         num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-        MetricTrackerCls=MetricTracker,
+        MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
     )
     sim.run()

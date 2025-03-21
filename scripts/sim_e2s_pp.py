@@ -15,7 +15,7 @@ from sav_pkg.simulation_framework import (
     SAVScenario,
     SAVASGraphAnalyzer, 
 )
-from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
     LooseuRPF,
     StrictuRPF,
@@ -121,7 +121,7 @@ def main():
         num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-        MetricTrackerCls=MetricTracker,
+        MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
     )
     sim.run()

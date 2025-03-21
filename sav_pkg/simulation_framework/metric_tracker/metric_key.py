@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 # from typing import Optional
 
-from bgpy.enums import ASGroups, Plane, Outcomes
+from bgpy.enums import ASGroups, Plane
+
+from sav_pkg.enums import Outcomes
 
 
 @dataclass(frozen=True, slots=True)

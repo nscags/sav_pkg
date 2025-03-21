@@ -19,7 +19,7 @@ from .metric_key import MetricKey
 from sav_pkg.utils.utils import get_metric_keys
 
 
-class MetricTracker(MetricTracker):
+class SAVMetricTracker(MetricTracker):
     """Tracks metrics used in graphs across trials"""
 
     def __init__(
@@ -205,8 +205,6 @@ class MetricTracker(MetricTracker):
         # Ensure metric_keys are initialized properly before each run
         if not hasattr(self, 'metric_keys') or not self.metric_keys:
             self.metric_keys = tuple(list(get_metric_keys()))
-        else:
-            self.metric_keys = tuple(list(self.metric_keys))
 
         metrics = [Metric(x) for x in self.metric_keys]
         # print(f"Metrics: {metrics}", flush=True)
@@ -253,7 +251,7 @@ class MetricTracker(MetricTracker):
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:
             metric.save_percents()
-            # print(f"Metric: {metric.metric_key.outcome._name_}", flush=True)
-            # print(f"Numerator: {metric._numerator}", flush=True)
-            # print(f"Denominator: {metric._denominator}", flush=True)
-            # print(f"Percents: {metric.percents}", flush=True)
+            print(f"Metric: {metric.metric_key.outcome._name_}", flush=True)
+            print(f"Numerator: {metric._numerator}", flush=True)
+            print(f"Denominator: {metric._denominator}", flush=True)
+            print(f"Percents: {metric.percents}", flush=True)

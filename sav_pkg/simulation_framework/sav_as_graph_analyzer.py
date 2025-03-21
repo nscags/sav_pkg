@@ -204,7 +204,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     else Outcomes.FALSE_POSITIVE.value
                 )
             else:
-                raise ValueError("Packet did not recieve outcome?")
+                raise ValueError("Packet did not receive an outcome?")
         # Not adopting SAV, no validation, forward packet
         else:
             return Outcomes.FORWARD.value
@@ -240,17 +240,17 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     ] = Outcomes.DISCONNECTED.value
 
 
-        connected_reflectors = []
-        for victim_asn in self.scenario.victim_asns:
-            victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
-            for prefix, ann_info in victim_as_obj.policy._local_rib.data.items():
-                for reflector_asn in self.scenario.reflector_asns:
-                    if reflector_asn == ann_info.origin:
-                        connected_reflectors.append(reflector_asn)
+        # connected_reflectors = []
+        # for victim_asn in self.scenario.victim_asns:
+        #     victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
+        #     for prefix, ann_info in victim_as_obj.policy._local_rib.data.items():
+        #         for reflector_asn in self.scenario.reflector_asns:
+        #             if reflector_asn == ann_info.origin:
+        #                 connected_reflectors.append(reflector_asn)
         
         # Alterantively, look at the victim and attacker asns,
         # all instances in which an AS does not contain a reflector's
         # ann in their local_rib, said reflector in disconnected
-        # we can compare this result with the current disconnection reate and compare
+        # we can compare this result with the current disconnection rate and compare
         # if the same, fine
         # if different, i have no idea but def need to fix then

@@ -88,11 +88,9 @@ class Metric:
     ) -> None:
         """Adds to numerator if it is within the as group and the outcome is correct"""
 
-        for key, outcome in data_plane_outcomes.items():
-            if key[0] == as_obj.asn and outcome == self.metric_key.outcome.value:
+        if (as_obj.asn,) in data_plane_outcomes:
+            if data_plane_outcomes[(as_obj.asn,)] == self.metric_key.outcome.value:
                 self._numerator += 1
-                return
-
 
     def _add_denominator(
         self,

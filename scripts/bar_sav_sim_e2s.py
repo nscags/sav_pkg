@@ -14,8 +14,8 @@ from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
     SAVScenarioASPAExport2Some,
     SAVASGraphAnalyzer, 
-    MetricTracker,
 )
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies import (
     RefinedAlgA,
     BGPFullExport2Some,
@@ -106,7 +106,7 @@ def main():
         num_trials=300,
         parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-        MetricTrackerCls=MetricTracker,
+        MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
     )
     sim.run()

@@ -11,7 +11,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.policies import RefinedAlgA, ASPAFullExport2Some
 
@@ -36,5 +36,5 @@ refined_alg_a_002 = EngineTestConfig(
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=MetricTracker,
+    MetricTrackerCls=SAVMetricTracker,
 )

@@ -15,7 +15,7 @@ from sav_pkg.simulation_framework import (
     SAVScenario,
     SAVASGraphAnalyzer, 
 )
-from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
     LooseuRPF,
     StrictuRPF,
@@ -31,7 +31,7 @@ from sav_pkg.utils.utils import get_metric_keys
 
 def main():
     # Simulation for the paper
-    random.seed(os.environ['JOB_COMPLETION_INDEX'])
+    # random.seed(os.environ['JOB_COMPLETION_INDEX'])
     sim = Simulation(
         percent_adoptions = (
             0.0,
@@ -47,7 +47,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="loose",
             ),
             SAVScenarioConfig(
@@ -55,7 +55,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="strict",
             ),
             SAVScenarioConfig(
@@ -63,7 +63,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="feasible",
             ),
             SAVScenarioConfig(
@@ -71,7 +71,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="efp_alg_b",
             ),
             SAVScenarioConfig(
@@ -79,7 +79,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="efp_alg_a",
             ),
             SAVScenarioConfig(
@@ -87,7 +87,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="efp_alg_a_wo_peers",
             ),
             SAVScenarioConfig(
@@ -95,7 +95,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="rfc8704",
             ),
             SAVScenarioConfig(
@@ -103,15 +103,15 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="refined_alg_a",
             ),
         ),
-        output_dir=Path(f"~/sav/results/10_5_rda").expanduser(),
-        num_trials=10,
+        output_dir=Path(f"~/sav/results/3_1_rda").expanduser(),
+        num_trials=3,
         parse_cpus=1,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-        MetricTrackerCls=MetricTracker,
+        MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
     )
     sim.run()
