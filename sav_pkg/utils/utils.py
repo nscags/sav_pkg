@@ -2,7 +2,7 @@ import json
 import os
 import random
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Optional, List
 from frozendict import frozendict
 
 from bgpy.simulation_engine import ROVFull
@@ -24,11 +24,17 @@ if TYPE_CHECKING:
 #             for outcome in [Outcomes.FALSE_NEGATIVE, Outcomes.TRUE_POSITIVE]:
 #                 yield MetricKey(plane=plane, outcome=outcome, as_group=as_group)
 
-def get_metric_keys() -> Iterable[MetricKey]:
+def get_metric_keys(
+    planes: Optional[List[Plane]] = None,
+    as_groups: Optional[List[ASGroups]] = None
+) -> List[MetricKey]:
+    planes = planes or [Plane.DATA]
+    as_groups = as_groups or [ASGroups.ALL_WOUT_IXPS]
+
     metric_keys = [
         MetricKey(plane=plane, outcome=outcome, as_group=as_group)
-        for plane in [Plane.DATA]
-        for as_group in [ASGroups.ALL_WOUT_IXPS]
+        for plane in planes
+        for as_group in as_groups
         for outcome in [
             Outcomes.FALSE_NEGATIVE,
             Outcomes.FALSE_POSITIVE,
@@ -37,12 +43,14 @@ def get_metric_keys() -> Iterable[MetricKey]:
             Outcomes.FILTERED_ON_PATH,
             Outcomes.DISCONNECTED,
             Outcomes.FORWARD,
+            Outcomes.ATTACKER_SUCCESS,
+            Outcomes.VICTIM_SUCCESS,
         ]
     ]
     return metric_keys
 
 
-# NOTE: for BAR SAV ROV adoption doesn't actually matter
+# NOTE: for BAR SAV, ROV adoption doesn't actually matter
 #       Only ROA adoption (for Victim/Legit Sender) has an impact 
 #       Leaving here for now, may be useful for SAV attacks paper
 def get_real_world_rov_asn_cls_dict(

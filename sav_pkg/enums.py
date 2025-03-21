@@ -5,13 +5,17 @@ class Outcomes(YamlAbleEnum):
     """Outcomes for traceback"""
 
     ORIGIN: int = 1
-    DISCONNECTED: int = 2  # Not on path
-    FALSE_NEGATIVE: int = 3  # Incorrectly allows spoofed packet
-    TRUE_NEGATIVE: int = 4  # Correctly allows legitimate packet
-    FALSE_POSITIVE: int = 5  # Incorrectly block legitimate packet
-    TRUE_POSITIVE: int = 6  # Correctly blocks spoofed packet
-    FORWARD: int = 7
+    DISCONNECTED: int = 2      # Victim/Attacker cannot route to reflector
+    FALSE_NEGATIVE: int = 3    # Incorrectly allows spoofed packet
+    TRUE_NEGATIVE: int = 4     # Correctly allows legitimate packet
+    FALSE_POSITIVE: int = 5    # Incorrectly block legitimate packet
+    TRUE_POSITIVE: int = 6     # Correctly blocks spoofed packet
+    FORWARD: int = 7           # Packet forwarded (no SAV policy applied)
     FILTERED_ON_PATH: int = 8  # Filtered on path from attacker/victim -> reflector
+
+    # Used for metrics
+    ATTACKER_SUCCESS: int = 9 # FN or Forward
+    VICTIM_SUCCESS: int = 10  # TN or Forward
 
 
 class Prefixes(YamlAbleEnum):

@@ -6,6 +6,7 @@ from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 
 from .metric_key import MetricKey
+from sav_pkg.enums import Outcomes
 
 
 class Metric:
@@ -88,8 +89,30 @@ class Metric:
     ) -> None:
         """Adds to numerator if it is within the as group and the outcome is correct"""
 
-        if (as_obj.asn,) in data_plane_outcomes:
-            if data_plane_outcomes[(as_obj.asn,)] == self.metric_key.outcome.value:
+        relevant_entries = [
+            (origin, outcome)
+            for (asn, source_prefix, prev_hop, origin), outcome in data_plane_outcomes.items()
+            if asn ==  as_obj.asn
+        ]
+
+        if not relevant_entries:
+            return
+
+        if any(outcome == self.metric_key.outcome.value for _, outcome in relevant_entries):
+            self._numerator += 1
+
+        if self.metric_key.outcome == Outcomes.ATTACKER_SUCCESS:
+            if any(
+                origin in scenario.attacker_asns and outcome in {Outcomes.FALSE_NEGATIVE.value, Outcomes.FORWARD.value}
+                for origin, outcome in relevant_entries
+            ):
+                self._numerator += 1
+
+        if self.metric_key.outcome == Outcomes.VICTIM_SUCCESS:
+            if any(
+                origin in scenario.victim_asns and outcome in {Outcomes.TRUE_NEGATIVE.value, Outcomes.FORWARD.value}
+                for origin, outcome in relevant_entries
+            ):
                 self._numerator += 1
 
     def _add_denominator(
@@ -103,6 +126,12 @@ class Metric:
         """Adds to the denominator if it is within the as group"""
 
         if as_obj.asn in scenario.reflector_asns:
+            # For Attacker and Victim success we ignore disconnected reflectors
+            if self.metric_key.outcome in (Outcomes.ATTACKER_SUCCESS, Outcomes.VICTIM_SUCCESS):
+                outcome = data_plane_outcomes.get((as_obj.asn,), None)
+                if outcome == Outcomes.DISCONNECTED.value:
+                    return False
+
             self._denominator += 1
             return True
         else:

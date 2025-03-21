@@ -240,7 +240,6 @@ class SAVMetricTracker(MetricTracker):
         for reflector_asn in scenario.reflector_asns:
             as_obj = engine.as_graph.as_dict[reflector_asn]
             for metric in metrics:
-
                 metric.add_data(
                     as_obj=as_obj,
                     engine=engine,
