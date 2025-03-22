@@ -16,6 +16,8 @@ class Outcomes(YamlAbleEnum):
     # Used for metrics
     ATTACKER_SUCCESS: int = 9 # FN or Forward
     VICTIM_SUCCESS: int = 10  # TN or Forward
+    # To verify traceback disconnections align with control plane
+    DISCONNECTED_CTRL: int = 11
 
 
 class Prefixes(YamlAbleEnum):

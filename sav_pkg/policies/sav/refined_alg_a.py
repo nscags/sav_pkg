@@ -62,15 +62,15 @@ class RefinedAlgA(BaseSAVPolicy):
             # From AS-set C, remove any ASNs that are present in Z(j), for j=1
             # to j=(i-1).  Call the resulting set Z(i)."
             c_i = a_i.union(b_i)
-
-            for j in range(0, i):
-                c_i -= z_i[j - 1]
+            
+            for j in range(i):
+                c_i -= z_i[j]
 
             z_i.append(c_i)
 
             # "If AS-set Z(i) is null, then set i_max = i - 1 and go to Step 9.
             # Else, go to Step 4."
-            if not z_i[i - 1]:
+            if not z_i[i]:
                 i_max = i - 1
                 break
 

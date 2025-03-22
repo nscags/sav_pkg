@@ -14,7 +14,7 @@ from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.policies.sav.loose_urpf import LooseuRPF
 
 
-desc = "Single reflector, Loose uRPF"
+desc = "Loose uRPF"
 
 loose_000 = EngineTestConfig(
     name="loose_000",
@@ -22,10 +22,11 @@ loose_000 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
+        num_reflectors=3,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
-        override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
+        override_reflector_asns=frozenset({ASNs.REFLECTOR.value, 5, 12}),
+        override_sav_asns=frozenset({ASNs.REFLECTOR.value, 5, 12}),
         BaseSAVPolicyCls=LooseuRPF,
     ),
     as_graph_info=as_graph_info_000,

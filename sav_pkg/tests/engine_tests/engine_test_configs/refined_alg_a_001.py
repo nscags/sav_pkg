@@ -16,7 +16,7 @@ from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.policies import RefinedAlgA, ASPAFullExport2Some
 
 
-desc = "Single reflector running Refined Alg A"
+desc = "Single reflector running Refined Alg A, ASPAExport2some no ann, testing ASPA functionality"
 
 refined_alg_a_001 = EngineTestConfig(
     name="refined_alg_a_001",

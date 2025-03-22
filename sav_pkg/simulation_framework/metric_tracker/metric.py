@@ -17,8 +17,7 @@ class Metric:
         metric_key: MetricKey,
         percents: Optional[defaultdict[MetricKey, list[float]]] = None,
     ) -> None:
-        # At this point the PolicyCls is None for the metric_key,
-        # it's later added in the save_percents
+        # At this point the PolicyCls is None for the metric_key
         self.metric_key: MetricKey = metric_key
         self._numerator: float = 0
         self._denominator: float = 0
@@ -54,8 +53,6 @@ class Metric:
         else:
             self.percents[self.metric_key].append(0)
 
-    # instead of calling add data with an outcome it will be called with the full dict
-    # extract outcome from there
     def add_data(
         self,
         *,
@@ -125,12 +122,24 @@ class Metric:
     ) -> bool:
         """Adds to the denominator if it is within the as group"""
 
+        # Only track metrics at reflectors
         if as_obj.asn in scenario.reflector_asns:
+            relevant_entries = [
+                (origin, outcome)
+                for (asn, source_prefix, prev_hop, origin), outcome in data_plane_outcomes.items()
+                if asn == as_obj.asn
+            ]
+
             # For Attacker and Victim success we ignore disconnected reflectors
-            if self.metric_key.outcome in (Outcomes.ATTACKER_SUCCESS, Outcomes.VICTIM_SUCCESS):
-                outcome = data_plane_outcomes.get((as_obj.asn,), None)
-                if outcome == Outcomes.DISCONNECTED.value:
-                    return False
+            attacker_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.attacker_asns]
+            if self.metric_key.outcome == Outcomes.ATTACKER_SUCCESS:
+                if attacker_outcomes and all(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
+                    return False  
+
+            victim_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.victim_asns]
+            if self.metric_key.outcome == Outcomes.VICTIM_SUCCESS:
+                if victim_outcomes and all(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
+                    return False 
 
             self._denominator += 1
             return True

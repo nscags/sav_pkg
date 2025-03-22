@@ -14,7 +14,7 @@ from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.policies.sav.strict_urpf import StrictuRPF
 
 
-desc = "Single reflector, Strict uRPF"
+desc = "Strict uRPF"
 
 strict_000 = EngineTestConfig(
     name="strict_000",
@@ -22,10 +22,11 @@ strict_000 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
+        num_reflectors=3,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
-        override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
+        override_reflector_asns=frozenset({ASNs.REFLECTOR.value, 5, 12}),
+        override_sav_asns=frozenset({ASNs.REFLECTOR.value, 5, 12}),
         BaseSAVPolicyCls=StrictuRPF,
     ),
     as_graph_info=as_graph_info_000,

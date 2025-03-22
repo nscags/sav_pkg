@@ -117,9 +117,9 @@ def main():
                 hardcoded_asn_cls_dict=e2s_asn_cls_dict
             ),
         ),
-        output_dir=Path(f"~/sav/results/300_5_rda_e2s_pp").expanduser(),
-        num_trials=300,
-        parse_cpus=10,
+        output_dir=Path(f"~/sav/results/500_5_rda_e2s_pp").expanduser(),
+        num_trials=500,
+        parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

@@ -213,12 +213,20 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         self, 
         asn: int, 
         origin: int
-    ):
+    ) -> bool:
         """
         check if AS has an outcome for a given origin
         """
-        for key in self._data_plane_outcomes.keys():
-            if key[0] == asn and key[3] == origin:
+        return any(asn == key[0] and origin == key[3] for key in self._data_plane_outcomes)
+    
+    def _has_ann(
+        self,
+        asn: int,
+        origin: int
+    ) -> bool:
+        as_obj = self.engine.as_graph.as_dict[asn]
+        for ann in as_obj.policy._local_rib.data.values():
+            if ann.origin == origin:
                 return True
         return False
 
@@ -233,12 +241,13 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     self._data_plane_outcomes[
                         (reflector_asn, None, None, attacker_asn)
                     ] = Outcomes.DISCONNECTED.value
+                    assert not self._has_ann(attacker_asn, reflector_asn)
             for victim_asn in self.scenario.victim_asns:
                 if not self._has_outcome(reflector_asn, victim_asn):
                     self._data_plane_outcomes[
                         (reflector_asn, None, None, victim_asn)
                     ] = Outcomes.DISCONNECTED.value
-
+                    assert not self._has_ann(victim_asn, reflector_asn)
 
         # connected_reflectors = []
         # for victim_asn in self.scenario.victim_asns:

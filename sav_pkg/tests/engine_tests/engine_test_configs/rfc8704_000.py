@@ -14,7 +14,7 @@ from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.policies.sav import RFC8704
 
 
-desc = "Single reflector, RFC8704"
+desc = "RFC8704"
 
 rfc8704_000 = EngineTestConfig(
     name="rfc8704_000",
@@ -22,10 +22,11 @@ rfc8704_000 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
+        num_reflectors=3,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
-        override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
+        override_reflector_asns=frozenset({ASNs.REFLECTOR.value, 5, 12}),
+        override_sav_asns=frozenset({ASNs.REFLECTOR.value, 5, 12}),
         BaseSAVPolicyCls=RFC8704,
     ),
     as_graph_info=as_graph_info_000,
