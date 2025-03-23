@@ -13,6 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
     SAVScenarioASPAExport2SomeROA,
+    SAVScenarioCPPPercentAdoptROA,
     SAVASGraphAnalyzer, 
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
@@ -38,13 +39,14 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioASPAExport2SomeROA,
+                ScenarioCls=SAVScenarioCPPPercentAdoptROA,
                 BasePolicyCls=BGPFull,
-                num_reflectors=5,
                 BaseSAVPolicyCls=RefinedAlgA,
+                AdoptPolicyCls=BGPFullExport2Some,
                 reflector_default_adopters=True,
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                scenario_label="refined_alg_a_aspa_0"
+                num_reflectors=5,
+                scenario_label="refined_alg_a_aspa_0",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioASPAExport2SomeROA,
@@ -102,9 +104,9 @@ def main():
                 scenario_label="refined_alg_a_aspa_99"
             ),
         ),
-        output_dir=Path(f"~/sav/results/300_5_aspa_e2s_roa").expanduser(),
-        num_trials=300,
-        parse_cpus=10,
+        output_dir=Path(f"~/sav/results/1000_5_aspa_e2s_roa").expanduser(),
+        num_trials=1000,
+        parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

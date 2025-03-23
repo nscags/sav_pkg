@@ -36,7 +36,6 @@ class BaseSAVPolicy(ABC):
         else:
             return True
                 
-
     @staticmethod
     @abstractmethod
     def _validate(self, *args, **kwargs) -> bool:

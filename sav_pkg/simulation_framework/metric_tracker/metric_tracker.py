@@ -250,7 +250,7 @@ class SAVMetricTracker(MetricTracker):
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:
             metric.save_percents()
-            print(f"Metric: {metric.metric_key.outcome._name_}", flush=True)
-            print(f"Numerator: {metric._numerator}", flush=True)
-            print(f"Denominator: {metric._denominator}", flush=True)
-            print(f"Percents: {metric.percents}", flush=True)
+            # print(f"Metric: {metric.metric_key.outcome._name_}", flush=True)
+            # print(f"Numerator: {metric._numerator}", flush=True)
+            # print(f"Denominator: {metric._denominator}", flush=True)
+            # print(f"Percents: {metric.percents}", flush=True)

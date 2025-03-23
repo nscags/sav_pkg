@@ -133,14 +133,14 @@ class Metric:
             # For Attacker and Victim success we ignore disconnected reflectors
             attacker_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.attacker_asns]
             if self.metric_key.outcome == Outcomes.ATTACKER_SUCCESS:
-                if attacker_outcomes and all(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
-                    return False  
+                if any(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
+                    return False
 
             victim_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.victim_asns]
             if self.metric_key.outcome == Outcomes.VICTIM_SUCCESS:
-                if victim_outcomes and all(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
-                    return False 
-
+                if any(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
+                    return False
+                
             self._denominator += 1
             return True
         else:
