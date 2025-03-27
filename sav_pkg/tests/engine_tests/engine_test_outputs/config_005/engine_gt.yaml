@@ -57,6 +57,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 8
             - 2
             - 777
+            - 777
+            - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 8
@@ -131,6 +133,8 @@ as_graph: !yamlable/CAIDAASGraph
           7.7.7.0/24: !yamlable/Announcement
             as_path: !!python/tuple
             - 2
+            - 777
+            - 777
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
@@ -356,6 +360,8 @@ as_graph: !yamlable/CAIDAASGraph
             as_path: !!python/tuple
             - 8
             - 2
+            - 777
+            - 777
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
@@ -695,6 +701,8 @@ as_graph: !yamlable/CAIDAASGraph
             as_path: !!python/tuple
             - 666
             - 2
+            - 777
+            - 777
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null

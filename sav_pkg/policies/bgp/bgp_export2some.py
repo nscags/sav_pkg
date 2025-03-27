@@ -26,6 +26,10 @@ class BGPExport2Some(BGP):
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers
 
+            # No providers, return else raise error
+            if not neighbors:
+                return
+            
             # AS must export to at least one provider
             num = max(1, int(len(neighbors) * percent))
             # num = math.ceil(len(neighbors) * percent)

@@ -5,6 +5,7 @@ from .config_002 import config_002
 from .config_003 import config_003
 from .config_004 import config_004
 from .config_005 import config_005
+from .config_006 import config_006
 
 # SAV Policy Tests
 from .loose_000 import loose_000
@@ -26,6 +27,7 @@ engine_test_configs = [
     # config_003,
     # config_004,
     # config_005,
+    config_006,
     # loose_000,
     # strict_000,
     # fp_000,
@@ -33,9 +35,9 @@ engine_test_configs = [
     # efp_alg_a_wo_peers_000,
     # efp_alg_b_000,
     # rfc8704_000,
-    refined_alg_a_000,
-    refined_alg_a_001,
-    refined_alg_a_002,
+    # refined_alg_a_000,
+    # refined_alg_a_001,
+    # refined_alg_a_002,
 ]
 
 __all__ = ["engine_test_configs"]
