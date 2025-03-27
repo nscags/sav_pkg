@@ -27,15 +27,22 @@ class SAVScenarioASPAExport2Some(SAVScenario):
         # Get the asn_cls_dict without randomized adoption
         asn_cls_dict = dict(self.scenario_config.hardcoded_asn_cls_dict)
         for asn in self._default_adopters:
-            asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
+            if asn_cls_dict.get(asn) == BGPExport2Some:
+                asn_cls_dict[asn] = ASPAExport2Some
+            elif asn_cls_dict.get(asn) == BGPFullExport2Some: 
+                asn_cls_dict[asn] = ASPAFullExport2Some
+            else:
+                asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
             asns = engine.as_graph.asn_groups[subcategory]
-            # Remove ASes that are already pre-set
-            # Ex: Attacker and victim
-            # Ex: ROV Nodes (in certain situations)
-            possible_adopters = asns.difference(self._preset_asns)
+            
+            # This scenario is specifically for varying ASPA adoption for a graph with a
+            # hardcoded_asn_cls_dict for export-to-some ASes
+            # However, e2s and ASPA are not mutually exclusive, so we do not remove these 
+            # ASes from the list of possible adopters
+            possible_adopters = asns
 
             # Get how many ASes should be adopting
 

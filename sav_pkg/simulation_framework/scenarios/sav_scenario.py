@@ -156,6 +156,10 @@ class SAVScenario(Scenario):
         All victims, attackers, and reflectors announce a unique prefix
         """
 
+        # NOTE: this logic doesn't allow for multiple victims/attackers since
+        #       all victim/attacker ASes will originate the same prefix
+        #       In our simulations we use 1 victim/attacker pair so this 
+        #       functionality is unnecessary, will need to add in future
         anns = list()
         for victim_asn in self.victim_asns:
             anns.append(

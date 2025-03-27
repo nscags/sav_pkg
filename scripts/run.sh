@@ -17,4 +17,4 @@ export PYTHONHASHSEED=$JOB_COMPLETION_INDEX
 # PYTHONHASHSEED=$SLURM_TASK_ID
 
 # Run the simulation
-python3 ~/sav/sav_pkg/scripts/sim_e2s.py
+python3 ~/sav/sav_pkg/scripts/bar_sav_sim_e2s.py

@@ -104,8 +104,8 @@ def main():
                 scenario_label="refined_alg_a_aspa_99"
             ),
         ),
-        output_dir=Path(f"~/sav/results/1000_5_aspa_e2s_roa").expanduser(),
-        num_trials=1000,
+        output_dir=Path(f"~/sav/results/200_5_aspa_e2s_roa").expanduser(),
+        num_trials=200,
         parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

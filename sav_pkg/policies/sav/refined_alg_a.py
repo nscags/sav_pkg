@@ -24,7 +24,7 @@ class RefinedAlgA(BaseSAVPolicy):
         Validates incoming packets based on Refined Alg A defined in BAR SAV draft.
 
         Internet draft procedure description:
-        https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/
+        https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/
         """
         i = 0
         z_i = [{prev_hop.asn}]

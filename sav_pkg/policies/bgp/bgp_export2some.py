@@ -1,5 +1,5 @@
 import random
-import math
+# import math
 
 from bgpy.simulation_engine.policies.bgp import BGP
 from bgpy.enums import Relationships
@@ -20,17 +20,16 @@ class BGPExport2Some(BGP):
         No export to remaining providers
         """
 
-        # TODO: rewite, should select providers randomly
-        #       percentage of providers should be based on measurement data
-        #       sorta need a variety of options
-        #       you have to export to a minimum of 1, but the percent of providers exported to is unknown currently
-
-        percent = 0.50
+        # Based on measurement data, e2s ASes export prefixes to 57.39% of providers
+        percent = 0.5739
 
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers
 
-            num = math.ceil(len(neighbors) * percent)
+            # AS must export to at least one provider
+            num = max(1, int(len(neighbors) * percent))
+            # num = math.ceil(len(neighbors) * percent)
+            
             # https://stackoverflow.com/a/15837796/8903959
             some_neighbors = random.sample(tuple(neighbors), num)
 
@@ -47,11 +46,11 @@ class BGPExport2Some(BGP):
                         self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
 
                 other_neighbors = [n for n in neighbors if n not in some_neighbors]
-                self._other_propagate(propagate_to, send_rels, other_neighbors, ann)
+                self._propagate_to_others(propagate_to, send_rels, other_neighbors, ann)
         else:
             super()._propagate(propagate_to, send_rels)
 
-    def _other_propagate(
+    def _propagate_to_others(
         self: "BGPExport2Some",
         propagate_to: Relationships,
         send_rels: set[Relationships],

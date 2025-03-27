@@ -9,7 +9,7 @@ from sav_pkg.enums import Prefixes
 class BGPExport2SomeSuperSubPrefix(BGPExport2Some):
     name: str = "BGP E2S Super/Sub Prefix"
 
-    def _other_propagate(
+    def _propagate_to_others(
         self: "BGPExport2Some",
         propagate_to: Relationships,
         send_rels: set[Relationships],

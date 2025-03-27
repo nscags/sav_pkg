@@ -9,7 +9,7 @@ from bgpy.simulation_engine import Announcement as Ann
 class BGPExport2SomePathPrepending(BGPExport2Some):
     name: str = "BGP E2S Path Prepending"
 
-    def _other_propagate(
+    def _propagate_to_others(
         self: "BGPExport2Some",
         propagate_to: Relationships,
         send_rels: set[Relationships],

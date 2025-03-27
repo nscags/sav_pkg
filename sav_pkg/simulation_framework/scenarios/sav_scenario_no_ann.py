@@ -15,7 +15,8 @@ if TYPE_CHECKING:
 
 class SAVScenarioNoAnnouncements(SAVScenario):
     """
-    Victim does not announce anything but has a ROA for it's prefix
+    Victim ASes do not originate any prefixes and therefore are not seeded with any announcements.
+    However, there exists a ROA for the victim's prefix
     """
 
     def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
