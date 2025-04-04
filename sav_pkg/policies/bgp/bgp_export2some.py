@@ -1,14 +1,76 @@
 import random
-# import math
+from frozendict import frozendict
 
 from bgpy.simulation_engine.policies.bgp import BGP
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import Announcement as Ann
 
+from sav_pkg.utils.utils import get_e2s_asn_provider_weight_dict, get_e2s_asn_provider_prepending_dict
+from sav_pkg.enums import Prefixes
+
 
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
+
+    def __init__(
+        self, 
+        *args,
+        **kwargs
+    ) -> None:
+        self.e2s_asn_provider_weight_dict: frozendict = get_e2s_asn_provider_weight_dict()
+        self.e2s_asn_provider_path_prepending_dict: frozendict = get_e2s_asn_provider_prepending_dict()
+        super().__init__(*args, **kwargs)
+
+    def _provider_export_control(
+        self
+    ) -> set:  
+        DEFAULT_EXPORT_WEIGHT = 0.5739
+
+        asn = self.as_.asn
+        provider_weights = self.e2s_asn_provider_weight_dict.get(asn)
+        providers = self.as_.provider_asns
+
+        export_set = set()
+        for provider in providers:
+            # if provider doesn't have a weight
+            # due to differences between measurement data and CAIDA topology
+            # default to the avg percent of of providers exported to per AS
+            weight = (provider_weights or {}).get(provider, DEFAULT_EXPORT_WEIGHT)
+            if random.random() < weight:
+                export_set.add(provider)
+
+        if export_set:
+            return export_set
+
+        # Ensure that at least one provider is selected
+        if provider_weights:
+            valid_weights = {p: provider_weights.get(p, DEFAULT_EXPORT_WEIGHT) for p in providers}
+            if valid_weights:
+                max_weight = max(valid_weights.values())
+                top_providers = [p for p, w in valid_weights.items() if w == max_weight]
+                export_set.add(random.choice(top_providers))
+        else:
+            export_set.add(random.choice(providers))
+
+        return export_set
+
+    def _path_prepending(
+        self,
+        provider,
+    ) -> bool:
+        provider_prepending_dict = self.e2s_asn_provider_path_prepending_dict.get(self.as_.asn)
+        if not provider_prepending_dict:
+            return False
         
+        prepending_list = provider_prepending_dict.get(provider.asn)
+        if not prepending_list:
+            return False
+        
+        if len(prepending_list) > 1:
+            return random.choice(prepending_list)
+        else:
+            return prepending_list[0]
+
     def _propagate(
         self: "BGPExport2Some",
         propagate_to: Relationships,
@@ -16,26 +78,14 @@ class BGPExport2Some(BGP):
     ) -> None:
         """
         Modified propagtion logic to export to subset of providers
-        Providers are selected randomly
-        No export to remaining providers
         """
-
-        # Based on measurement data, e2s ASes export prefixes to 57.39% of providers
-        percent = 0.5739
 
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers
-
-            # No providers, return else raise error
             if not neighbors:
                 return
-            
-            # AS must export to at least one provider
-            num = max(1, int(len(neighbors) * percent))
-            # num = math.ceil(len(neighbors) * percent)
-            
-            # https://stackoverflow.com/a/15837796/8903959
-            some_neighbors = random.sample(tuple(neighbors), num)
+            some_neighbors_asns = self._provider_export_control()
+            some_neighbors = [neighbor for neighbor in neighbors if neighbor.asn in some_neighbors_asns]
 
             for _prefix, unprocessed_ann in self._local_rib.items():
                 if neighbors and unprocessed_ann.recv_relationship in send_rels:
@@ -47,7 +97,11 @@ class BGPExport2Some(BGP):
                     if ann.recv_relationship in send_rels and not self._prev_sent(
                         neighbor, ann
                     ):
-                        self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
+                        ann2 = ann
+                        if self._path_prepending(neighbor):
+                            as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
+                            ann2 = ann.copy({"as_path": as_path})
+                        self._process_outgoing_ann(neighbor, ann2, propagate_to, send_rels)
 
                 other_neighbors = [n for n in neighbors if n not in some_neighbors]
                 self._propagate_to_others(propagate_to, send_rels, other_neighbors, ann)
@@ -61,7 +115,26 @@ class BGPExport2Some(BGP):
         other_neighbors: set,
         ann: Ann,
     ):
-        """
-        propagation logic for remaining providers which did not recieve the announcement
-        """
-        pass
+        # NOTE: using this method means victim MUST use dedicated prefix
+        if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
+            # and add prepending stuff here
+            other_ann = ann.copy({"prefix": "9.9.0.0/16"})
+        else:
+            other_ann = ann
+        
+        for neighbor in other_neighbors:
+            # Victim/Legit Sender AS propagates a new announcement with separate prefix to all providers which
+            # did not recieve the original announcement
+            # some policies use route info from any prefix (but same origin AS) to create rpf list
+            if ann.recv_relationship in send_rels and not self._prev_sent(
+                neighbor, other_ann
+            ):
+                # though transit ASes can perform path prepending, we only have measurement data for origin ASes
+                if (self._path_prepending(neighbor) 
+                    and ann.recv_relationship == Relationships.ORIGIN 
+                    and ann.prefix == Prefixes.VICTIM.value
+                ):
+                    as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
+                    other_ann = other_ann.copy({"as_path": as_path})
+
+                self._process_outgoing_ann(neighbor, other_ann, propagate_to, send_rels)

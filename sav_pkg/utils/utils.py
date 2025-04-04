@@ -53,6 +53,10 @@ def get_metric_keys(
 # NOTE: for BAR SAV, ROV adoption doesn't actually matter
 #       Only ROA adoption (for Victim/Legit Sender) has an impact 
 #       Leaving here for now, may be useful for SAV attacks paper
+#       
+#       Addtionally, both attacker/victim/reflectors all announce 
+#       their own legitimate prefixes, so ROV wouldn't be useful in
+#       this context, again will probably be useful in SAV attacks paper
 def get_real_world_rov_asn_cls_dict(
     json_path: Path = Path.home() / "rov_info.json",
     requests_cache_db_path: Path | None = None,
@@ -135,3 +139,52 @@ def get_export_to_some_dict(
     export2some_asn_cls_dict = frozendict({asn: e2s_policy for asn in export2some_asns})
 
     return export2some_asn_cls_dict
+
+
+def get_e2s_asn_provider_weight_dict(
+    json_path: Path = Path.home() / "asn_e2s_provider_weights.json",
+) -> frozendict:
+    """
+    Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
+
+    Weights are percentage of unique IPv4 prefixes received on that interface divided 
+    by the total number of unique prefixes exported by the AS.
+    """
+    
+    if not json_path.exists():
+        print("oh no")
+        raise FileNotFoundError(f"File: 'asn_e2s_provider_weights.json' not found in {json_path}.")
+
+    with open(json_path, "r") as f:
+        raw_data = json.load(f)
+
+    asn_e2s_provider_weight_dict = {
+        int(asn): frozendict({int(provider): float(weight) for provider, weight in providers.items()})
+        for asn, providers in raw_data.items()
+    }
+
+    # {asn: provider_asn: weight}
+    return frozendict(asn_e2s_provider_weight_dict)
+
+
+def get_e2s_asn_provider_prepending_dict(
+    json_path: Path = Path.home() / "mh_2p_export_to_some_prepending.json",
+) -> frozendict:
+    """
+    Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
+    """
+    
+    if not json_path.exists():
+        print("oh no")
+        raise FileNotFoundError(f"File: 'asn_e2s_provider_weights.json' not found in {json_path}.")
+
+    with open(json_path, "r") as f:
+        raw_data = json.load(f)
+
+    e2s_asn_provider_prepending_dict = {
+        int(asn): frozendict({int(provider): list(prepending) for provider, prepending in providers.items()})
+        for asn, providers in raw_data.items()
+    }
+
+    # {asn: provider_asn: [path prepending] (list(bool))}
+    return frozendict(e2s_asn_provider_prepending_dict)
