@@ -13,10 +13,9 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
-from sav_pkg.policies.bgp.bgp_e2s_prefix_specific import BGPExport2SomePrefixSpecific
 
 
-desc = "Single reflector, prefix specific e2s"
+desc = "tmp"
 
 config_003 = EngineTestConfig(
     name="config_003",
@@ -28,9 +27,6 @@ config_003 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
-        override_non_default_asn_cls_dict=frozendict(
-            {ASNs.VICTIM.value: BGPExport2SomePrefixSpecific}
-        )
     ),
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,

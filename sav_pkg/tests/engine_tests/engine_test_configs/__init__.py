@@ -7,6 +7,8 @@ from .config_004 import config_004
 from .config_005 import config_005
 from .config_006 import config_006
 from .config_007 import config_007
+from .config_008 import config_008
+from .config_009 import config_009
 
 # SAV Policy Tests
 from .loose_000 import loose_000
@@ -30,6 +32,8 @@ engine_test_configs = [
     # config_005,
     # config_006,
     config_007,
+    config_008,
+    config_009,
     # loose_000,
     # strict_000,
     # fp_000,

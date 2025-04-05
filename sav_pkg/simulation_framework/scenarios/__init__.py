@@ -6,6 +6,7 @@ from .sav_scenario_config import SAVScenarioConfig
 from .aspa_e2s_scenario import SAVScenarioASPAExport2Some
 from .aspa_e2s_scenario_roa import SAVScenarioASPAExport2SomeROA
 from .sav_scenario_no_ann import SAVScenarioNoAnnouncements
+from .sav_scenario_e2s import SAVScenarioExport2Some
 
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "SAVScenarioASPAExport2Some",
     "SAVScenarioASPAExport2SomeROA",
     "SAVScenarioNoAnnouncements",
+    "SAVScenarioExport2Some"
 ]

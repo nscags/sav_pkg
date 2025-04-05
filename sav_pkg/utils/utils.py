@@ -127,22 +127,24 @@ def get_applied_interfaces(
 
 def get_export_to_some_dict(
     e2s_policy,
-    json_path: Path = Path.home() / "export_to_some.json",
+    json_path: Path = Path.home() / "mh_2p_export_to_some_prefixes.json",
 ):
     if not json_path.exists():
         print("oh no")
-        raise FileNotFoundError(f"File: 'export_to_some.json' not found in {json_path}.")
+        raise FileNotFoundError(f"File not found: {json_path}")
 
-    with open(json_path, 'r') as f:
-        export2some_asns = json.load(f)
+    with open(json_path, "r") as f:
+        export2some_raw = json.load(f)
 
-    export2some_asn_cls_dict = frozendict({asn: e2s_policy for asn in export2some_asns})
+    export2some_asn_cls_dict = frozendict({
+        int(asn): e2s_policy for asn in export2some_raw.keys()
+    })
 
     return export2some_asn_cls_dict
 
 
 def get_e2s_asn_provider_weight_dict(
-    json_path: Path = Path.home() / "asn_e2s_provider_weights.json",
+    json_path: Path = Path.home() / "e2s_asn_provider_weights.json",
 ) -> frozendict:
     """
     Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
@@ -153,7 +155,7 @@ def get_e2s_asn_provider_weight_dict(
     
     if not json_path.exists():
         print("oh no")
-        raise FileNotFoundError(f"File: 'asn_e2s_provider_weights.json' not found in {json_path}.")
+        raise FileNotFoundError(f"File: 'e2s_asn_provider_weights.json' not found in {json_path}.")
 
     with open(json_path, "r") as f:
         raw_data = json.load(f)

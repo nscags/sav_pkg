@@ -13,10 +13,6 @@ from .bgp import BGPExport2Some
 from .bgp import BGPFullExport2Some
 from .bgp import BGPExport2SomeSuperSubPrefix
 from .bgp import BGPFullExport2SomeSuperSubPrefix
-from .bgp import BGPExport2SomePrefixSpecific
-from .bgp import BGPFullExport2SomePrefixSpecific
-from .bgp import BGPExport2SomePathPrepending
-from .bgp import BGPFullExport2SomePathPrepending
 
 
 from .aspa import ASPAExport2Some
@@ -37,10 +33,6 @@ __all__ = [
     "BGPFullExport2Some",
     "BGPExport2SomeSuperSubPrefix",
     "BGPFullExport2SomeSuperSubPrefix",
-    "BGPExport2SomePrefixSpecific",
-    "BGPFullExport2SomePrefixSpecific",
-    "BGPExport2SomePathPrepending",
-    "BGPFullExport2SomePathPrepending",
     "ASPAFullExport2Some",
     "ASPAExport2Some",
 ]

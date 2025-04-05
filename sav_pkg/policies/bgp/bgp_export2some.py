@@ -46,9 +46,9 @@ class BGPExport2Some(BGP):
         if provider_weights:
             valid_weights = {p: provider_weights.get(p, DEFAULT_EXPORT_WEIGHT) for p in providers}
             if valid_weights:
-                max_weight = max(valid_weights.values())
-                top_providers = [p for p, w in valid_weights.items() if w == max_weight]
-                export_set.add(random.choice(top_providers))
+                providers_list = list(valid_weights.keys())
+                weights_list = list(valid_weights.values())
+                export_set.add(random.choices(providers_list, weights=weights_list, k=1)[0])
         else:
             export_set.add(random.choice(providers))
 
@@ -117,12 +117,14 @@ class BGPExport2Some(BGP):
     ):
         # NOTE: using this method means victim MUST use dedicated prefix
         if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
-            # and add prepending stuff here
             other_ann = ann.copy({"prefix": "9.9.0.0/16"})
         else:
             other_ann = ann
         
         for neighbor in other_neighbors:
+            # If the neighbor is weighted with 0, do not export anything to them
+            if self.e2s_asn_provider_weight_dict.get(self.as_.asn, {}).get(neighbor.asn) == 0:
+                continue
             # Victim/Legit Sender AS propagates a new announcement with separate prefix to all providers which
             # did not recieve the original announcement
             # some policies use route info from any prefix (but same origin AS) to create rpf list
@@ -130,11 +132,12 @@ class BGPExport2Some(BGP):
                 neighbor, other_ann
             ):
                 # though transit ASes can perform path prepending, we only have measurement data for origin ASes
+                other_ann2 = other_ann
                 if (self._path_prepending(neighbor) 
                     and ann.recv_relationship == Relationships.ORIGIN 
                     and ann.prefix == Prefixes.VICTIM.value
                 ):
                     as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
-                    other_ann = other_ann.copy({"as_path": as_path})
+                    other_ann2 = other_ann.copy({"as_path": as_path})
 
-                self._process_outgoing_ann(neighbor, other_ann, propagate_to, send_rels)
+                self._process_outgoing_ann(neighbor, other_ann2, propagate_to, send_rels)

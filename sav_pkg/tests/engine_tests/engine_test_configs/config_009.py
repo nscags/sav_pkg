@@ -1,4 +1,4 @@
-from .as_graph_info_001 import as_graph_info_001
+from .as_graph_info_003 import as_graph_info_003
 
 from frozendict import frozendict
 
@@ -18,36 +18,54 @@ from sav_pkg.policies.bgp.bgp_export2some import BGPExport2Some
 desc = "Single reflector, e2s"
 
 """
-  "17": {
-    "6461": 0.25,
-    "19782": 1.0
+  "100": {
+    "4193": 0.0,
+    "10580": 0.16666666666666666,
+    "16158": 0.16666666666666666,
+    "46197": 0.16666666666666666,
+    "46301": 0.16666666666666666,
+    "329381": 0.16666666666666666,
+    "395727": 0.16666666666666666
   },
 
-    "17": {
-        "6461": [
+    "100": {
+        "4193": [],
+        "10580": [
             true
         ],
-        "19782": [
+        "16158": [
+            false
+        ],
+        "46197": [
+            false
+        ],
+        "46301": [
+            false
+        ],
+        "329381": [
+            false
+        ],
+        "395727": [
             false
         ]
     },
 """
 
-config_007 = EngineTestConfig(
-    name="config_007",
+config_009 = EngineTestConfig(
+    name="config_009",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
-        override_victim_asns=frozenset({17}),
+        override_victim_asns=frozenset({100}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
         override_sav_asns=frozenset({ASNs.REFLECTOR.value}),
         override_non_default_asn_cls_dict=frozendict(
-            {17: BGPExport2Some}
+            {100: BGPExport2Some}
         )
     ),
-    as_graph_info=as_graph_info_001,
+    as_graph_info=as_graph_info_003,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
     MetricTrackerCls=SAVMetricTracker,
