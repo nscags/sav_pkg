@@ -12,8 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
-    SAVScenario,
-    SAVScenarioCPPPercentAdopt,
+    SAVScenarioExport2Some,
     SAVASGraphAnalyzer, 
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
@@ -47,88 +46,80 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
-                AdoptPolicyCls=BGPExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="loose",
                 hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
-                AdoptPolicyCls=BGPExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="strict",
                 hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
-                AdoptPolicyCls=BGPFullExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="feasible",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
-                AdoptPolicyCls=BGPFullExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_b",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
-                AdoptPolicyCls=BGPFullExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_a",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
-                AdoptPolicyCls=BGPFullExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_a_wo_peers",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
-                AdoptPolicyCls=BGPFullExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="rfc8704",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioCPPPercentAdopt,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
-                AdoptPolicyCls=BGPFullExport2Some,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="refined_alg_a",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
             ),
         ),
-        output_dir=Path(f"~/sav/results/500_5_rda_e2s").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/200_5_rda_e2s").expanduser(),
+        num_trials=200,
         parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
