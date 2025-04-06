@@ -127,7 +127,7 @@ def get_applied_interfaces(
 
 def get_export_to_some_dict(
     e2s_policy,
-    json_path: Path = Path.home() / "mh_2p_export_to_some_prefixes.json",
+    json_path: Path = Path.home() / "e2s_asn_provider_weights.json",
 ):
     if not json_path.exists():
         print("oh no")

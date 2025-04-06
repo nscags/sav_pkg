@@ -1,9 +1,8 @@
 from pathlib import Path
 from time import time
-import random
 
 from bgpy.simulation_framework import Simulation
-from bgpy.simulation_engine import BGP, BGPFull
+from bgpy.simulation_engine import BGP#, BGPFull
 
 import os
 import sys
@@ -12,26 +11,32 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
-    SAVScenario,
+    SAVScenarioExport2Some,
     SAVASGraphAnalyzer, 
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
     LooseuRPF,
-    StrictuRPF,
-    FeasiblePathuRPF,
-    EnhancedFeasiblePathuRPFAlgB,
-    EnhancedFeasiblePathuRPFAlgA,
-    EnhancedFeasiblePathuRPFAlgAwoPeers,
-    RFC8704,
-    RefinedAlgA,
+    # StrictuRPF,
+    # FeasiblePathuRPF,
+    # EnhancedFeasiblePathuRPFAlgB,
+    # EnhancedFeasiblePathuRPFAlgA,
+    # EnhancedFeasiblePathuRPFAlgAwoPeers,
+    # RFC8704,
+    # RefinedAlgA,
 )
-from sav_pkg.utils.utils import get_metric_keys
+from sav_pkg.policies.bgp import (
+    BGPExport2Some,
+    # BGPFullExport2Some,
+)
+from sav_pkg.utils.utils import get_metric_keys, get_export_to_some_dict
 
 
 def main():
     # Simulation for the paper
-    random.seed(os.environ['JOB_COMPLETION_INDEX'])
+    # random.seed(os.environ['JOB_COMPLETION_INDEX'])
+    bgp_e2s_asn_cls_dict = get_export_to_some_dict(e2s_policy=BGPExport2Some)
+    # bgpfull_e2s_asn_cls_dict = get_export_to_some_dict(e2s_policy=BGPFullExport2Some)
     sim = Simulation(
         percent_adoptions = (
             0.0,
@@ -43,73 +48,18 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
                 num_reflectors=1,
                 scenario_label="loose",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGP,
-                BaseSAVPolicyCls=StrictuRPF,
-                reflector_default_adopters=True,
-                num_reflectors=1,
-                scenario_label="strict",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=FeasiblePathuRPF,
-                reflector_default_adopters=True,
-                num_reflectors=1,
-                scenario_label="feasible",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
-                reflector_default_adopters=True,
-                num_reflectors=1,
-                scenario_label="efp_alg_b",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
-                reflector_default_adopters=True,
-                num_reflectors=1,
-                scenario_label="efp_alg_a",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
-                reflector_default_adopters=True,
-                num_reflectors=1,
-                scenario_label="efp_alg_a_wo_peers",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RFC8704,
-                reflector_default_adopters=True,
-                num_reflectors=1,
-                scenario_label="rfc8704",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RefinedAlgA,
-                reflector_default_adopters=True,
-                num_reflectors=1,
-                scenario_label="refined_alg_a",
+                hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
             ),
         ),
-        output_dir=Path(f"~/sav/results/3_1_rda").expanduser(),
-        num_trials=3,
-        parse_cpus=1,
+        output_dir=Path(f"~/sav/results/test").expanduser(),
+        num_trials=1,
+        parse_cpus=2,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

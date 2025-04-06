@@ -35,7 +35,7 @@ from sav_pkg.utils.utils import get_metric_keys, get_export_to_some_dict
 
 def main():
     # Simulation for the paper
-    random.seed(os.environ['JOB_COMPLETION_INDEX'])
+    # random.seed(os.environ['JOB_COMPLETION_INDEX'])
     bgp_e2s_asn_cls_dict = get_export_to_some_dict(e2s_policy=BGPExport2Some)
     bgpfull_e2s_asn_cls_dict = get_export_to_some_dict(e2s_policy=BGPFullExport2Some)
     sim = Simulation(
@@ -53,7 +53,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="loose",
                 hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
             ),
@@ -62,7 +62,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="strict",
                 hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
             ),
@@ -71,7 +71,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="feasible",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
@@ -80,7 +80,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="efp_alg_b",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
@@ -89,7 +89,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="efp_alg_a",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
@@ -98,7 +98,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="efp_alg_a_wo_peers",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
@@ -107,7 +107,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="rfc8704",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
@@ -116,14 +116,14 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
                 reflector_default_adopters=True,
-                num_reflectors=5,
+                num_reflectors=1,
                 scenario_label="refined_alg_a",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/10_5_rda_e2s").expanduser(),
-        num_trials=10,
-        parse_cpus=1,
+        output_dir=Path(f"~/sav/results/1_1_rda_e2s").expanduser(),
+        num_trials=1,
+        parse_cpus=2,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

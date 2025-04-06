@@ -37,7 +37,7 @@ class SAVScenario(Scenario):
 
         Any kwarg prefixed with default is only required for the test suite/YAML
         """
-
+        print("Initializing SAVScenario", flush=True)
         # Config's ScenarioCls must be the same as instantiated Scenario
         assert scenario_config.ScenarioCls == self.__class__, (
             "The config's scenario class is "
@@ -88,6 +88,7 @@ class SAVScenario(Scenario):
         ] = self._get_ordered_prefix_subprefix_dict()
 
         self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
+        print("Initializing SAVScenario done", flush=True)
 
     ##################
     # Get Reflectors #

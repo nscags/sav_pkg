@@ -12,12 +12,13 @@ from sav_pkg.enums import Prefixes
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
 
+    DEFAULT_EXPORT_WEIGHT = 0.5739
+
     def _provider_export_control(
         self
     ) -> set:  
-        DEFAULT_EXPORT_WEIGHT = 0.5739
 
-        e2s_asn_provider_weight_dict: frozendict = get_e2s_asn_provider_weight_dict(self.as_.asn)
+        e2s_asn_provider_weight_dict = self._cached_provider_weights
 
         providers = self.as_.provider_asns
 
@@ -26,7 +27,7 @@ class BGPExport2Some(BGP):
             # if provider doesn't have a weight
             # due to differences between measurement data and CAIDA topology
             # default to the avg percent of of providers exported to per AS
-            weight = (e2s_asn_provider_weight_dict or {}).get(provider, DEFAULT_EXPORT_WEIGHT)
+            weight = (e2s_asn_provider_weight_dict or {}).get(provider, self.DEFAULT_EXPORT_WEIGHT)
             if random.random() < weight:
                 export_set.add(provider)
 
@@ -35,7 +36,7 @@ class BGPExport2Some(BGP):
 
         # Ensure that at least one provider is selected
         if e2s_asn_provider_weight_dict:
-            valid_weights = {p: e2s_asn_provider_weight_dict.get(p, DEFAULT_EXPORT_WEIGHT) for p in providers}
+            valid_weights = {p: e2s_asn_provider_weight_dict.get(p, self.DEFAULT_EXPORT_WEIGHT) for p in providers}
             if valid_weights:
                 providers_list = list(valid_weights.keys())
                 weights_list = list(valid_weights.values())
@@ -58,8 +59,7 @@ class BGPExport2Some(BGP):
         self,
         provider,
     ) -> bool:
-        
-        e2s_asn_provider_path_prepending_dict: frozendict = get_e2s_asn_provider_prepending_dict(self.as_.asn)
+        e2s_asn_provider_path_prepending_dict = self._cached_prependings
 
         if not e2s_asn_provider_path_prepending_dict:
             return False
@@ -68,10 +68,7 @@ class BGPExport2Some(BGP):
         if not prepending_list:
             return False
         
-        if len(prepending_list) > 1:
-            return random.choice(prepending_list)
-        else:
-            return prepending_list[0]
+        return random.choice(prepending_list)
 
     def _propagate(
         self: "BGPExport2Some",
@@ -123,7 +120,7 @@ class BGPExport2Some(BGP):
         else:
             other_ann = ann
         
-        e2s_asn_provider_weight_dict: frozendict = get_e2s_asn_provider_weight_dict(self.as_.asn)
+        e2s_asn_provider_weight_dict = self._cached_provider_weights
         for neighbor in other_neighbors:
             # If the neighbor is weighted with 0, do not export anything to them
             if e2s_asn_provider_weight_dict.get(neighbor.asn) == 0:
@@ -144,3 +141,15 @@ class BGPExport2Some(BGP):
                     other_ann2 = other_ann.copy({"as_path": as_path})
 
                 self._process_outgoing_ann(neighbor, other_ann2, propagate_to, send_rels)
+
+    @property
+    def _cached_provider_weights(self) -> frozendict:
+        if not hasattr(self, "_provider_weights_cache"):
+            self._provider_weights_cache = get_e2s_asn_provider_weight_dict(self.as_.asn)
+        return self._provider_weights_cache
+    
+    @property
+    def _cached_prependings(self) -> frozendict:
+        if not hasattr(self, "_prepending_cache"):
+            self._prepending_cache = get_e2s_asn_provider_prepending_dict(self.as_.asn)
+        return self._prepending_cache
