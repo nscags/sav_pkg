@@ -144,6 +144,7 @@ def get_export_to_some_dict(
 
 
 def get_e2s_asn_provider_weight_dict(
+    asn: int,
     json_path: Path = Path.home() / "e2s_asn_provider_weights.json",
 ) -> frozendict:
     """
@@ -160,16 +161,20 @@ def get_e2s_asn_provider_weight_dict(
     with open(json_path, "r") as f:
         raw_data = json.load(f)
 
+    raw_provider_weights = raw_data.get(str(asn))
+    if raw_provider_weights is None:
+        return frozendict() 
+
     asn_e2s_provider_weight_dict = {
-        int(asn): frozendict({int(provider): float(weight) for provider, weight in providers.items()})
-        for asn, providers in raw_data.items()
+        int(provider): float(weight)
+        for provider, weight in raw_provider_weights.items()
     }
 
-    # {asn: provider_asn: weight}
     return frozendict(asn_e2s_provider_weight_dict)
 
 
 def get_e2s_asn_provider_prepending_dict(
+    asn: int,
     json_path: Path = Path.home() / "mh_2p_export_to_some_prepending.json",
 ) -> frozendict:
     """
@@ -183,10 +188,13 @@ def get_e2s_asn_provider_prepending_dict(
     with open(json_path, "r") as f:
         raw_data = json.load(f)
 
+    raw_provider_prepending = raw_data.get(str(asn))
+    if raw_provider_prepending is None:
+        return frozendict()  # ASN not present in data
+
     e2s_asn_provider_prepending_dict = {
-        int(asn): frozendict({int(provider): list(prepending) for provider, prepending in providers.items()})
-        for asn, providers in raw_data.items()
+        int(provider): list(prepending)  
+        for provider, prepending in raw_provider_prepending.items()
     }
 
-    # {asn: provider_asn: [path prepending] (list(bool))}
     return frozendict(e2s_asn_provider_prepending_dict)

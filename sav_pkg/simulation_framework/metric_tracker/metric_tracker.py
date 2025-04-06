@@ -177,8 +177,9 @@ class SAVMetricTracker(MetricTracker):
         The reason we don't simply save the engine to track metrics later
         is because the engines are very large and this would take a lot longer
         """
-        # if scenario.scenario_config.BaseSAVPolicyCls:
-        #     print(f"\nTracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}\n", flush=True)
+        if scenario.scenario_config.BaseSAVPolicyCls:
+            print(f"\nTracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}\n", flush=True)
+        
         self._track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,

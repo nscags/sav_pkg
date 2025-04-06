@@ -31,7 +31,7 @@ from sav_pkg.utils.utils import get_metric_keys
 
 def main():
     # Simulation for the paper
-    # random.seed(os.environ['JOB_COMPLETION_INDEX'])
+    random.seed(os.environ['JOB_COMPLETION_INDEX'])
     sim = Simulation(
         percent_adoptions = (
             0.0,

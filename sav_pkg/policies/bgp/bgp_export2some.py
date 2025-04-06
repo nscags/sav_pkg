@@ -12,22 +12,13 @@ from sav_pkg.enums import Prefixes
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
 
-    def __init__(
-        self, 
-        *args,
-        **kwargs
-    ) -> None:
-        self.e2s_asn_provider_weight_dict: frozendict = get_e2s_asn_provider_weight_dict()
-        self.e2s_asn_provider_path_prepending_dict: frozendict = get_e2s_asn_provider_prepending_dict()
-        super().__init__(*args, **kwargs)
-
     def _provider_export_control(
         self
     ) -> set:  
         DEFAULT_EXPORT_WEIGHT = 0.5739
 
-        asn = self.as_.asn
-        provider_weights = self.e2s_asn_provider_weight_dict.get(asn)
+        e2s_asn_provider_weight_dict: frozendict = get_e2s_asn_provider_weight_dict(self.as_.asn)
+
         providers = self.as_.provider_asns
 
         export_set = set()
@@ -35,7 +26,7 @@ class BGPExport2Some(BGP):
             # if provider doesn't have a weight
             # due to differences between measurement data and CAIDA topology
             # default to the avg percent of of providers exported to per AS
-            weight = (provider_weights or {}).get(provider, DEFAULT_EXPORT_WEIGHT)
+            weight = (e2s_asn_provider_weight_dict or {}).get(provider, DEFAULT_EXPORT_WEIGHT)
             if random.random() < weight:
                 export_set.add(provider)
 
@@ -43,8 +34,8 @@ class BGPExport2Some(BGP):
             return export_set
 
         # Ensure that at least one provider is selected
-        if provider_weights:
-            valid_weights = {p: provider_weights.get(p, DEFAULT_EXPORT_WEIGHT) for p in providers}
+        if e2s_asn_provider_weight_dict:
+            valid_weights = {p: e2s_asn_provider_weight_dict.get(p, DEFAULT_EXPORT_WEIGHT) for p in providers}
             if valid_weights:
                 providers_list = list(valid_weights.keys())
                 weights_list = list(valid_weights.values())
@@ -58,11 +49,13 @@ class BGPExport2Some(BGP):
         self,
         provider,
     ) -> bool:
-        provider_prepending_dict = self.e2s_asn_provider_path_prepending_dict.get(self.as_.asn)
-        if not provider_prepending_dict:
+        
+        e2s_asn_provider_path_prepending_dict: frozendict = get_e2s_asn_provider_prepending_dict(self.as_.asn)
+
+        if not e2s_asn_provider_path_prepending_dict:
             return False
         
-        prepending_list = provider_prepending_dict.get(provider.asn)
+        prepending_list = e2s_asn_provider_path_prepending_dict.get(provider.asn)
         if not prepending_list:
             return False
         
@@ -121,9 +114,10 @@ class BGPExport2Some(BGP):
         else:
             other_ann = ann
         
+        e2s_asn_provider_weight_dict: frozendict = get_e2s_asn_provider_weight_dict(self.as_.asn)
         for neighbor in other_neighbors:
             # If the neighbor is weighted with 0, do not export anything to them
-            if self.e2s_asn_provider_weight_dict.get(self.as_.asn, {}).get(neighbor.asn) == 0:
+            if e2s_asn_provider_weight_dict.get(neighbor.asn) == 0:
                 continue
             # Victim/Legit Sender AS propagates a new announcement with separate prefix to all providers which
             # did not recieve the original announcement

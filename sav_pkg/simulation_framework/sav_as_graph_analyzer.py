@@ -37,6 +37,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Analyzes as graph to perform data plane traceback
         """
+        print("Starting data plane analysis:", flush=True)
 
         for victim_asn in self.scenario.victim_asns:
             victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
@@ -67,26 +68,6 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                 self._propagate_packet(
                     as_obj, source_prefix, prev_hop, origin, dst
                 )
-
-        # send packets to all neighbors, typically used for testing
-        # for ann in as_obj.policy._local_rib.data.values():
-        #     if ann.origin in self.scenario.reflector_asns:
-        #         dst = ann.prefix
-        #         for neighbor_as_obj in as_obj.neighbors:
-        #             self._propagate_packet(
-        #                 neighbor_as_obj, source_prefix, as_obj, origin, dst
-        #             )
-
-        # Manual config for fp_004 (false positive e2a)
-        # we need AS to select unfavorable route, since this is
-        # only used for this one config, it can remain manual for now
-        # for ann in as_obj.policy._local_rib.data.values():
-        #     if ann.origin in self.scenario.reflector_asns:
-        #         dst = ann.prefix
-        #         next_as = self.engine.as_graph.as_dict[4]
-        #         self._propagate_packet(
-        #             next_as, source_prefix, as_obj, origin, dst
-        #         )
 
     def _get_attacker_outcome_data_plane(
         self,
@@ -248,18 +229,4 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                         (reflector_asn, None, None, victim_asn)
                     ] = Outcomes.DISCONNECTED.value
                     assert not self._has_ann(victim_asn, reflector_asn)
-
-        # connected_reflectors = []
-        # for victim_asn in self.scenario.victim_asns:
-        #     victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
-        #     for prefix, ann_info in victim_as_obj.policy._local_rib.data.items():
-        #         for reflector_asn in self.scenario.reflector_asns:
-        #             if reflector_asn == ann_info.origin:
-        #                 connected_reflectors.append(reflector_asn)
-        
-        # Alterantively, look at the victim and attacker asns,
-        # all instances in which an AS does not contain a reflector's
-        # ann in their local_rib, said reflector in disconnected
-        # we can compare this result with the current disconnection rate and compare
-        # if the same, fine
-        # if different, i have no idea but def need to fix then
+                    

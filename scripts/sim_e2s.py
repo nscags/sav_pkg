@@ -26,7 +26,10 @@ from sav_pkg.policies.sav import (
     RFC8704,
     RefinedAlgA,
 )
-from sav_pkg.policies.bgp import BGPExport2Some, BGPFullExport2Some
+from sav_pkg.policies.bgp import (
+    BGPExport2Some,
+    BGPFullExport2Some,
+)
 from sav_pkg.utils.utils import get_metric_keys, get_export_to_some_dict
 
 
@@ -61,7 +64,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="strict",
-                hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
+                hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
@@ -70,7 +73,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="feasible",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
@@ -79,7 +82,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_b",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
@@ -88,7 +91,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_a",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
@@ -97,7 +100,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_a_wo_peers",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
@@ -106,7 +109,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="rfc8704",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
@@ -115,12 +118,12 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="refined_alg_a",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/200_5_rda_e2s").expanduser(),
-        num_trials=200,
-        parse_cpus=20,
+        output_dir=Path(f"~/sav/results/10_5_rda").expanduser(),
+        num_trials=10,
+        parse_cpus=1,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
