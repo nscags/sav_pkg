@@ -121,7 +121,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/10_5_rda").expanduser(),
+        output_dir=Path(f"~/sav/results/10_5_rda_e2s").expanduser(),
         num_trials=10,
         parse_cpus=1,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

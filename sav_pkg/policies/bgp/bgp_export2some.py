@@ -39,7 +39,16 @@ class BGPExport2Some(BGP):
             if valid_weights:
                 providers_list = list(valid_weights.keys())
                 weights_list = list(valid_weights.values())
-                export_set.add(random.choices(providers_list, weights=weights_list, k=1)[0])
+                if sum(weights_list) > 0:
+                    export_set.add(random.choices(providers_list, weights=weights_list, k=1)[0])
+                else:
+                    # All weights are 0, just pick one provider at random
+                    # I don't know if this is an error somewhere in my code or if its the data (probably not)
+                    # but this is needed to prevent errors
+                    # if all weights are 0, then an AS would export to none of its providers
+                    # for a mh AS, this doesn't really make sense 
+                    # (technically mh includes peer interfaces, so it could work)
+                    export_set.add(random.choice(providers_list))
         else:
             export_set.add(random.choice(providers))
 
