@@ -51,10 +51,10 @@ def get_metric_keys(
 
 
 # NOTE: for BAR SAV, ROV adoption doesn't actually matter
-#       Only ROA adoption (for Victim/Legit Sender) has an impact 
+#       Only ROA adoption (for Victim/Legit Sender) has an impact
 #       Leaving here for now, may be useful for SAV attacks paper
-#       
-#       Addtionally, both attacker/victim/reflectors all announce 
+#
+#       Addtionally, both attacker/victim/reflectors all announce
 #       their own legitimate prefixes, so ROV wouldn't be useful in
 #       this context, again will probably be useful in SAV attacks paper
 def get_real_world_rov_asn_cls_dict(
@@ -102,15 +102,15 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
 })
 
 def get_applied_interfaces(
-    as_obj: "AS", 
-    scenario, 
+    as_obj: "AS",
+    scenario,
     sav_policy
 ):
     """Gets the applied interfaces based on the given SAV policy."""
-    
+
     interfaces = (
-        scenario.scenario_config.override_default_interface_dict.get(sav_policy.name) 
-        if scenario.scenario_config.override_default_interface_dict 
+        scenario.scenario_config.override_default_interface_dict.get(sav_policy.name)
+        if scenario.scenario_config.override_default_interface_dict
         else DEFAULT_SAV_POLICY_INTERFACE_DICT[sav_policy.name]
     )
 
@@ -119,9 +119,9 @@ def get_applied_interfaces(
         Interfaces.PEER.value: as_obj.peer_asns,
         Interfaces.PROVIDER.value: as_obj.provider_asns,
     }
-    
+
     applied_interfaces = {interface_map[i] for i in interfaces if i in interface_map}
-    
+
     return applied_interfaces
 
 
@@ -142,6 +142,19 @@ def get_export_to_some_dict(
 
     return export2some_asn_cls_dict
 
+def get_e2s(
+    json_path: Path = Path.home() / "e2s_asn_provider_weights.json",
+) -> frozendict:
+    with open(json_path, "r") as f:
+        raw_data = json.load(f)
+        formatted_data = dict()
+        for asn, inner_dict in raw_data.items():
+            try:
+                formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
+            except TypeError:
+                formatted_data[int(asn)] = {int(k): [bool(x) for x in v] for k, v in inner_dict.items()}
+        return frozendict(formatted_data)
+
 
 def get_e2s_asn_provider_weight_dict(
     asn: int,
@@ -150,10 +163,10 @@ def get_e2s_asn_provider_weight_dict(
     """
     Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
 
-    Weights are percentage of unique IPv4 prefixes received on that interface divided 
+    Weights are percentage of unique IPv4 prefixes received on that interface divided
     by the total number of unique prefixes exported by the AS.
     """
-    
+
     if not json_path.exists():
         print("oh no")
         raise FileNotFoundError(f"File: 'e2s_asn_provider_weights.json' not found in {json_path}.")
@@ -163,7 +176,7 @@ def get_e2s_asn_provider_weight_dict(
 
     raw_provider_weights = raw_data.get(str(asn))
     if raw_provider_weights is None:
-        return frozendict() 
+        return frozendict()
 
     asn_e2s_provider_weight_dict = {
         int(provider): float(weight)
@@ -180,7 +193,7 @@ def get_e2s_asn_provider_prepending_dict(
     """
     Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
     """
-    
+
     if not json_path.exists():
         print("oh no")
         raise FileNotFoundError(f"File: 'asn_e2s_provider_weights.json' not found in {json_path}.")
@@ -193,7 +206,7 @@ def get_e2s_asn_provider_prepending_dict(
         return frozendict()  # ASN not present in data
 
     e2s_asn_provider_prepending_dict = {
-        int(provider): list(prepending)  
+        int(provider): list(prepending)
         for provider, prepending in raw_provider_prepending.items()
     }
 

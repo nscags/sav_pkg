@@ -13,10 +13,10 @@ class BaseSAVPolicy(ABC):
 
     @staticmethod
     def validate(
-        as_obj: "AS", 
-        source_prefix: str, 
-        prev_hop: "AS", 
-        engine: "SimulationEngine", 
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
         scenario,
     ) -> bool:
         """
@@ -27,7 +27,7 @@ class BaseSAVPolicy(ABC):
 
         if any(prev_hop.asn in subset for subset in applied_interfaces):
             return sav_policy._validate(
-                as_obj, 
+                as_obj,
                 source_prefix,
                 prev_hop,
                 engine,
@@ -35,7 +35,7 @@ class BaseSAVPolicy(ABC):
             )
         else:
             return True
-                
+
     @staticmethod
     @abstractmethod
     def _validate(self, *args, **kwargs) -> bool:
