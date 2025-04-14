@@ -11,14 +11,12 @@ from sav_pkg.utils.utils import get_e2s_asn_provider_weight_dict, get_e2s_asn_pr
 from sav_pkg.enums import Prefixes
 
 
-e2s_prefix = get_e2s(Path.home() / "e2s_asn_provider_weights.json")
-e2s_prepending = get_e2s(Path.home() / "Desktop" / "mh_2p_export_to_some_prepending.json")
-
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
 
     DEFAULT_EXPORT_WEIGHT = 0.5739
-    data = {}
+    e2s_prefix = get_e2s(Path.home() / "e2s_asn_provider_weights.json")
+    e2s_prepending = get_e2s(Path.home() / "Desktop" / "mh_2p_export_to_some_prepending.json")
 
     def _provider_export_control(
         self
@@ -150,8 +148,8 @@ class BGPExport2Some(BGP):
 
     @cached_property
     def _cached_provider_weights(self) -> frozendict:
-        return e2s_prefix[self.as_.asn]
+        return self.e2s_prefix[self.as_.asn]
 
     @cached_property
     def _cached_prependings(self) -> frozendict:
-        return e2s_prepending[self.as_.asn]
+        return self.e2s_prepending[self.as_.asn]
