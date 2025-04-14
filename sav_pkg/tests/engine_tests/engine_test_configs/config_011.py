@@ -13,7 +13,7 @@ from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetric
 from sav_pkg.utils.diagram import SAVDiagram
 
 
-desc = "Single reflector"
+desc = "Testing e2s scenario will default to random edge AS if no hardcoded_asn_cls_dict"
 
 config_011 = EngineTestConfig(
     name="config_011",

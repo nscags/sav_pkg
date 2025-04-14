@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class BaseSAVPolicy(ABC):
-    name: str = "NoSAV"
+    name: str = "No SAV"
 
     @staticmethod
     def validate(

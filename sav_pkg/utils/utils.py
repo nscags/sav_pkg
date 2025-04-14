@@ -89,7 +89,7 @@ def get_real_world_rov_asn_cls_dict(
 
 
 DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
-    "NoSAV": frozenset(),
+    "No SAV": frozenset(),
     "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
@@ -144,7 +144,6 @@ def get_export_to_some_dict(
 
 
 def get_e2s_asn_provider_weight_dict(
-    asn: int,
     json_path: Path = Path.home() / "e2s_asn_provider_weights.json",
 ) -> frozendict:
     """
@@ -161,20 +160,13 @@ def get_e2s_asn_provider_weight_dict(
     with open(json_path, "r") as f:
         raw_data = json.load(f)
 
-    raw_provider_weights = raw_data.get(str(asn))
-    if raw_provider_weights is None:
-        return frozendict() 
-
-    asn_e2s_provider_weight_dict = {
-        int(provider): float(weight)
-        for provider, weight in raw_provider_weights.items()
-    }
-
-    return frozendict(asn_e2s_provider_weight_dict)
+    formatted_data = dict()
+    for asn, inner_dict in raw_data.items():
+        formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
+    return frozendict(formatted_data)
 
 
 def get_e2s_asn_provider_prepending_dict(
-    asn: int,
     json_path: Path = Path.home() / "mh_2p_export_to_some_prepending.json",
 ) -> frozendict:
     """
@@ -188,13 +180,7 @@ def get_e2s_asn_provider_prepending_dict(
     with open(json_path, "r") as f:
         raw_data = json.load(f)
 
-    raw_provider_prepending = raw_data.get(str(asn))
-    if raw_provider_prepending is None:
-        return frozendict()  # ASN not present in data
-
-    e2s_asn_provider_prepending_dict = {
-        int(provider): list(prepending)  
-        for provider, prepending in raw_provider_prepending.items()
-    }
-
-    return frozendict(e2s_asn_provider_prepending_dict)
+    formatted_data = dict()
+    for asn, inner_dict in raw_data.items():
+        formatted_data[int(asn)] = {int(k): [bool(x) for x in v] for k, v in inner_dict.items()}
+    return frozendict(formatted_data)

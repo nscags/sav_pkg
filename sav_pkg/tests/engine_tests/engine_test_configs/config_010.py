@@ -15,7 +15,7 @@ from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetric
 from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.policies.bgp.bgp_export2some import BGPExport2Some
 
-desc = "Single reflector, e2s"
+desc = "Testing that e2s scenario randomly samples from hardcoded_asn_cls_dict"
 
 """
   "100": {

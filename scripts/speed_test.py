@@ -26,20 +26,18 @@ def main():
     sim = Simulation(
         percent_adoptions=(
             SpecialPercentAdoptions.ONLY_ONE,
-            0.1,
-            0.2,
-            0.5,
-            0.8,
-            0.99,
+            # 0.1,
+            # 0.2,
+            # 0.5,
+            # 0.8,
+            # 0.99,
             # Using only 1 AS not adopting causes extreme variance
             # SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
         scenario_configs=(
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
-                BaseSAVPolicyCls=LooseuRPF,
-                reflector_default_adopters=True,
-                scenario_label="loose",
+                scenario_label="speed_test",
                 hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
             ),
         ),
@@ -56,23 +54,10 @@ if __name__ == "__main__":
     profiler.enable()
     main()
     print(f"{time.perf_counter() - start:.2f}s")
-    # v9 Normal 61.6s
-    # v8 68.53s
-    # v9 again only 63.88s
-    # CIBUILDWHEEL=1 pip install frozendict - 64s
-    # After removing 5% info tag from announcements
     profiler.disable()
-
-    # Create a StringIO object to capture the profiling results
     s = io.StringIO()
-
-    # Create a Stats object with the profiling results
     sortby = 'cumtime'
     ps = pstats.Stats(profiler, stream=s).sort_stats(sortby)
-
-    # Print the profiling results to the StringIO object
     ps.print_stats()
-
-    # Write the profiling results to a file
-    with open('~/sav/results/speed_test/speed_test.txt', 'w') as f:
+    with Path('~/sav_speed_test.txt').expanduser().open('w+') as f:
         f.write(s.getvalue())

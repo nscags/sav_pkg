@@ -13,9 +13,10 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
+from sav_pkg.policies.sav import LooseuRPF
 
 
-desc = "tmp"
+desc = "Single Reflector, Loose uRPF"
 
 config_001 = EngineTestConfig(
     name="config_001",
@@ -23,6 +24,7 @@ config_001 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
+        BaseSAVPolicyCls=LooseuRPF,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
