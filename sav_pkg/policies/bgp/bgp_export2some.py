@@ -1,11 +1,14 @@
 import random
-from frozendict import frozendict
 
 from bgpy.simulation_engine.policies.bgp import BGP
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import Announcement as Ann
 
-from sav_pkg.utils.utils import get_e2s_asn_provider_weight_dict, get_e2s_asn_provider_prepending_dict
+from sav_pkg.utils.utils import (
+    get_e2s_asn_provider_weight_dict, 
+    get_e2s_asn_provider_prepending_dict,
+    get_e2s_superprefix_weight_dict,
+)
 from sav_pkg.enums import Prefixes
 
 
@@ -15,11 +18,15 @@ class BGPExport2Some(BGP):
     DEFAULT_EXPORT_WEIGHT = 0.5739
     e2s_asn_provider_weight_dict = get_e2s_asn_provider_weight_dict()
     e2s_asn_provider_prepending_dict = get_e2s_asn_provider_prepending_dict()
+    e2s_asn_provider_superprefix_dict = get_e2s_superprefix_weight_dict()
 
     def _provider_export_control(
         self
     ) -> set:  
-        provider_weight_dict = self.e2s_asn_provider_weight_dict[self.as_.asn]
+        """
+        Determine subset of providers the AS will export to.
+        """
+        provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn, {})
 
         export_set = set()
         for provider in self.as_.provider_asns:
@@ -115,23 +122,27 @@ class BGPExport2Some(BGP):
         send_rels: set[Relationships],
         other_neighbors: set,
         ann: Ann,
-    ):
+    ) -> None:
         """
         Propagation logic for providers which did not receive the original announcement
-        """
-        # NOTE: using this method means victim MUST use dedicated prefix
-
-        # TODO: change to implement the superprefix functionality
-        if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
-            other_ann = ann.copy({"prefix": "9.9.0.0/16"})
-        else:
-            other_ann = ann
-        
-        provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn)
+        """ 
+        provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn, {})
+        superprefix_weight_dict = self.e2s_asn_provider_superprefix_dict.get(self.as_.asn, {})
         for neighbor in other_neighbors:
             # If the neighbor is weighted with 0, do not export anything to them
             if provider_weight_dict.get(neighbor.asn) == 0:
                 continue
+
+            # NOTE: using this method means victim MUST use dedicated prefix
+            if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
+                weight = (superprefix_weight_dict or {}).get(neighbor.asn, 0)
+                if random.random() < weight:
+                    other_ann = ann.copy({"prefix": "7.7.0.0/16"})  
+                else:              
+                    other_ann = ann.copy({"prefix": "9.9.0.0/23"})
+            else:
+                other_ann = ann
+
             # Victim/Legit Sender AS propagates a new announcement with separate prefix to all providers which
             # did not recieve the original announcement
             # some policies use route info from any prefix (but same origin AS) to create rpf list

@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+import ipaddress
 
 from .base_sav_policy import BaseSAVPolicy
 
@@ -60,5 +61,5 @@ class EnhancedFeasiblePathuRPFAlgAwoPeers(BaseSAVPolicy):
                     if prefix in xi:
                         rpf_list.update(xi)
 
-        return source_prefix in rpf_list
-                
+        src_prefix = ipaddress.ip_network(source_prefix)
+        return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in rpf_list)                

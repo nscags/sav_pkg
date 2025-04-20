@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+import ipaddress
 
 from .base_sav_policy import BaseSAVPolicy
 
@@ -59,4 +60,5 @@ class EnhancedFeasiblePathuRPFAlgB(BaseSAVPolicy):
         # Then, Set Z = Union(P,Q) is the RPF list that is applied for every customer interface in Set I.
         Z = P.union(Q)
 
-        return source_prefix in Z
+        src_prefix = ipaddress.ip_network(source_prefix)
+        return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in Z)

@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+import ipaddress
 
 from .base_sav_policy import BaseSAVPolicy
 
@@ -22,12 +23,13 @@ class FeasiblePathuRPF(BaseSAVPolicy):
         """
         Validates incoming packets based on Feasible-Path uRPF.
         """
+        src_prefix = ipaddress.ip_network(source_prefix)
+
         for ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).values():
-            if (
-                as_obj.policy._valid_ann(
+            ann_prefix = ipaddress.ip_network(ann_info.unprocessed_ann.prefix)
+            if src_prefix.subnet_of(ann_prefix):
+                if as_obj.policy._valid_ann(
                     ann_info.unprocessed_ann, ann_info.recv_relationship
-                )
-                and ann_info.unprocessed_ann.prefix == source_prefix
-            ):
-                return True
+                ):
+                    return True
         return False

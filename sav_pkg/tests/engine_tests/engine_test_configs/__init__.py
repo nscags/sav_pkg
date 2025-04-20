@@ -11,11 +11,17 @@ from .config_008 import config_008
 from .config_009 import config_009
 from .config_010 import config_010
 from .config_011 import config_011
+from .config_012 import config_012
 
 # SAV Policy Tests
 from .loose_000 import loose_000
+from .loose_001 import loose_001
 from .strict_000 import strict_000
+from .strict_001 import strict_001
+from .strict_002 import strict_002
 from .fp_000 import fp_000
+from .fp_001 import fp_001
+from .fp_002 import fp_002
 from .efp_alg_a_000 import efp_alg_a_000
 from .efp_alg_a_wo_peers_000 import efp_alg_a_wo_peers_000
 from .efp_alg_b_000 import efp_alg_b_000
@@ -37,10 +43,16 @@ engine_test_configs = [
     # config_008,
     # config_009,
     # config_010,
-    config_011,
+    # config_011,
+    config_012,
     # loose_000,
+    # loose_001,
     # strict_000,
+    # strict_001,
+    # strict_002,
     # fp_000,
+    # fp_001,
+    # fp_002,
     # efp_alg_a_000,
     # efp_alg_a_wo_peers_000,
     # efp_alg_b_000,

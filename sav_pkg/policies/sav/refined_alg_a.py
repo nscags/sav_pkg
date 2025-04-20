@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+import ipaddress
 
 from .base_sav_policy import BaseSAVPolicy
 
@@ -74,20 +75,22 @@ class RefinedAlgA(BaseSAVPolicy):
                 i_max = i - 1
                 break
 
+        # "Form the union of the AS-sets, Z(i), i = 1, 2, ..., i_max, and
+        # name this union as AS-set D."
         d = set().union(*z_i[:i_max])
 
         # "Select all ROAs in which the authorized origin ASN is in AS-set
         # D. Form the union of the sets of prefixes listed in the
-        # selected ROAs. Name this union set of prefixes as Prefix-set P1."
-        p1 = set()
+        # selected ROAs. Name this union set of prefixes as Pfx-set Q1."
+        q1 = set()
         for roa in scenario.roa_infos:
             if roa.origin in d:
-                p1.add(roa.prefix)
+                q1.add(roa.prefix)
 
-        # "Using the routes in Adj-RIBs-In of all interfaces, create a list
-        # of all prefixes originated by any ASN in AS-set D.  Name this
-        # set of prefixes as Prefix-set P2."
-        p2 = set()
+        # Using the routes in Adj-RIBs-In of all interfaces, create a list
+        # of all prefixes originated by any ASN in AS-set D. Name this
+        # set of prefixes as Pfx-set Q2."
+        q2 = set()
         for prefix_dict in as_obj.policy._ribs_in.data.values():
             for ann_info in prefix_dict.values():
                 if as_obj.policy._valid_ann(
@@ -95,8 +98,11 @@ class RefinedAlgA(BaseSAVPolicy):
                 ):
                     ann = ann_info.unprocessed_ann
                     if ann.origin in d:
-                        p2.add(ann.prefix)
+                        q2.add(ann.prefix)
 
-        prefixes = p1.union(p2)
+        # "Form the union of Pfx-set Q1, Pfx-set Q2, and any Prefix ACL configured for this interface.  
+        # Call the union set as Pfx-set Q. Apply Pfx-set Q as the list of permissible prefixes for SAV."
+        q = q1.union(q2)
 
-        return source_prefix in prefixes
+        src_prefix = ipaddress.ip_network(source_prefix)
+        return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in q)

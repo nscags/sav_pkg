@@ -184,3 +184,26 @@ def get_e2s_asn_provider_prepending_dict(
     for asn, inner_dict in raw_data.items():
         formatted_data[int(asn)] = {int(k): [bool(x) for x in v] for k, v in inner_dict.items()}
     return frozendict(formatted_data)
+
+
+def get_e2s_superprefix_weight_dict(
+    json_path: Path = Path.home() / "mh_2p_superprefix_weights.json",
+) -> frozendict:
+    """
+    Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
+
+    Weights are percentage of unique IPv4 prefixes received on that interface which
+    are a superprefix of another IPv4 prefix announced by that AS
+    """
+    
+    if not json_path.exists():
+        print("oh no")
+        raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
+
+    with open(json_path, "r") as f:
+        raw_data = json.load(f)
+
+    formatted_data = dict()
+    for asn, inner_dict in raw_data.items():
+        formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
+    return frozendict(formatted_data)

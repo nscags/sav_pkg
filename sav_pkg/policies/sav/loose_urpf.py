@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+import ipaddress
 
 from .base_sav_policy import BaseSAVPolicy
 
@@ -22,7 +23,9 @@ class LooseuRPF(BaseSAVPolicy):
         """
         Validates incoming packets based on Loose uRPF.
         """
+        src_prefix = ipaddress.ip_network(source_prefix)
         for ann in as_obj.policy._local_rib.data.values():
-            if ann.prefix == source_prefix:
+            ann_prefix = ipaddress.ip_network(ann.prefix)
+            if src_prefix.subnet_of(ann_prefix):
                 return True
         return False
