@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Prefixes
 from bgpy.enums import Timestamps
 
 from sav_pkg.enums import Prefixes

@@ -1,16 +1,13 @@
-from pathlib import Path
-from typing import Optional, TYPE_CHECKING
-
-from graphviz import Digraph
 import ipaddress
+from pathlib import Path
+from typing import TYPE_CHECKING
 
-from bgpy.simulation_engine import BGP
-from bgpy.simulation_engine import BGPFull
-from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_framework import Scenario
+from bgpy.simulation_engine import BGP, BaseSimulationEngine, BGPFull
 from bgpy.utils import Diagram
+from graphviz import Digraph
 
 from sav_pkg.enums import Outcomes
+from sav_pkg.simulation_framework import SAVScenario
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
@@ -27,14 +24,14 @@ class SAVDiagram(Diagram):
     def generate_as_graph(
         self,
         engine: BaseSimulationEngine,
-        scenario: Scenario,
+        scenario: SAVScenario,
         # Just the data plane
         traceback: dict[int, int],
         description: str,
         metric_tracker,
         diagram_ranks: tuple[tuple["AS", ...], ...],
         static_order: bool = False,
-        path: Optional[Path] = None,
+        path: Path | None = None,
         view: bool = False,
     ) -> None:
         self._add_legend(traceback, scenario)
@@ -46,7 +43,7 @@ class SAVDiagram(Diagram):
         self._add_description(description, display_next_hop_asn)
         self._render(path=path, view=view)
 
-    def _get_count(self, traceback, scenario):
+    def _get_count(self, traceback: dict, scenario: SAVScenario):
         fn = tp = fp = tn = ad = vd = af = vf = 0
 
         for key, outcome in traceback.items():
@@ -69,21 +66,17 @@ class SAVDiagram(Diagram):
             ):
                 vd += 1
             elif (
-                outcome == Outcomes.FILTERED_ON_PATH.value
-                and key[0] in scenario.reflector_asns
-                and key[3] in scenario.attacker_asns
+                outcome == Outcomes.A_FILTERED_ON_PATH.value
             ):
                 af += 1
             elif (
-                outcome == Outcomes.FILTERED_ON_PATH.value
-                and key[0] in scenario.reflector_asns
-                and key[3] in scenario.victim_asns
+                outcome == Outcomes.V_FILTERED_ON_PATH.value
             ):
                 vf += 1
 
         return fn, tp, fp, tn, ad, vd, af, vf
 
-    def _add_legend(self, traceback: dict, scenario: Scenario) -> None:
+    def _add_legend(self, traceback: dict, scenario: SAVScenario) -> None:
         """Adds legend to the graph with outcome counts"""
 
         fn, tp, fp, tn, ad, vd, af, vf = self._get_count(traceback, scenario)
@@ -148,7 +141,7 @@ class SAVDiagram(Diagram):
         as_obj: "AS",
         engine: BaseSimulationEngine,
         traceback: dict,
-        scenario: Scenario,
+        scenario: SAVScenario,
         display_next_hop_asn: bool,
     ) -> None:
         kwargs = dict()
@@ -213,13 +206,13 @@ class SAVDiagram(Diagram):
                     victim_str = "&#10003;"
 
                 elif (
-                    outcome == Outcomes.FILTERED_ON_PATH.value
+                    outcome == Outcomes.A_FILTERED_ON_PATH.value
                     and origin in scenario.attacker_asns
                     and attacker_str not in ["&#8869;", "&#10004;", "&#10006;"]
                 ):
                     attacker_str = "&#10005;"
                 elif (
-                    outcome == Outcomes.FILTERED_ON_PATH.value
+                    outcome == Outcomes.V_FILTERED_ON_PATH.value
                     and origin in scenario.victim_asns
                     and victim_str not in ["&#8869;", "&#10004;", "&#10006;"]
                 ):
@@ -232,7 +225,7 @@ class SAVDiagram(Diagram):
         as_obj: "AS",
         engine: BaseSimulationEngine,
         traceback: dict,
-        scenario: Scenario,
+        scenario: SAVScenario,
         display_next_hop_asn: bool,
     ) -> str:
         if display_next_hop_asn:
@@ -329,7 +322,7 @@ class SAVDiagram(Diagram):
         as_obj: "AS",
         engine: BaseSimulationEngine,
         traceback: dict,
-        scenario: Scenario,
+        scenario: SAVScenario,
     ) -> dict[str, str]:
         kwargs = {
             "color": "black",
@@ -365,7 +358,7 @@ class SAVDiagram(Diagram):
                 kwargs["shape"] = "octagon"
         return kwargs
 
-    def _add_traffic_edges(self, scenario, traceback):
+    def _add_traffic_edges(self, scenario: SAVScenario, traceback):
         # NOTE: since this does not track visted ASes
         #       multiple attackers will cause multiple
         #       traffic lines over same edge
@@ -374,7 +367,7 @@ class SAVDiagram(Diagram):
             if origin in scenario.attacker_asns:
                 color = "red"
                 # if outcome in [Outcomes.FALSE_NEGATIVE.value, Outcomes.TRUE_POSITIVE.value]:
-                if prev_hop not in [None, -1] and outcome != Outcomes.FILTERED_ON_PATH.value:
+                if prev_hop not in [None, -1] and outcome not in [Outcomes.V_FILTERED_ON_PATH.value, Outcomes.A_FILTERED_ON_PATH.value]:
                     self.dot.edge(
                         str(prev_hop),
                         str(asn),
@@ -386,7 +379,7 @@ class SAVDiagram(Diagram):
             elif origin in scenario.victim_asns:
                 color = "#22B14C"
                 # if outcome in [Outcomes.TRUE_NEGATIVE.value, Outcomes.FALSE_POSITIVE]:
-                if prev_hop not in [None, -1] and outcome != Outcomes.FILTERED_ON_PATH.value:
+                if prev_hop not in [None, -1] and outcome not in [Outcomes.V_FILTERED_ON_PATH.value, Outcomes.A_FILTERED_ON_PATH.value]:
                     self.dot.edge(
                         str(prev_hop),
                         str(asn),

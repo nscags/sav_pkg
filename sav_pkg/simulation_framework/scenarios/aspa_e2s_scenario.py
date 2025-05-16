@@ -1,15 +1,21 @@
-from typing import TYPE_CHECKING
-import random
 import math
+import random
+from typing import TYPE_CHECKING
 
 from bgpy.enums import SpecialPercentAdoptions
 
+from sav_pkg.policies import (
+    ASPAExport2Some,
+    ASPAFullExport2Some,
+    BGPExport2Some,
+    BGPFullExport2Some,
+)
+
 from .sav_scenario import SAVScenario
-from sav_pkg.policies import BGPExport2Some, BGPFullExport2Some, ASPAExport2Some, ASPAFullExport2Some
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import BaseSimulationEngine, Policy
-    
+
 
 class SAVScenarioASPAExport2Some(SAVScenario):
 
@@ -29,7 +35,7 @@ class SAVScenarioASPAExport2Some(SAVScenario):
         for asn in self._default_adopters:
             if asn_cls_dict.get(asn) == BGPExport2Some:
                 asn_cls_dict[asn] = ASPAExport2Some
-            elif asn_cls_dict.get(asn) == BGPFullExport2Some: 
+            elif asn_cls_dict.get(asn) == BGPFullExport2Some:
                 asn_cls_dict[asn] = ASPAFullExport2Some
             else:
                 asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
@@ -37,10 +43,10 @@ class SAVScenarioASPAExport2Some(SAVScenario):
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
             asns = engine.as_graph.asn_groups[subcategory]
-            
+
             # This scenario is specifically for varying ASPA adoption for a graph with a
             # hardcoded_asn_cls_dict for export-to-some ASes
-            # However, e2s and ASPA are not mutually exclusive, so we do not remove these 
+            # However, e2s and ASPA are not mutually exclusive, so we do not remove these
             # ASes from the list of possible adopters
             possible_adopters = asns
 
@@ -68,7 +74,7 @@ class SAVScenarioASPAExport2Some(SAVScenario):
                 for asn in random.sample(possible_adopters_tup, k):
                     if asn_cls_dict.get(asn) == BGPExport2Some:
                         asn_cls_dict[asn] = ASPAExport2Some
-                    elif asn_cls_dict.get(asn) == BGPFullExport2Some: 
+                    elif asn_cls_dict.get(asn) == BGPFullExport2Some:
                         asn_cls_dict[asn] = ASPAFullExport2Some
                     else:
                         asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls

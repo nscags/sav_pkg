@@ -1,5 +1,6 @@
-from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink,PeerLink
 from bgpy.as_graphs import ASGraphInfo
+from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
+from bgpy.as_graphs.base.links import PeerLink
 
 from sav_pkg.enums import ASNs
 

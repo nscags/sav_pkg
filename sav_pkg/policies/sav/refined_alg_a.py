@@ -1,13 +1,14 @@
-from typing import TYPE_CHECKING
 import ipaddress
-
-from .base_sav_policy import BaseSAVPolicy
+from typing import TYPE_CHECKING
 
 from bgpy.simulation_engine import ASPA
+
+from .base_sav_policy import BaseSAVPolicy
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
     from bgpy.simulation_engine import SimulationEngine
+
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 class RefinedAlgA(BaseSAVPolicy):
@@ -15,10 +16,10 @@ class RefinedAlgA(BaseSAVPolicy):
 
     @staticmethod
     def _validate(
-        as_obj: "AS", 
-        source_prefix: str, 
-        prev_hop: "AS", 
-        engine: "SimulationEngine", 
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
         scenario: "SAVScenario",
     ):
         """
@@ -64,7 +65,7 @@ class RefinedAlgA(BaseSAVPolicy):
             # to j=(i-1).  Call the resulting set Z(i)."
             c_i = a_i.union(b_i)
 
-            for j in range(0, i):
+            for j in range(i):
                 c_i -= z_i[j - 1]
 
             z_i.append(c_i)
@@ -100,7 +101,7 @@ class RefinedAlgA(BaseSAVPolicy):
                     if ann.origin in d:
                         q2.add(ann.prefix)
 
-        # "Form the union of Pfx-set Q1, Pfx-set Q2, and any Prefix ACL configured for this interface.  
+        # "Form the union of Pfx-set Q1, Pfx-set Q2, and any Prefix ACL configured for this interface.
         # Call the union set as Pfx-set Q. Apply Pfx-set Q as the list of permissible prefixes for SAV."
         q = q1.union(q2)
 

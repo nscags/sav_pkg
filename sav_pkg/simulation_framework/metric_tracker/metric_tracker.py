@@ -1,22 +1,21 @@
-from collections import defaultdict
 import csv
+import pickle
+from collections import defaultdict
 from math import sqrt
 from pathlib import Path
-import pickle
-from statistics import mean
-from statistics import stdev
-from typing import Any, Optional, Union
+from statistics import mean, stdev
+from typing import Any
 
 from bgpy.enums import Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework import MetricTracker
+from bgpy.simulation_framework.scenarios import Scenario
+
+from sav_pkg.utils.utils import get_metric_keys
 
 from .data_key import DataKey
 from .metric import Metric
 from .metric_key import MetricKey
-
-from sav_pkg.utils.utils import get_metric_keys
 
 
 class SAVMetricTracker(MetricTracker):
@@ -24,7 +23,7 @@ class SAVMetricTracker(MetricTracker):
 
     def __init__(
         self,
-        data: Optional[defaultdict[DataKey, list[Metric]]] = None,
+        data: defaultdict[DataKey, list[Metric]] | None = None,
         metric_keys: tuple[MetricKey, ...] = tuple(list(get_metric_keys())),
     ):
         """Inits data"""
@@ -165,7 +164,7 @@ class SAVMetricTracker(MetricTracker):
         self,
         *,
         engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
+        percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
         propagation_round: int,
@@ -179,7 +178,7 @@ class SAVMetricTracker(MetricTracker):
         """
         if scenario.scenario_config.BaseSAVPolicyCls:
             print(f"\nTracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}\n", flush=True)
-        
+
         self._track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
@@ -193,7 +192,7 @@ class SAVMetricTracker(MetricTracker):
         self,
         *,
         engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
+        percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
         propagation_round: int,

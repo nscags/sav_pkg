@@ -1,19 +1,18 @@
-from .as_graph_info_006 import as_graph_info_006
-from frozendict import frozendict
-
 from bgpy.simulation_engine.policies import BGP
 from bgpy.tests.engine_tests import EngineTestConfig
+from frozendict import frozendict
 
 from sav_pkg.enums import ASNs
+from sav_pkg.policies.bgp import BGPExport2Some
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
+from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenarioExport2Some,
 )
-from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
-from sav_pkg.policies.bgp import BGPExport2Some
 
+from .as_graph_info_006 import as_graph_info_006
 
 desc = "Testing e2s w superprefix"
 

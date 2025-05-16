@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_framework import BaseASGraphAnalyzer
-from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.enums import Plane, Relationships
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_framework import BaseASGraphAnalyzer
 
 from sav_pkg.enums import Outcomes
 from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 if TYPE_CHECKING:
-    from bgpy.simulation_framework.scenarios import Scenario
     from bgpy.as_graphs import AS
+    from bgpy.simulation_framework.scenarios import Scenario
 
 
 class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
@@ -51,7 +51,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         return self.outcomes
 
     def _get_victim_outcome_data_plane(
-        self, 
+        self,
         as_obj: "AS"
     ) -> None:
         """
@@ -101,12 +101,12 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         #         )
 
     def _propagate_packet(
-        self, 
-        as_obj: "AS", 
-        source_prefix: str, 
-        prev_hop: "AS", 
-        origin: int, 
-        dst: str, 
+        self,
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        origin: int,
+        dst: str,
         filtered: bool = False
     ):
         """
@@ -114,16 +114,20 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         Validates packets at all ASes adopting a SAV policy
         """
         prev_hop_asn = prev_hop.asn if prev_hop is not None else None
-        
-        if filtered:
-            if self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin)) is None:
+
+        if filtered and self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin)) is None:
+            if origin in self.scenario.victim_asns:
                 self._data_plane_outcomes[
                     (as_obj.asn, source_prefix, prev_hop_asn, origin)
-                ] = Outcomes.FILTERED_ON_PATH.value
+                ] = Outcomes.V_FILTERED_ON_PATH.value
+            elif origin in self.scenario.attacker_asns:
+                self._data_plane_outcomes[
+                    (as_obj.asn, source_prefix, prev_hop_asn, origin)
+                ] = Outcomes.A_FILTERED_ON_PATH.value
         else:
-            # check if outcome was previously determined 
+            # check if outcome was previously determined
             outcome_int = self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin))
-        
+
             if outcome_int is None:
                 outcome_int = self._determine_as_outcome_data_plane(
                     as_obj, source_prefix, prev_hop, origin, filtered
@@ -135,7 +139,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                     # assigning each remaining AS the outcome filtered_on_path
                     filtered = True
 
-            elif outcome_int == Outcomes.FILTERED_ON_PATH.value:
+            elif outcome_int in [Outcomes.V_FILTERED_ON_PATH.value, Outcomes.A_FILTERED_ON_PATH.value]:
                 new_outcome_int = self._determine_as_outcome_data_plane(
                     as_obj, source_prefix, prev_hop, origin, filtered
                 )
@@ -155,12 +159,12 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             )
 
     def _determine_as_outcome_data_plane(
-        self, 
-        as_obj: "AS", 
-        source_prefix: str, 
-        prev_hop: "AS", 
-        origin: int, 
-        dst: str, 
+        self,
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        origin: int,
+        dst: str,
         filtered: bool = False
     ):
         """
@@ -170,13 +174,13 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         # Origins do not validate their own packets
         if as_obj.asn == origin:
             return Outcomes.ORIGIN.value
-        
+
         if origin in self.scenario.victim_asns:
             spoofed_packet = False
         elif origin in self.scenario.attacker_asns:
             spoofed_packet = True
         else:
-            raise ValueError(f"Origin must be in victim_asns or attacker_asns.")
+            raise ValueError("Origin must be in victim_asns or attacker_asns.")
 
         sav_policy = self.scenario.sav_policy_asn_dict.get(as_obj.asn)
         if sav_policy:
@@ -202,15 +206,15 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             return Outcomes.FORWARD.value
 
     def _has_outcome(
-        self, 
-        asn: int, 
+        self,
+        asn: int,
         origin: int
     ) -> bool:
         """
         check if AS has an outcome for a given origin
         """
         return any(asn == key[0] and origin == key[3] for key in self._data_plane_outcomes)
-    
+
     def _has_ann(
         self,
         asn: int,
@@ -240,4 +244,3 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                         (reflector_asn, None, None, victim_asn)
                     ] = Outcomes.DISCONNECTED.value
                     assert not self._has_ann(victim_asn, reflector_asn)
-                    

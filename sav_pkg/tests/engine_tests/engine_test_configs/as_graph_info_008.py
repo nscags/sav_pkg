@@ -1,6 +1,5 @@
-from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 from bgpy.as_graphs import ASGraphInfo
-
+from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 
 as_graph_info_008 = ASGraphInfo(
     customer_provider_links=frozenset(

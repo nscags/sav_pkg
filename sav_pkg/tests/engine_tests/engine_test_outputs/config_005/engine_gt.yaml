@@ -57,8 +57,6 @@ as_graph: !yamlable/CAIDAASGraph
             - 8
             - 2
             - 777
-            - 777
-            - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 8
@@ -134,8 +132,6 @@ as_graph: !yamlable/CAIDAASGraph
             as_path: !!python/tuple
             - 2
             - 777
-            - 777
-            - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 777
@@ -171,8 +167,6 @@ as_graph: !yamlable/CAIDAASGraph
             - 3
             - 9
             - 4
-            - 777
-            - 777
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
@@ -248,8 +242,6 @@ as_graph: !yamlable/CAIDAASGraph
           7.7.7.0/24: !yamlable/Announcement
             as_path: !!python/tuple
             - 4
-            - 777
-            - 777
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
@@ -361,8 +353,6 @@ as_graph: !yamlable/CAIDAASGraph
             - 8
             - 2
             - 777
-            - 777
-            - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 2
@@ -440,8 +430,6 @@ as_graph: !yamlable/CAIDAASGraph
             as_path: !!python/tuple
             - 9
             - 4
-            - 777
-            - 777
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
@@ -702,8 +690,6 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             - 2
             - 777
-            - 777
-            - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 2
@@ -732,7 +718,7 @@ as_graph: !yamlable/CAIDAASGraph
       input_clique: false
       ixp: false
       peers: !!python/tuple []
-      policy: !yamlable/BGP%20E2S%20Path%20Prepending
+      policy: !yamlable/PseudoBGP
         _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/24: !yamlable/Announcement
             as_path: !!python/tuple

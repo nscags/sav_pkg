@@ -19,13 +19,8 @@ from .test_000 import test_000
 
 # SAV Policy Tests
 from .loose_000 import loose_000
-# from .loose_001 import loose_001
 from .strict_000 import strict_000
-# from .strict_001 import strict_001
-# from .strict_002 import strict_002
 from .fp_000 import fp_000
-# from .fp_001 import fp_001
-# from .fp_002 import fp_002
 from .efp_alg_a_000 import efp_alg_a_000
 from .efp_alg_a_wo_peers_000 import efp_alg_a_wo_peers_000
 from .efp_alg_b_000 import efp_alg_b_000
@@ -36,37 +31,31 @@ from .refined_alg_a_002 import refined_alg_a_002
 
 
 engine_test_configs = [
-    # test_000,
-    # config_000,
-    # config_001,
-    # config_002,
-    # config_003,
-    # config_004,
-    # config_005,
-    # config_006,
-    # config_007,
-    # config_008,
-    # config_009,
-    # config_010,
-    # config_011,
-    # config_012,
+    test_000,
+    config_000,
+    config_001,
+    config_003,
+    config_004,
+    config_005,
+    config_006,
+    config_007,
+    config_008,
+    config_009,
+    config_010,
+    config_011,
+    config_012,
     config_013,
-    # config_014,
-    # loose_000,
-    # loose_001,
-    # strict_000,
-    # strict_001,
-    # strict_002,
-    # fp_000,
-    # fp_001,
-    # fp_002,
-    # efp_alg_a_000,
-    # efp_alg_a_wo_peers_000,
-    # efp_alg_b_000,
-    # rfc8704_000,
-    # refined_alg_a_000,
-    # refined_alg_a_001,
-    # refined_alg_a_002,
+    config_014,
+    loose_000,
+    strict_000,
+    fp_000,
+    efp_alg_a_000,
+    efp_alg_a_wo_peers_000,
+    efp_alg_b_000,
+    rfc8704_000,
+    refined_alg_a_000,
+    refined_alg_a_001,
+    refined_alg_a_002,
 ]
 
 __all__ = ["engine_test_configs"]

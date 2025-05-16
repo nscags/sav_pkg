@@ -1,19 +1,19 @@
 import math
 import random
 
+from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_engine.policies import Policy
-from bgpy.enums import SpecialPercentAdoptions
 
 from .sav_scenario import SAVScenario
 
 
 class SAVScenarioExport2Some(SAVScenario):
-    
+
     def _get_possible_victim_asns(
-        self, 
-        engine, 
-        percent_adoption, 
+        self,
+        engine,
+        percent_adoption,
         prev_scenario
     ) -> frozenset[int]:
         # victims are only selected from mh e2s ASes
@@ -26,7 +26,7 @@ class SAVScenarioExport2Some(SAVScenario):
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
         return possible_asns
-    
+
     def _get_randomized_non_default_asn_cls_dict(
         self,
         engine: BaseSimulationEngine,
@@ -41,7 +41,7 @@ class SAVScenarioExport2Some(SAVScenario):
         asn_cls_dict = dict(self.scenario_config.hardcoded_asn_cls_dict)
         # Removing this line, instead we sample victims from hardcoded_asn_cls_dict
         # this line would override victim class with BGP
-        # alternatively could just set the AdoptPolicyCls, but then will 
+        # alternatively could just set the AdoptPolicyCls, but then will
         # for asn in self._default_adopters:
         #     asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
 

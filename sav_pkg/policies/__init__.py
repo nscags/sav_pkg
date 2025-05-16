@@ -9,7 +9,6 @@ from .sav import RefinedAlgA
 from .sav import ProcedureX
 
 from .bgp import BGPExport2Some
-from .bgp import BGPExport2Some
 from .bgp import BGPFullExport2Some
 
 from .aspa import ASPAExport2Some

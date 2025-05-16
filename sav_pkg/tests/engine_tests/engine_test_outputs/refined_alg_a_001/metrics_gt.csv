@@ -3,7 +3,8 @@ SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,FALSE_NEGATIVE,0,0,0
 SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,FALSE_POSITIVE,0,0,0.0,0.0,,PseudoBGPFull
 SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,TRUE_NEGATIVE,0,0,100.0,0.0,,PseudoBGPFull
 SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,TRUE_POSITIVE,0,0,100.0,0.0,,PseudoBGPFull
-SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,FILTERED_ON_PATH,0,0,0.0,0.0,,PseudoBGPFull
+SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,V_FILTERED_ON_PATH,0,0,0.0,0.0,,PseudoBGPFull
+SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,A_FILTERED_ON_PATH,0,0,0.0,0.0,,PseudoBGPFull
 SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,,PseudoBGPFull
 SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,FORWARD,0,0,0.0,0.0,,PseudoBGPFull
 SAVScenarioNoAnnouncements,Refined Alg A,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,,PseudoBGPFull

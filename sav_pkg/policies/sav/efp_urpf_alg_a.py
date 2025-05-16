@@ -1,23 +1,24 @@
-from typing import TYPE_CHECKING
 import ipaddress
+from typing import TYPE_CHECKING
 
 from .base_sav_policy import BaseSAVPolicy
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
     from bgpy.simulation_engine import SimulationEngine
+
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 
 class EnhancedFeasiblePathuRPFAlgA(BaseSAVPolicy):
     name: str = "EFP uRPF Alg A"
-    
+
     @staticmethod
     def _validate(
-        as_obj: "AS", 
-        source_prefix: str, 
-        prev_hop: "AS", 
-        engine: "SimulationEngine", 
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
         scenario: "SAVScenario",
     ):
         """
@@ -28,7 +29,7 @@ class EnhancedFeasiblePathuRPFAlgA(BaseSAVPolicy):
         peer interfaces. This extension seems fairly straightforward, we simply will consider
         peers in the first step (creating set A), and apply rpf list to customer and peer interfaces
         """
-        # Create the set of unique origin ASes considering only the routes in the Adj-RIBs-In of 
+        # Create the set of unique origin ASes considering only the routes in the Adj-RIBs-In of
         # customer and peer interfaces. Call it Set A = {AS1, AS2, ..., ASn}.
         A = set()
         for asn in (as_obj.customer_asns | as_obj.peer_asns):
@@ -39,11 +40,11 @@ class EnhancedFeasiblePathuRPFAlgA(BaseSAVPolicy):
                     ann_info.unprocessed_ann, ann_info.recv_relationship
                 ):
                     A.add(ann_info.unprocessed_ann.origin)
-        
-        # Considering all routes in Adj-RIBs-In for all interfaces (customer, lateral peer, and transit provider), 
+
+        # Considering all routes in Adj-RIBs-In for all interfaces (customer, lateral peer, and transit provider),
         # form the set of unique prefixes that have a common origin AS1. Call it Set X1.
 
-        # Include Set X1 in the RPF list on all customer and peer interfaces on which one or 
+        # Include Set X1 in the RPF list on all customer and peer interfaces on which one or
         # more of the prefixes in Set X1 were received.
 
         # Repeat Steps 2 and 3 for each of the remaining ASes in Set A (i.e., for ASi, where i = 2, ..., n).

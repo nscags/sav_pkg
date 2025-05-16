@@ -1,9 +1,10 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 
-from .sav_scenario import SAVScenario
 from sav_pkg.enums import Prefixes
+
+from .sav_scenario import SAVScenario
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann

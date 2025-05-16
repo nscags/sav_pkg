@@ -1,15 +1,15 @@
 import random
 
-from bgpy.simulation_engine.policies.bgp import BGP
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import Announcement as Ann
+from bgpy.simulation_engine.policies.bgp import BGP
 
+from sav_pkg.enums import Prefixes
 from sav_pkg.utils.utils import (
-    get_e2s_asn_provider_weight_dict, 
     get_e2s_asn_provider_prepending_dict,
+    get_e2s_asn_provider_weight_dict,
     get_e2s_superprefix_weight_dict,
 )
-from sav_pkg.enums import Prefixes
 
 
 class BGPExport2Some(BGP):
@@ -22,7 +22,7 @@ class BGPExport2Some(BGP):
 
     def _provider_export_control(
         self
-    ) -> set:  
+    ) -> set:
         """
         Determine subset of providers the AS will export to.
         """
@@ -52,11 +52,11 @@ class BGPExport2Some(BGP):
                     # I don't know if this is an error somewhere in my code or if its the data (probably not)
                     # but this is needed to prevent errors
                     # if all weights are 0, then an AS would export to none of its providers
-                    # for a mh AS, this doesn't really make sense 
+                    # for a mh AS, this doesn't really make sense
                     # (technically mh includes peer interfaces, so it could work)
                     export_set.add(random.choice(providers_list))
         else:
-            export_set.add(random.choice(self.as_.provider_asns))
+            export_set.add(random.choice(list(self.as_.provider_asns)))
 
         return export_set
 
@@ -70,7 +70,7 @@ class BGPExport2Some(BGP):
         prepending_list = (self.e2s_asn_provider_prepending_dict.get(self.as_.asn, {}).get(provider.asn))
         if not prepending_list:
             return False
-        
+
         return random.choice(prepending_list)
 
     def _propagate(
@@ -87,7 +87,7 @@ class BGPExport2Some(BGP):
             neighbors = self.as_.providers
             if not neighbors: # no neighbors, bye bye
                 return
-            # Decide the "some" neighbors to export to, 
+            # Decide the "some" neighbors to export to,
             # this is based off weights assigned from measurement data
             some_neighbors_asns = self._provider_export_control()
             some_neighbors = [neighbor for neighbor in neighbors if neighbor.asn in some_neighbors_asns]
@@ -125,7 +125,7 @@ class BGPExport2Some(BGP):
     ) -> None:
         """
         Propagation logic for providers which did not receive the original announcement
-        """ 
+        """
         provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn, {})
         superprefix_weight_dict = self.e2s_asn_provider_superprefix_dict.get(self.as_.asn, {})
         for neighbor in other_neighbors:
@@ -137,8 +137,8 @@ class BGPExport2Some(BGP):
             if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
                 weight = (superprefix_weight_dict or {}).get(neighbor.asn, 0)
                 if random.random() < weight:
-                    other_ann = ann.copy({"prefix": "7.7.0.0/16"})  
-                else:              
+                    other_ann = ann.copy({"prefix": "7.7.0.0/16"})
+                else:
                     other_ann = ann.copy({"prefix": "9.9.0.0/23"})
             else:
                 other_ann = ann
@@ -151,8 +151,8 @@ class BGPExport2Some(BGP):
             ):
                 # though transit ASes can perform path prepending, we only have measurement data for origin ASes
                 other_ann2 = other_ann
-                if (self._path_prepending(neighbor) 
-                    and ann.recv_relationship == Relationships.ORIGIN 
+                if (self._path_prepending(neighbor)
+                    and ann.recv_relationship == Relationships.ORIGIN
                     and ann.prefix == Prefixes.VICTIM.value
                 ):
                     as_path = (self.as_.asn, self.as_.asn,) + ann.as_path

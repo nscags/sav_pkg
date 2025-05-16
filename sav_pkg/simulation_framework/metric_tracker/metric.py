@@ -1,12 +1,12 @@
 from collections import defaultdict
-from typing import Optional
 
 from bgpy.as_graphs import AS
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 
-from .metric_key import MetricKey
 from sav_pkg.enums import Outcomes
+
+from .metric_key import MetricKey
 
 
 class Metric:
@@ -15,7 +15,7 @@ class Metric:
     def __init__(
         self,
         metric_key: MetricKey,
-        percents: Optional[defaultdict[MetricKey, list[float]]] = None,
+        percents: defaultdict[MetricKey, list[float]] | None = None,
     ) -> None:
         # At this point the PolicyCls is None for the metric_key
         self.metric_key: MetricKey = metric_key
@@ -140,7 +140,7 @@ class Metric:
             if self.metric_key.outcome == Outcomes.VICTIM_SUCCESS:
                 if any(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
                     return False
-                
+
             self._denominator += 1
             return True
         else:

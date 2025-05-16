@@ -2,16 +2,16 @@ import json
 import os
 import random
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING
+
+from bgpy.enums import ASGroups, Plane
+from bgpy.simulation_engine import ROVFull
 from frozendict import frozendict
 
-from bgpy.simulation_engine import ROVFull
-from bgpy.enums import Plane, ASGroups
-# from rov_collector import rov_collector_classes
+from sav_pkg.enums import Interfaces, Outcomes
 
+# from rov_collector import rov_collector_classes
 from sav_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
-from sav_pkg.enums import Interfaces
-from sav_pkg.enums import Outcomes
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
@@ -25,9 +25,9 @@ if TYPE_CHECKING:
 #                 yield MetricKey(plane=plane, outcome=outcome, as_group=as_group)
 
 def get_metric_keys(
-    planes: Optional[List[Plane]] = None,
-    as_groups: Optional[List[ASGroups]] = None
-) -> List[MetricKey]:
+    planes: list[Plane] | None = None,
+    as_groups: list[ASGroups] | None = None
+) -> list[MetricKey]:
     planes = planes or [Plane.DATA]
     as_groups = as_groups or [ASGroups.ALL_WOUT_IXPS]
 
@@ -40,7 +40,8 @@ def get_metric_keys(
             Outcomes.FALSE_POSITIVE,
             Outcomes.TRUE_NEGATIVE,
             Outcomes.TRUE_POSITIVE,
-            Outcomes.FILTERED_ON_PATH,
+            Outcomes.V_FILTERED_ON_PATH,
+            Outcomes.A_FILTERED_ON_PATH,
             Outcomes.DISCONNECTED,
             Outcomes.FORWARD,
             Outcomes.ATTACKER_SUCCESS,
@@ -51,10 +52,10 @@ def get_metric_keys(
 
 
 # NOTE: for BAR SAV, ROV adoption doesn't actually matter
-#       Only ROA adoption (for Victim/Legit Sender) has an impact 
+#       Only ROA adoption (for Victim/Legit Sender) has an impact
 #       Leaving here for now, may be useful for SAV attacks paper
-#       
-#       Addtionally, both attacker/victim/reflectors all announce 
+#
+#       Addtionally, both attacker/victim/reflectors all announce
 #       their own legitimate prefixes, so ROV wouldn't be useful in
 #       this context, again will probably be useful in SAV attacks paper
 def get_real_world_rov_asn_cls_dict(
@@ -102,15 +103,15 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
 })
 
 def get_applied_interfaces(
-    as_obj: "AS", 
-    scenario, 
+    as_obj: "AS",
+    scenario,
     sav_policy
 ):
     """Gets the applied interfaces based on the given SAV policy."""
-    
+
     interfaces = (
-        scenario.scenario_config.override_default_interface_dict.get(sav_policy.name) 
-        if scenario.scenario_config.override_default_interface_dict 
+        scenario.scenario_config.override_default_interface_dict.get(sav_policy.name)
+        if scenario.scenario_config.override_default_interface_dict
         else DEFAULT_SAV_POLICY_INTERFACE_DICT[sav_policy.name]
     )
 
@@ -119,9 +120,9 @@ def get_applied_interfaces(
         Interfaces.PEER.value: as_obj.peer_asns,
         Interfaces.PROVIDER.value: as_obj.provider_asns,
     }
-    
+
     applied_interfaces = {interface_map[i] for i in interfaces if i in interface_map}
-    
+
     return applied_interfaces
 
 
@@ -133,7 +134,7 @@ def get_export_to_some_dict(
         print("oh no")
         raise FileNotFoundError(f"File not found: {json_path}")
 
-    with open(json_path, "r") as f:
+    with open(json_path) as f:
         export2some_raw = json.load(f)
 
     export2some_asn_cls_dict = frozendict({
@@ -152,12 +153,12 @@ def get_e2s_asn_provider_weight_dict(
     Weights are percentage of unique IPv4 prefixes received on that interface divided 
     by the total number of unique prefixes exported by the AS.
     """
-    
+
     if not json_path.exists():
         print("oh no")
         raise FileNotFoundError(f"File: 'e2s_asn_provider_weights.json' not found in {json_path}.")
 
-    with open(json_path, "r") as f:
+    with open(json_path) as f:
         raw_data = json.load(f)
 
     formatted_data = dict()
@@ -172,12 +173,12 @@ def get_e2s_asn_provider_prepending_dict(
     """
     Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
     """
-    
+
     if not json_path.exists():
         print("oh no")
         raise FileNotFoundError(f"File: 'asn_e2s_provider_weights.json' not found in {json_path}.")
 
-    with open(json_path, "r") as f:
+    with open(json_path) as f:
         raw_data = json.load(f)
 
     formatted_data = dict()
@@ -195,12 +196,12 @@ def get_e2s_superprefix_weight_dict(
     Weights are percentage of unique IPv4 prefixes received on that interface which
     are a superprefix of another IPv4 prefix announced by that AS
     """
-    
+
     if not json_path.exists():
         print("oh no")
         raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
 
-    with open(json_path, "r") as f:
+    with open(json_path) as f:
         raw_data = json.load(f)
 
     formatted_data = dict()

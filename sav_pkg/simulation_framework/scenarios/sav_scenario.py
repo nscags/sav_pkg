@@ -1,22 +1,19 @@
-from typing import Optional, TYPE_CHECKING, Union, Type
-import random
 import math
-from frozendict import frozendict
+import random
+from typing import TYPE_CHECKING, Optional
 
-from roa_checker import ROA
-
-from bgpy.simulation_framework.scenarios import Scenario
-from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
-from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_engine import Policy
-from bgpy.enums import Timestamps
 from bgpy.enums import (
     SpecialPercentAdoptions,
+    Timestamps,
 )
+from bgpy.simulation_engine import BaseSimulationEngine, Policy
+from bgpy.simulation_framework.scenarios import Scenario
+from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
+from frozendict import frozendict
+from roa_checker import ROA
 
 from sav_pkg.enums import Prefixes
 from sav_pkg.simulation_framework.scenarios.sav_scenario_config import SAVScenarioConfig
-
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
@@ -28,8 +25,8 @@ class SAVScenario(Scenario):
         self,
         *,
         scenario_config: SAVScenarioConfig,
-        percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
-        engine: Optional[BaseSimulationEngine] = None,
+        percent_adoption: float | SpecialPercentAdoptions = 0,
+        engine: BaseSimulationEngine | None = None,
         prev_scenario: Optional["SAVScenario"] = None,
         preprocess_anns_func=noop,
     ):
@@ -46,7 +43,7 @@ class SAVScenario(Scenario):
         )
 
         self.scenario_config: SAVScenarioConfig = scenario_config
-        self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
+        self.percent_adoption: float | SpecialPercentAdoptions = percent_adoption
 
         self.attacker_asns: frozenset[int] = self._get_attacker_asns(
             scenario_config.override_attacker_asns, engine, prev_scenario
@@ -87,7 +84,7 @@ class SAVScenario(Scenario):
             str, list[str]
         ] = self._get_ordered_prefix_subprefix_dict()
 
-        self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
+        self.policy_classes_used: frozenset[type[Policy]] = frozenset()
         print("Initializing SAVScenario done", flush=True)
 
     ##################
@@ -96,8 +93,8 @@ class SAVScenario(Scenario):
 
     def _get_reflector_asns(
         self,
-        override_reflector_asns: Optional[frozenset[int]],
-        engine: Optional[BaseSimulationEngine],
+        override_reflector_asns: frozenset[int] | None,
+        engine: BaseSimulationEngine | None,
         prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Returns reflector ASN at random"""
@@ -129,13 +126,13 @@ class SAVScenario(Scenario):
     def _get_possible_reflector_asns(
         self,
         engine: BaseSimulationEngine,
-        percent_adoption: Union[float, SpecialPercentAdoptions],
+        percent_adoption: float | SpecialPercentAdoptions,
         prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Returns possible reflectors ASNs, defaulted from config"""
 
         # NOTE: may change to combine stubs/mh, input_clique, etc AS groups
-        #       this filters IXPs, which seems to be done for adoption as well 
+        #       this filters IXPs, which seems to be done for adoption as well
 
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.reflector_subcategory_attr
@@ -150,7 +147,7 @@ class SAVScenario(Scenario):
 
     #####################
     # Get Announcements #
-    #####################   
+    #####################
 
     def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """
@@ -159,7 +156,7 @@ class SAVScenario(Scenario):
 
         # NOTE: this logic doesn't allow for multiple victims/attackers since
         #       all victim/attacker ASes will originate the same prefix
-        #       In our simulations we use 1 victim/attacker pair so this 
+        #       In our simulations we use 1 victim/attacker pair so this
         #       functionality is unnecessary, will need to add in future
         anns = list()
         for victim_asn in self.victim_asns:

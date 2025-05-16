@@ -1,17 +1,16 @@
-from .as_graph_info_000 import as_graph_info_000
-
 from bgpy.simulation_engine.policies import BGP
 from bgpy.tests.engine_tests import EngineTestConfig
 
 from sav_pkg.enums import ASNs
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
+from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenarioExport2Some,
 )
-from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
 
+from .as_graph_info_000 import as_graph_info_000
 
 desc = "Testing e2s scenario will default to random edge AS if no hardcoded_asn_cls_dict"
 
