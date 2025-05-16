@@ -11,7 +11,7 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
-from sav_pkg.policies.sav.strict_urpf import StrictuRPF
+from sav_pkg.policies.sav import StrictuRPF
 
 
 desc = "Strict uRPF"

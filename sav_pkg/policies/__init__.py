@@ -11,9 +11,6 @@ from .sav import ProcedureX
 from .bgp import BGPExport2Some
 from .bgp import BGPExport2Some
 from .bgp import BGPFullExport2Some
-from .bgp import BGPExport2SomeSuperSubPrefix
-from .bgp import BGPFullExport2SomeSuperSubPrefix
-
 
 from .aspa import ASPAExport2Some
 from .aspa import ASPAFullExport2Some
@@ -31,8 +28,6 @@ __all__ = [
     "ProcedureX",
     "BGPExport2Some",
     "BGPFullExport2Some",
-    "BGPExport2SomeSuperSubPrefix",
-    "BGPFullExport2SomeSuperSubPrefix",
     "ASPAFullExport2Some",
     "ASPAExport2Some",
 ]

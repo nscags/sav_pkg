@@ -89,6 +89,17 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                         neighbor_as_obj, source_prefix, as_obj, origin, dst
                     )
 
+                source_prefix = self.scenario.scenario_config.victim_source_prefix
+
+        # prev_hop = None
+        # for ann in as_obj.policy._local_rib.data.values():
+        #     if ann.origin in self.scenario.reflector_asns:
+        #         dst = ann.prefix
+
+        #         self._propagate_packet(
+        #             as_obj, source_prefix, prev_hop, origin, dst
+        #         )
+
     def _propagate_packet(
         self, 
         as_obj: "AS", 

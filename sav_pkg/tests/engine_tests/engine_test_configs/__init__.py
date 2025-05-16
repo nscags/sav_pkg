@@ -1,7 +1,7 @@
 # General System Tests
 from .config_000 import config_000
 from .config_001 import config_001
-from .config_002 import config_002
+# from .config_002 import config_002
 from .config_003 import config_003
 from .config_004 import config_004
 from .config_005 import config_005
@@ -12,16 +12,20 @@ from .config_009 import config_009
 from .config_010 import config_010
 from .config_011 import config_011
 from .config_012 import config_012
+from .config_013 import config_013
+from .config_014 import config_014
+
+from .test_000 import test_000
 
 # SAV Policy Tests
 from .loose_000 import loose_000
-from .loose_001 import loose_001
+# from .loose_001 import loose_001
 from .strict_000 import strict_000
-from .strict_001 import strict_001
-from .strict_002 import strict_002
+# from .strict_001 import strict_001
+# from .strict_002 import strict_002
 from .fp_000 import fp_000
-from .fp_001 import fp_001
-from .fp_002 import fp_002
+# from .fp_001 import fp_001
+# from .fp_002 import fp_002
 from .efp_alg_a_000 import efp_alg_a_000
 from .efp_alg_a_wo_peers_000 import efp_alg_a_wo_peers_000
 from .efp_alg_b_000 import efp_alg_b_000
@@ -32,6 +36,7 @@ from .refined_alg_a_002 import refined_alg_a_002
 
 
 engine_test_configs = [
+    # test_000,
     # config_000,
     # config_001,
     # config_002,
@@ -44,7 +49,9 @@ engine_test_configs = [
     # config_009,
     # config_010,
     # config_011,
-    config_012,
+    # config_012,
+    config_013,
+    # config_014,
     # loose_000,
     # loose_001,
     # strict_000,

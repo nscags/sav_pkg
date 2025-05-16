@@ -374,7 +374,7 @@ class SAVDiagram(Diagram):
             if origin in scenario.attacker_asns:
                 color = "red"
                 # if outcome in [Outcomes.FALSE_NEGATIVE.value, Outcomes.TRUE_POSITIVE.value]:
-                if prev_hop not in [None, -1]:
+                if prev_hop not in [None, -1] and outcome != Outcomes.FILTERED_ON_PATH.value:
                     self.dot.edge(
                         str(prev_hop),
                         str(asn),
@@ -386,7 +386,7 @@ class SAVDiagram(Diagram):
             elif origin in scenario.victim_asns:
                 color = "#22B14C"
                 # if outcome in [Outcomes.TRUE_NEGATIVE.value, Outcomes.FALSE_POSITIVE]:
-                if prev_hop not in [None, -1]:
+                if prev_hop not in [None, -1] and outcome != Outcomes.FILTERED_ON_PATH.value:
                     self.dot.edge(
                         str(prev_hop),
                         str(asn),
