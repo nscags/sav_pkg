@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 
 
 class SAVScenario(Scenario):
+    
     def __init__(
         self,
         *,

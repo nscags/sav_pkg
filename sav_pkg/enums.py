@@ -27,6 +27,11 @@ class Prefixes(YamlAbleEnum):
     ATTACKER: str = "6.6.6.0/24"
     REFLECTOR: str = "1.2.0.0/16"
 
+    ANYCAST_SERVER: str = "2.1.0.0/24"
+    EDGE_SERVER: str = "2.2.0.0/24"
+    USER: str = "3.3.0.0/24"
+
+
 class ASNs(YamlAbleEnum):
     """Default ASNs for various ASNs"""
 

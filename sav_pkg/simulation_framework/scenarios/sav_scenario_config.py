@@ -14,7 +14,7 @@ class SAVScenarioConfig(ScenarioConfig):
     reflector_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
     override_reflector_asns: frozenset[int] | None = None
 
-    victim_source_prefix = Prefixes.VICTIM.value
+    victim_source_prefix: str = Prefixes.VICTIM.value
 
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
@@ -30,3 +30,17 @@ class SAVScenarioConfig(ScenarioConfig):
     # I hijacked the default percent_adopt for SAV policies
     special_percent_adoption: float = 0.0
     override_default_interface_dict: frozendict[str, frozenset] = None
+
+    # DSR configs 
+    # user 
+    num_users: int = 1
+    user_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
+    override_user_asns: frozenset[int] | None = None
+    # anycast server
+    num_anycast_servers: int = 1
+    anycast_server_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
+    override_anycast_server_asns: frozenset[int] | None = None
+    # edge server 
+    num_edge_servers: int = 1
+    edge_server_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
+    override_edge_server_asns: frozenset[int] | None = None

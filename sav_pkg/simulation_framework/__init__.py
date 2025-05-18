@@ -7,6 +7,8 @@ from .scenarios import SAVScenarioASPAExport2Some
 from .scenarios import SAVScenarioASPAExport2SomeROA
 from .scenarios import SAVScenarioNoAnnouncements
 from .scenarios import SAVScenarioExport2Some
+from .scenarios import SAVScenarioDSR
+from .scenarios import SAVScenarioDSRROA
 
 
 
@@ -19,4 +21,6 @@ __all__ = [
     "SAVScenarioASPAExport2SomeROA",
     "SAVScenarioNoAnnouncements",
     "SAVScenarioExport2Some",
+    "SAVScenarioDSR",
+    "SAVScenarioDSRROA",
 ]
