@@ -94,9 +94,9 @@ class SAVDiagramDSR(SAVDiagram):
         else:
             colspan = 4
         asn_str = str(as_obj.asn)
-        edge_server_str = "&#128517;"
-        anycast_server_str = "&#128566;"
-        user_str = "&#128512;"
+        edge_server_str = "&#9889;"
+        anycast_server_str = "&#9729;&#65039;"
+        user_str = "&#128516;"
         if as_obj.asn in scenario.edge_server_asns:
             asn_str = edge_server_str + asn_str + edge_server_str
         elif as_obj.asn in scenario.anycast_server_asns:
