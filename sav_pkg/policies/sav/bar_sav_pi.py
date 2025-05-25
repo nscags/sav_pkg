@@ -1,0 +1,130 @@
+from typing import TYPE_CHECKING
+import ipaddress
+
+from bgpy.simulation_engine.policies import ASPA, ROV
+
+from .base_sav_policy import BaseSAVPolicy
+from .refined_alg_a import RefinedAlgA
+
+if TYPE_CHECKING:
+    from bgpy.as_graphs.base import AS
+    from bgpy.simulation_engine import SimulationEngine
+
+    from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
+
+
+class BARSAVPI(BaseSAVPolicy):
+    name: str = "BAR SAV PI"
+
+    @staticmethod
+    def _validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ):
+        # 1.  Per procedure in Section 4, compute AS-set D and Pfx-set Q for
+        #     each customer interface of the AS in consideration.
+        dq_set = []
+        for customer_asn in as_obj.customer_asns:
+            d, q = RefinedAlgA._get_as_prefix_set(
+                as_obj,
+                source_prefix,
+                customer_asn,
+                engine,
+                scenario,
+            )
+            dq_set.append((d, q))
+
+        # 2.  Form the union of the AS-sets found above and call it AS-set Du,
+        #     and form the union of the Pfx-sets found above and call it Pfx-
+        #     set Qu.
+        du = set().union(*(d for d, _ in dq_set))
+        qu = set().union(*(q for _, q in dq_set))
+
+        # 3.  Modify Pfx-set Qu to keep only the prefixes whose routes in the
+        #     RIBs-In (of the customer interfaces in consideration) are all
+        #     RPKI-ROV Valid and have Valid AS path per ASPA verification.
+        qu3 = set()
+        for prefix in qu:
+            anns = []
+            for prefix_dict in as_obj.policy._ribs_in.data.values():
+                for ann_info in prefix_dict.values():
+                    if as_obj.policy._valid_ann(
+                        ann_info.unprocessed_ann, ann_info.recv_relationship
+                    ) and ann_info.unprocessed_ann.prefix == prefix:
+                        anns.append(ann_info)
+
+            if not anns:
+                continue
+
+            aspa = ASPA()
+            rov = ROV()
+            if all(
+                aspa._valid_ann(ann.unprocessed_ann, ann.recv_relationship) and rov._valid_ann(ann.unprocessed_ann, ann.recv_relationship)
+                for ann in anns
+            ):
+                qu3.add(prefix)
+
+        qu = qu3
+
+        # 4.  Further modify Pfx-set Qu to keep only the prefixes that have all
+        #     their allowed origin ASes (per ROAs) contained within AS-set Du.
+        for roa in scenario.roa_infos:
+            if roa.origin not in du and roa.prefix in qu:
+                qu.remove(roa.prefix)
+
+        # 5.  Further modify Pfx-set Qu to keep only the prefixes with all
+        #     feasible routes from their respective origin AS to the local AS
+        #     (i.e., AS doing SAV) such that each AS in the AS path of each
+        #     route has all its Provider ASes (per ASPAs) contained within AS-
+        #     set Du.  Call the resulting modified set as Pfx-set S.
+        s = set()
+
+        for prefix in qu:
+            anns = []
+
+            for prefix_dict in as_obj.policy._ribs_in.data.values():
+                for ann_info in prefix_dict.values():
+                    ann = ann_info.unprocessed_ann
+                    if ann.prefix == prefix and as_obj.policy._valid_ann(ann, ann_info.recv_relationship):
+                        anns.append(ann)
+
+            if not anns:
+                continue 
+
+            all_paths_valid = True
+
+            for ann in anns:
+                for asn in ann.as_path:
+                    as_on_path_obj = engine.as_graph.as_dict.get(asn)
+                    if isinstance(as_on_path_obj.policy, ASPA):
+                        if any(provider not in du for provider in as_on_path_obj.provider_asns):
+                            all_paths_valid = False
+                            break
+                if not all_paths_valid:
+                    break
+
+            if all_paths_valid:
+                s.add(prefix)
+
+        # 6.  Subtract Pfx-set S from the set of allowed prefixes that pertain
+        #     to loose uRPF for the Provider interface in consideration.  Call
+        #     this reduced set as Pfx-set Ga.
+        ga = set()
+        for prefix, _ in as_obj.policy._local_rib.data.items():
+            if prefix not in s:
+                ga.add(prefix) 
+
+        # 7.  From Pfx-set Ga, subtract (a) any prefixes originated by the
+        #     local AS that are single-homed, and (b) any internal-use-only
+        #     prefixes of the local AS.  Call the resulting set as Pfx-set G.
+
+        # we don't simulate either of these
+        g = ga
+
+        # 8.  Apply Pfx-set G as the allow list for ingress SAV at each
+        #     provider interface of the local AS.  
+        src_prefix = ipaddress.ip_network(source_prefix)
+        return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in g)

@@ -6,6 +6,8 @@ from .efp_urpf_alg_a_wo_peers import EnhancedFeasiblePathuRPFAlgAwoPeers
 from .efp_urpf_alg_b import EnhancedFeasiblePathuRPFAlgB
 from .rfc8704 import RFC8704
 from .refined_alg_a import RefinedAlgA
+from .bar_sav_pi import BARSAVPI
+from .bar_sav_ietf import BAR_SAV_IETF
 from .procedure_x import ProcedureX
 
 
@@ -18,5 +20,7 @@ __all__ = [
     "EnhancedFeasiblePathuRPFAlgB",
     "RFC8704",
     "RefinedAlgA",
+    "BARSAVPI",
+    "BAR_SAV_IETF",
     "ProcedureX",
 ]

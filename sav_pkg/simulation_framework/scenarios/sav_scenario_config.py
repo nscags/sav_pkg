@@ -34,13 +34,13 @@ class SAVScenarioConfig(ScenarioConfig):
     # DSR configs 
     # user 
     num_users: int = 1
-    user_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
+    user_subcategory_attr: str | None = ASGroups.STUBS_OR_MH.value
     override_user_asns: frozenset[int] | None = None
     # anycast server
     num_anycast_servers: int = 1
-    anycast_server_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
+    anycast_server_subcategory_attr: str | None = ASGroups.STUBS_OR_MH.value
     override_anycast_server_asns: frozenset[int] | None = None
     # edge server 
     num_edge_servers: int = 1
-    edge_server_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
+    edge_server_subcategory_attr: str | None = ASGroups.STUBS_OR_MH.value
     override_edge_server_asns: frozenset[int] | None = None

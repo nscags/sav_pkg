@@ -56,7 +56,7 @@ class SAVScenarioDSR(SAVScenario):
         # anycast_server: simply announces prefix, but does nothing else
         # edge_server: will use victim AS implementation, will automatically route packets and track metrics
         # user: reflector, will announce its own separate prefix, destination, doesn't route packets
-        
+
         self.attacker_asns = frozenset()
 
         self.edge_server_asns: frozenset[int] = self._get_edge_server_asns(
@@ -152,7 +152,7 @@ class SAVScenarioDSR(SAVScenario):
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
-        # Remove attackers and victims from possible reflectors
+        # Remove edge servers and users from possible anycast servers
         possible_asns = possible_asns.difference(self.edge_server_asns)
         possible_asns = possible_asns.difference(self.user_asns)
         return possible_asns
@@ -197,7 +197,7 @@ class SAVScenarioDSR(SAVScenario):
         self,
         engine: BaseSimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["SAVScenarioDSR"],
+        prev_scenario: Optional["SAVScenario"],
     ) -> frozenset[int]:
         """Returns possible edge server ASNs, defaulted from config"""
 
@@ -207,8 +207,6 @@ class SAVScenarioDSR(SAVScenario):
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
-        # Remove attackers from possible edge_servers
-        possible_asns = possible_asns.difference(self._asns)
         return possible_asns
 
     #####################

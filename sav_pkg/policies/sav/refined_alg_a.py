@@ -15,19 +15,13 @@ class RefinedAlgA(BaseSAVPolicy):
     name: str = "Refined Alg A"
 
     @staticmethod
-    def _validate(
+    def _get_as_prefix_set(
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",
         engine: "SimulationEngine",
         scenario: "SAVScenario",
     ):
-        """
-        Validates incoming packets based on Refined Alg A defined in BAR SAV draft.
-
-        Internet draft procedure description:
-        https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/
-        """
         i = 0
         z_i = [{prev_hop.asn}]
 
@@ -57,7 +51,7 @@ class RefinedAlgA(BaseSAVPolicy):
                         ann = ann_info.unprocessed_ann
                         as_path = ann.as_path
                         for j in range(len(as_path) - 1):
-                            if as_path[j] in z_i[i - 1] and as_path[j + 1] in engine.as_graph.as_dict[as_path[j]].customer_asns:
+                            if as_path[j] in z_i[i - 1]: # and as_path[j + 1] in engine.as_graph.as_dict[as_path[j]].customer_asns:
                                 b_i.add(as_path[j + 1])
 
             # "Form the union of AS-sets A(i) and B(i) and call it AS-set C.
@@ -104,6 +98,31 @@ class RefinedAlgA(BaseSAVPolicy):
         # "Form the union of Pfx-set Q1, Pfx-set Q2, and any Prefix ACL configured for this interface.
         # Call the union set as Pfx-set Q. Apply Pfx-set Q as the list of permissible prefixes for SAV."
         q = q1.union(q2)
+
+        return d, q
+
+    @staticmethod
+    def _validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ):
+        """
+        Validates incoming packets based on Refined Alg A defined in BAR SAV draft.
+
+        Internet draft procedure description:
+        https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/
+        """
+
+        _, q = RefinedAlgA._get_as_prefix_set(
+            as_obj,
+            source_prefix,
+            prev_hop,
+            engine,
+            scenario
+        )
 
         src_prefix = ipaddress.ip_network(source_prefix)
         return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in q)
