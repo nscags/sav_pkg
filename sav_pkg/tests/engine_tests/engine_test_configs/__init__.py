@@ -34,15 +34,16 @@ from .rfc8704_000 import rfc8704_000
 from .refined_alg_a_000 import refined_alg_a_000
 from .refined_alg_a_001 import refined_alg_a_001
 from .refined_alg_a_002 import refined_alg_a_002
+from .bar_sav_pi_000 import bar_sav_pi_000
 
 
 engine_test_configs = [
     # test_000,
-    config_dsr_000,
-    config_dsr_001,
-    config_dsr_002,
-    config_dsr_003,
-    config_dsr_004,
+    # config_dsr_000,
+    # config_dsr_001,
+    # config_dsr_002,
+    # config_dsr_003,
+    # config_dsr_004,
     # config_000,
     # config_001,
     # config_003,
@@ -67,6 +68,7 @@ engine_test_configs = [
     # refined_alg_a_000,
     # refined_alg_a_001,
     # refined_alg_a_002,
+    bar_sav_pi_000,
 ]
 
 __all__ = ["engine_test_configs"]
