@@ -25,6 +25,8 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     RFC8704,
     RefinedAlgA,
+    BAR_SAV_PI,
+    BAR_SAV_IETF,
 )
 from sav_pkg.utils.utils import get_metric_keys
 
@@ -106,10 +108,26 @@ def main():
                 num_reflectors=5,
                 scenario_label="refined_alg_a",
             ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV_PI,
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_pi",
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV_IETF,
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_ietf",
+            ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_rda").expanduser(),
-        num_trials=100,
-        parse_cpus=10,
+        output_dir=Path(f"~/sav/results/5_300_rda").expanduser(),
+        num_trials=300,
+        parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

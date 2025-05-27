@@ -117,11 +117,11 @@ class RefinedAlgA(BaseSAVPolicy):
         """
 
         _, q = RefinedAlgA._get_as_prefix_set(
-            as_obj,
-            source_prefix,
-            prev_hop,
-            engine,
-            scenario
+            as_obj=as_obj,
+            source_prefix=source_prefix,
+            prev_hop=prev_hop,
+            engine=engine,
+            scenario=scenario
         )
 
         src_prefix = ipaddress.ip_network(source_prefix)

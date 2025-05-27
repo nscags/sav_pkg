@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from .base_sav_policy import BaseSAVPolicy
 from .refined_alg_a import RefinedAlgA
-from .bar_sav_pi import BARSAVPI
+from .bar_sav_pi import BAR_SAV_PI
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
@@ -31,7 +31,7 @@ class BAR_SAV_IETF(BaseSAVPolicy):
                 scenario=scenario
             )
         elif prev_hop.asn in as_obj.provider_asns:
-            return BARSAVPI._validate(
+            return BAR_SAV_PI._validate(
                 as_obj=as_obj,
                 source_prefix=source_prefix,
                 prev_hop=prev_hop,

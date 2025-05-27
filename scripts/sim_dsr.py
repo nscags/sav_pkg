@@ -26,7 +26,10 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     RFC8704,
     RefinedAlgA,
+    BAR_SAV_PI,
+    BAR_SAV_IETF,
 )
+from sav_pkg.enums import Prefixes
 from sav_pkg.utils.utils import get_metric_keys
 
 
@@ -45,6 +48,8 @@ def main():
         scenario_configs=(
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
@@ -52,6 +57,8 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
@@ -59,6 +66,8 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
@@ -66,6 +75,8 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
@@ -73,6 +84,8 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
@@ -80,6 +93,8 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
@@ -87,6 +102,8 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
@@ -94,6 +111,8 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
@@ -101,15 +120,35 @@ def main():
             ),            
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSRROA,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
-                scenario_label="BAR_SAV",
+                scenario_label="bar_sav",
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenarioDSRROA,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                num_users=5,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV_PI,
+                scenario_label="bar_sav_pi",
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenarioDSRROA,
+                num_attackers=0,
+                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                num_users=5,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV_IETF,
+                scenario_label="bar_sav_ietf",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_10_dsr").expanduser(),
-        num_trials=100,
-        parse_cpus=20,
+        output_dir=Path(f"~/sav/results/5_300_dsr_fixed").expanduser(),
+        num_trials=300,
+        parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

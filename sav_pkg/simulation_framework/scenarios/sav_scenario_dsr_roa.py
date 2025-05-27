@@ -27,4 +27,4 @@ class SAVScenarioDSRROA(SAVScenarioDSR):
 
         roa_origin: int = next(iter(self.edge_server_asns))
 
-        return (ROAInfo(Prefixes.ANYCAST_SERVER.value, roa_origin),)
+        return (ROAInfo(Prefixes.ANYCAST_SERVER.value, roa_origin), )

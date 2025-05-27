@@ -14,17 +14,17 @@ from .as_graph_info_000 import as_graph_info_000
 
 desc = "BAR SAV PI"
 
-bar_sav_pi_000 = EngineTestConfig(
-    name="bar_sav_pi_000",
+bar_sav_pi_001 = EngineTestConfig(
+    name="bar_sav_pi_001",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
         num_reflectors=2,
-        override_attacker_asns=frozenset({5}),
-        override_victim_asns=frozenset({555}),
-        override_reflector_asns=frozenset({666, 777}),
-        override_sav_asns=frozenset({666, 777}),
+        override_attacker_asns=frozenset({666}),
+        override_victim_asns=frozenset({777}),
+        override_reflector_asns=frozenset({5, 9}),
+        override_sav_asns=frozenset({5, 9}),
         BaseSAVPolicyCls=BAR_SAV_PI,
     ),
     as_graph_info=as_graph_info_000,

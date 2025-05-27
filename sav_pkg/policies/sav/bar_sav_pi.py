@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 
-class BARSAVPI(BaseSAVPolicy):
+class BAR_SAV_PI(BaseSAVPolicy):
     name: str = "BAR SAV PI"
 
     @staticmethod
@@ -28,12 +28,13 @@ class BARSAVPI(BaseSAVPolicy):
         #     each customer interface of the AS in consideration.
         dq_set = []
         for customer_asn in as_obj.customer_asns:
+            customer_as_obj = engine.as_graph.as_dict[customer_asn]
             d, q = RefinedAlgA._get_as_prefix_set(
-                as_obj,
-                source_prefix,
-                customer_asn,
-                engine,
-                scenario,
+                as_obj=as_obj,
+                source_prefix=source_prefix,
+                prev_hop=customer_as_obj,
+                engine=engine,
+                scenario=scenario,
             )
             dq_set.append((d, q))
 
@@ -56,16 +57,14 @@ class BARSAVPI(BaseSAVPolicy):
                     ) and ann_info.unprocessed_ann.prefix == prefix:
                         anns.append(ann_info)
 
-            if not anns:
-                continue
-
-            aspa = ASPA()
-            rov = ROV()
-            if all(
-                aspa._valid_ann(ann.unprocessed_ann, ann.recv_relationship) and rov._valid_ann(ann.unprocessed_ann, ann.recv_relationship)
-                for ann in anns
-            ):
-                qu3.add(prefix)
+            if anns:
+                aspa = ASPA(as_=as_obj)
+                rov = ROV(as_=as_obj)
+                if all(
+                    aspa._valid_ann(ann.unprocessed_ann, ann.recv_relationship) and rov._valid_ann(ann.unprocessed_ann, ann.recv_relationship)
+                    for ann in anns
+                ):
+                    qu3.add(prefix)
 
         qu = qu3
 
@@ -91,23 +90,21 @@ class BARSAVPI(BaseSAVPolicy):
                     if ann.prefix == prefix and as_obj.policy._valid_ann(ann, ann_info.recv_relationship):
                         anns.append(ann)
 
-            if not anns:
-                continue 
+            if anns:
+                all_paths_valid = True
 
-            all_paths_valid = True
+                for ann in anns:
+                    for asn in ann.as_path:
+                        as_on_path_obj = engine.as_graph.as_dict.get(asn)
+                        if isinstance(as_on_path_obj.policy, ASPA):
+                            if any(provider not in du for provider in as_on_path_obj.provider_asns):
+                                all_paths_valid = False
+                                break
+                    if not all_paths_valid:
+                        break
 
-            for ann in anns:
-                for asn in ann.as_path:
-                    as_on_path_obj = engine.as_graph.as_dict.get(asn)
-                    if isinstance(as_on_path_obj.policy, ASPA):
-                        if any(provider not in du for provider in as_on_path_obj.provider_asns):
-                            all_paths_valid = False
-                            break
-                if not all_paths_valid:
-                    break
-
-            if all_paths_valid:
-                s.add(prefix)
+                if all_paths_valid:
+                    s.add(prefix)
 
         # 6.  Subtract Pfx-set S from the set of allowed prefixes that pertain
         #     to loose uRPF for the Provider interface in consideration.  Call
