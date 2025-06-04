@@ -247,10 +247,6 @@ class SAVMetricTracker(MetricTracker):
                     data_plane_outcomes=data_plane_outcomes,
                 )
 
-        # Only call this once or else it adds significant amounts of time
+        # Only call this once or else it adds significant amount of time
         for metric in metrics:
             metric.save_percents()
-            # print(f"Metric: {metric.metric_key.outcome._name_}", flush=True)
-            # print(f"Numerator: {metric._numerator}", flush=True)
-            # print(f"Denominator: {metric._denominator}", flush=True)
-            # print(f"Percents: {metric.percents}", flush=True)

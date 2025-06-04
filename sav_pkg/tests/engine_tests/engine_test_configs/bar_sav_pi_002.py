@@ -10,24 +10,23 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.utils.diagram import SAVDiagram
 
-from .as_graph_info_000 import as_graph_info_000
+from .as_graph_info_010 import as_graph_info_010
 
 desc = "BAR SAV PI"
 
-bar_sav_pi_000 = EngineTestConfig(
-    name="bar_sav_pi_000",
+bar_sav_pi_002 = EngineTestConfig(
+    name="bar_sav_pi_002",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
-        num_reflectors=2,
-        override_attacker_asns=frozenset({5}),
-        override_victim_asns=frozenset({555}),
-        override_reflector_asns=frozenset({666, 777}),
-        override_sav_asns=frozenset({666, 777}),
+        num_attackers=0,
+        override_victim_asns=frozenset({1}),
+        override_reflector_asns=frozenset({3}),
+        override_sav_asns=frozenset({3}),
         BaseSAVPolicyCls=BAR_SAV_PI,
     ),
-    as_graph_info=as_graph_info_000,
+    as_graph_info=as_graph_info_010,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
     MetricTrackerCls=SAVMetricTracker,

@@ -22,8 +22,6 @@ from .config_dsr_003 import config_dsr_003
 from .config_dsr_004 import config_dsr_004
 from .config_dsr_005 import config_dsr_005
 
-from .test_000 import test_000
-
 # SAV Policy Tests
 from .loose_000 import loose_000
 from .strict_000 import strict_000
@@ -37,11 +35,14 @@ from .refined_alg_a_001 import refined_alg_a_001
 from .refined_alg_a_002 import refined_alg_a_002
 from .bar_sav_pi_000 import bar_sav_pi_000
 from .bar_sav_pi_001 import bar_sav_pi_001
+from .bar_sav_pi_002 import bar_sav_pi_002
 from .bar_sav_ietf_000 import bar_sav_ietf_000
 
 
+from .test_000 import test_000
+
 engine_test_configs = [
-    # test_000,
+    test_000,
     # config_dsr_000,
     # config_dsr_001,
     # config_dsr_002,
@@ -72,9 +73,10 @@ engine_test_configs = [
     # refined_alg_a_000,
     # refined_alg_a_001,
     # refined_alg_a_002,
-    bar_sav_pi_000,
-    bar_sav_pi_001,
-    bar_sav_ietf_000,
+    # bar_sav_pi_000,
+    # bar_sav_pi_001,
+    # bar_sav_pi_002,
+    # bar_sav_ietf_000,
 ]
 
 __all__ = ["engine_test_configs"]

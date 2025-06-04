@@ -13,12 +13,8 @@ class Outcomes(YamlAbleEnum):
     FORWARD: int = 7             # Packet forwarded (no SAV policy applied)
     V_FILTERED_ON_PATH: int = 8  # Filtered on path from victim -> reflector
     A_FILTERED_ON_PATH: int = 9  # Filtered on path from attacker -> reflector
-
-    # Used for metrics
-    ATTACKER_SUCCESS: int = 10    # FN or Forward
-    VICTIM_SUCCESS: int = 11     # TN or Forward
     # To verify traceback disconnections align with control plane
-    DISCONNECTED_CTRL: int = 12
+    DISCONNECTED_CTRL: int = 10
 
 class Prefixes(YamlAbleEnum):
     """Default Prefixes"""

@@ -1,4 +1,4 @@
-from bgpy.simulation_engine.policies import BGP
+from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
 
 from sav_pkg.policies.sav import BAR_SAV_PI
@@ -19,7 +19,7 @@ bar_sav_pi_001 = EngineTestConfig(
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
-        BasePolicyCls=BGP,
+        BasePolicyCls=BGPFull,
         num_reflectors=2,
         override_attacker_asns=frozenset({666}),
         override_victim_asns=frozenset({777}),

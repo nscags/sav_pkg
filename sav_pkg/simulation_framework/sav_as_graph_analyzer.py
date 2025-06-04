@@ -24,7 +24,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
     ) -> None:
         self.engine: BaseSimulationEngine = engine
         self.scenario: "SAVScenario" = scenario
-        # data_plane_outcomes: dict[tuple, int] = {(as_obj.asn, source_prefix, prev_hop, origin): outcome}
+        # data_plane_outcomes: dict[tuple, int] = {(as_obj.asn, source_prefix, prev_hop.asn, origin.asn): outcome}
         self._data_plane_outcomes: dict[tuple, int] = dict()
         self._control_plane_outcomes: dict[int, int] = dict()
         self.outcomes = {

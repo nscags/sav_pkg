@@ -89,7 +89,7 @@ class Metric:
         relevant_entries = [
             (origin, outcome)
             for (asn, source_prefix, prev_hop, origin), outcome in data_plane_outcomes.items()
-            if asn ==  as_obj.asn
+            if asn == as_obj.asn
         ]
 
         if not relevant_entries:
@@ -97,20 +97,6 @@ class Metric:
 
         if any(outcome == self.metric_key.outcome.value for _, outcome in relevant_entries):
             self._numerator += 1
-
-        if self.metric_key.outcome == Outcomes.ATTACKER_SUCCESS:
-            if any(
-                origin in scenario.attacker_asns and outcome in {Outcomes.FALSE_NEGATIVE.value, Outcomes.FORWARD.value}
-                for origin, outcome in relevant_entries
-            ):
-                self._numerator += 1
-
-        if self.metric_key.outcome == Outcomes.VICTIM_SUCCESS:
-            if any(
-                origin in scenario.victim_asns and outcome in {Outcomes.TRUE_NEGATIVE.value, Outcomes.FORWARD.value}
-                for origin, outcome in relevant_entries
-            ):
-                self._numerator += 1
 
     def _add_denominator(
         self,
@@ -124,23 +110,6 @@ class Metric:
 
         # Only track metrics at reflectors
         if as_obj.asn in scenario.reflector_asns:
-            relevant_entries = [
-                (origin, outcome)
-                for (asn, source_prefix, prev_hop, origin), outcome in data_plane_outcomes.items()
-                if asn == as_obj.asn
-            ]
-
-            # For Attacker and Victim success we ignore disconnected reflectors
-            attacker_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.attacker_asns]
-            if self.metric_key.outcome == Outcomes.ATTACKER_SUCCESS:
-                if any(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
-                    return False
-
-            victim_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.victim_asns]
-            if self.metric_key.outcome == Outcomes.VICTIM_SUCCESS:
-                if any(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
-                    return False
-
             self._denominator += 1
             return True
         else:
