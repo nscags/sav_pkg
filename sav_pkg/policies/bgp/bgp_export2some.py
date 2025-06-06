@@ -134,6 +134,7 @@ class BGPExport2Some(BGP):
                 continue
 
             # NOTE: using this method means victim MUST use dedicated prefix
+            #       this also means we must modify this to do DSR with e2s
             if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
                 weight = (superprefix_weight_dict or {}).get(neighbor.asn, 0)
                 if random.random() < weight:

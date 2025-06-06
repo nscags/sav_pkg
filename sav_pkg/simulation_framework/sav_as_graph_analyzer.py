@@ -37,7 +37,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Analyzes as graph to perform data plane traceback
         """
-        print("Starting data plane analysis:", flush=True)
+        # print("Starting data plane analysis:", flush=True)
 
         for victim_asn in self.scenario.victim_asns:
             victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
@@ -80,25 +80,25 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         source_prefix = self.scenario.scenario_config.victim_source_prefix
         origin = as_obj.asn
 
-        for ann in as_obj.policy._local_rib.data.values():
-            if ann.origin in self.scenario.reflector_asns:
-                dst = ann.prefix
-                for neighbor_as_obj in as_obj.neighbors:
-                    # propagate packet to all neighbors with prev_hop = attacker
-                    self._propagate_packet(
-                        neighbor_as_obj, source_prefix, as_obj, origin, dst
-                    )
-
-                source_prefix = self.scenario.scenario_config.victim_source_prefix
-
-        # prev_hop = None
         # for ann in as_obj.policy._local_rib.data.values():
         #     if ann.origin in self.scenario.reflector_asns:
         #         dst = ann.prefix
+        #         for neighbor_as_obj in as_obj.neighbors:
+        #             # propagate packet to all neighbors with prev_hop = attacker
+        #             self._propagate_packet(
+        #                 neighbor_as_obj, source_prefix, as_obj, origin, dst
+        #             )
 
-        #         self._propagate_packet(
-        #             as_obj, source_prefix, prev_hop, origin, dst
-        #         )
+        #         source_prefix = self.scenario.scenario_config.victim_source_prefix
+
+        prev_hop = None
+        for ann in as_obj.policy._local_rib.data.values():
+            if ann.origin in self.scenario.reflector_asns:
+                dst = ann.prefix
+
+                self._propagate_packet(
+                    as_obj, source_prefix, prev_hop, origin, dst
+                )
 
     def _propagate_packet(
         self,

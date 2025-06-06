@@ -2,8 +2,8 @@ from collections import defaultdict
 
 from bgpy.as_graphs import AS
 from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_framework.scenarios import Scenario
 
+from sav_pkg.simulation_framework.scenarios import SAVScenario
 from sav_pkg.enums import Outcomes
 
 from .metric_key import MetricKey
@@ -58,7 +58,7 @@ class Metric:
         *,
         as_obj: AS,
         engine: BaseSimulationEngine,
-        scenario: Scenario,
+        scenario: SAVScenario,
         data_plane_outcomes,
     ):
         within_denom = self._add_denominator(
@@ -81,35 +81,69 @@ class Metric:
         *,
         as_obj: AS,
         engine: BaseSimulationEngine,
-        scenario: Scenario,
+        scenario: SAVScenario,
         data_plane_outcomes,
     ) -> None:
         """Adds to numerator if it is within the as group and the outcome is correct"""
 
-        relevant_entries = [
-            (origin, outcome)
-            for (asn, source_prefix, prev_hop, origin), outcome in data_plane_outcomes.items()
-            if asn == as_obj.asn
-        ]
+        # as_obj = reflector, user
+        # origin = attacker, victim, edge
+        outcome_by_origin = dict()
+        for (asn, _, _, origin), outcome in data_plane_outcomes.items():
+            if asn != as_obj.asn:
+                continue
 
-        if not relevant_entries:
-            return
+            current = outcome_by_origin.get(origin)
+            if current is None:
+                outcome_by_origin[origin] = outcome
+            else:
+                if outcome < current:
+                    outcome_by_origin[origin] = outcome
 
-        if any(outcome == self.metric_key.outcome.value for _, outcome in relevant_entries):
-            self._numerator += 1
+        if self.metric_key.outcome == Outcomes.DETECTION_RATE:
+            for outcome in outcome_by_origin.values():
+                if outcome in [Outcomes.TRUE_POSITIVE.value, Outcomes.A_FILTERED_ON_PATH.value]:
+                    self._numerator += 1
+        elif self.metric_key.outcome == Outcomes.FALSE_POSITIVE_RATE:
+            for outcome in outcome_by_origin.values():
+                if outcome in [Outcomes.FALSE_POSITIVE.value, Outcomes.V_FILTERED_ON_PATH.value]:
+                    self._numerator += 1  
+        else:
+            for outcome in outcome_by_origin.values():
+                if outcome == self.metric_key.outcome.value:
+                    self._numerator += 1
 
     def _add_denominator(
         self,
         *,
         as_obj: AS,
         engine: BaseSimulationEngine,
-        scenario: Scenario,
+        scenario: SAVScenario,
         data_plane_outcomes,
     ) -> bool:
         """Adds to the denominator if it is within the as group"""
 
         # Only track metrics at reflectors
         if as_obj.asn in scenario.reflector_asns:
+            # ignore disconnections except for disconnected metric
+            if self.metric_key.outcome != Outcomes.DISCONNECTED:
+                relevant_entries = [
+                    (origin, outcome)
+                    for (asn, _, _, origin), outcome in data_plane_outcomes.items()
+                    if asn == as_obj.asn
+                ]
+
+                # For Attacker and Victim success we ignore disconnected reflectors
+                attacker_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.attacker_asns]
+                if self.metric_key.outcome == Outcomes.DETECTION_RATE:
+                    if any(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
+                        return False
+
+                victim_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.victim_asns]
+                if self.metric_key.outcome == Outcomes.FALSE_POSITIVE_RATE:
+                    if any(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
+                        return False
+                    
             self._denominator += 1
             return True
         else:

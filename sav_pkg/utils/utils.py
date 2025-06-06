@@ -36,16 +36,9 @@ def get_metric_keys(
         for plane in planes
         for as_group in as_groups
         for outcome in [
-            Outcomes.FALSE_NEGATIVE,
-            Outcomes.FALSE_POSITIVE,
-            Outcomes.TRUE_NEGATIVE,
-            Outcomes.TRUE_POSITIVE,
-            Outcomes.V_FILTERED_ON_PATH,
-            Outcomes.A_FILTERED_ON_PATH,
+            Outcomes.FALSE_POSITIVE_RATE,
+            Outcomes.DETECTION_RATE,
             Outcomes.DISCONNECTED,
-            Outcomes.FORWARD,
-            Outcomes.ATTACKER_SUCCESS,
-            Outcomes.VICTIM_SUCCESS,
         ]
     ]
     return metric_keys
@@ -59,7 +52,7 @@ def get_metric_keys(
 #       their own legitimate prefixes, so ROV wouldn't be useful in
 #       this context, again will probably be useful in SAV attacks paper
 def get_real_world_rov_asn_cls_dict(
-    json_path: Path = Path.home() / "rov_info.json",
+    json_path: Path = Path.home() / "data/rov_info.json",
     requests_cache_db_path: Path | None = None,
 ) -> frozendict[int, type[ROVFull]]:
     if not json_path.exists():
@@ -130,7 +123,7 @@ def get_applied_interfaces(
 
 def get_export_to_some_dict(
     e2s_policy,
-    json_path: Path = Path.home() / "e2s_asn_provider_weights.json",
+    json_path: Path = Path.home() / "data/e2s_asn_provider_weights.json",
 ):
     if not json_path.exists():
         print("oh no")
@@ -147,7 +140,7 @@ def get_export_to_some_dict(
 
 
 def get_e2s_asn_provider_weight_dict(
-    json_path: Path = Path.home() / "e2s_asn_provider_weights.json",
+    json_path: Path = Path.home() / "data/e2s_asn_provider_weights.json",
 ) -> frozendict:
     """
     Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
@@ -171,7 +164,7 @@ def get_e2s_asn_provider_weight_dict(
 
 
 def get_e2s_asn_provider_prepending_dict(
-    json_path: Path = Path.home() / "mh_2p_export_to_some_prepending.json",
+    json_path: Path = Path.home() / "data/mh_2p_export_to_some_prepending.json",
 ) -> frozendict:
     """
     Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
@@ -192,7 +185,7 @@ def get_e2s_asn_provider_prepending_dict(
 
 
 def get_e2s_superprefix_weight_dict(
-    json_path: Path = Path.home() / "mh_2p_superprefix_weights.json",
+    json_path: Path = Path.home() / "data/mh_2p_superprefix_weights.json",
 ) -> frozendict:
     """
     Retrieves dictionary of ASN, provider ASNs, and their corresponding weights

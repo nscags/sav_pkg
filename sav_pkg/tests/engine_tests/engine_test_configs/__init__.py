@@ -14,6 +14,7 @@ from .config_011 import config_011
 from .config_012 import config_012
 from .config_013 import config_013
 from .config_014 import config_014
+from .config_015 import config_015
 
 from .config_dsr_000 import config_dsr_000
 from .config_dsr_001 import config_dsr_001
@@ -21,6 +22,7 @@ from .config_dsr_002 import config_dsr_002
 from .config_dsr_003 import config_dsr_003
 from .config_dsr_004 import config_dsr_004
 from .config_dsr_005 import config_dsr_005
+from .config_dsr_006 import config_dsr_006
 
 # SAV Policy Tests
 from .loose_000 import loose_000
@@ -49,6 +51,7 @@ engine_test_configs = [
     # config_dsr_003,
     # config_dsr_004,
     # config_dsr_005,
+    config_dsr_006,
     # config_000,
     # config_001,
     # config_003,
@@ -63,6 +66,7 @@ engine_test_configs = [
     # config_012,
     # config_013,
     # config_014,
+    # config_015,
     # loose_000,
     # strict_000,
     # fp_000,

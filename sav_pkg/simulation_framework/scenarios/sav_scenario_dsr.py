@@ -112,7 +112,7 @@ class SAVScenarioDSR(SAVScenario):
         engine: BaseSimulationEngine | None,
         prev_scenario: Optional["SAVScenarioDSR"],
     ) -> frozenset[int]:
-        """Returns reflector ASN at random"""
+        """Returns anycast server ASN at random"""
 
         # This is coming from YAML, do not recalculate
         if override_anycast_server_asns is not None:

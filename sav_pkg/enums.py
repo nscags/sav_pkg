@@ -6,15 +6,18 @@ class Outcomes(YamlAbleEnum):
 
     ORIGIN: int = 1
     DISCONNECTED: int = 2        # Victim/Attacker cannot route to reflector
-    FALSE_NEGATIVE: int = 3      # Incorrectly allows spoofed packet
-    TRUE_NEGATIVE: int = 4       # Correctly allows legitimate packet
-    FALSE_POSITIVE: int = 5      # Incorrectly block legitimate packet
-    TRUE_POSITIVE: int = 6       # Correctly blocks spoofed packet
-    FORWARD: int = 7             # Packet forwarded (no SAV policy applied)
+    FORWARD: int = 3             # Packet forwarded (no SAV policy applied)
+    FALSE_NEGATIVE: int = 4      # Incorrectly allows spoofed packet
+    TRUE_NEGATIVE: int = 5       # Correctly allows legitimate packet
+    FALSE_POSITIVE: int = 6      # Incorrectly block legitimate packet
+    TRUE_POSITIVE: int = 7       # Correctly blocks spoofed packet
     V_FILTERED_ON_PATH: int = 8  # Filtered on path from victim -> reflector
     A_FILTERED_ON_PATH: int = 9  # Filtered on path from attacker -> reflector
+    # metrics to be calculated
+    FALSE_POSITIVE_RATE: int = 10
+    DETECTION_RATE: int = 11
     # To verify traceback disconnections align with control plane
-    DISCONNECTED_CTRL: int = 10
+    # DISCONNECTED_CTRL: int = 10
 
 class Prefixes(YamlAbleEnum):
     """Default Prefixes"""
