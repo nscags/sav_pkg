@@ -57,7 +57,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Victim sends packet to each reflector
         """
-        source_prefix = self.scenario.scenario_config.victim_source_prefix
+        source_prefix = self.scenario.scenario_config.source_prefix
         origin = as_obj.asn
         prev_hop = None
 
@@ -77,7 +77,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         Attacker will send packets to each of its neighbors for every reflector
         This provides attacker with greater opportunity for success
         """
-        source_prefix = self.scenario.scenario_config.victim_source_prefix
+        source_prefix = self.scenario.scenario_config.source_prefix
         origin = as_obj.asn
 
         # for ann in as_obj.policy._local_rib.data.values():

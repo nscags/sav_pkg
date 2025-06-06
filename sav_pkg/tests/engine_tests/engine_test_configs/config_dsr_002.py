@@ -9,12 +9,12 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.utils.diagram_dsr import SAVDiagramDSR
 from sav_pkg.enums import Prefixes
-from sav_pkg.policies.sav import EnhancedFeasiblePathuRPFAlgA
+from sav_pkg.policies.sav import RefinedAlgA
 
 from .as_graph_info_009 import as_graph_info_009
 
 
-desc = "Test DSR Scenario, draft ex, EFP Alg A"
+desc = "Test DSR Scenario, Refined Alg A (BAR SAV), no ROA"
 
 config_dsr_002 = EngineTestConfig(
     name="config_dsr_002",
@@ -23,12 +23,12 @@ config_dsr_002 = EngineTestConfig(
         ScenarioCls=SAVScenarioDSR,
         BasePolicyCls=BGPFull,
         num_attackers=0,
-        victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+        source_prefix=Prefixes.ANYCAST_SERVER.value,
         override_user_asns=frozenset({1}),
         override_edge_server_asns=frozenset({2}),
         override_anycast_server_asns=frozenset({3}),
         override_sav_asns=frozenset({4}),
-        BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
+        BaseSAVPolicyCls=RefinedAlgA,
     ),
     as_graph_info=as_graph_info_009,
     DiagramCls=SAVDiagramDSR,

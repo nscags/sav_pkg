@@ -13,9 +13,6 @@ from .sav import ProcedureX
 from .bgp import BGPExport2Some
 from .bgp import BGPFullExport2Some
 
-from .aspa import ASPAExport2Some
-from .aspa import ASPAFullExport2Some
-
 
 __all__ = [
     "LooseuRPF",
@@ -31,6 +28,4 @@ __all__ = [
     "ProcedureX",
     "BGPExport2Some",
     "BGPFullExport2Some",
-    "ASPAFullExport2Some",
-    "ASPAExport2Some",
 ]

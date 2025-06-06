@@ -14,7 +14,7 @@ from sav_pkg.policies.sav import RefinedAlgA
 from .as_graph_info_009 import as_graph_info_009
 
 
-desc = "Test DSR Scenario, Refined Alg A (BAR SAV), no ROA"
+desc = "Test DSR Scenario, Refined Alg A (BAR SAV), with ROA"
 
 config_dsr_003 = EngineTestConfig(
     name="config_dsr_003",
@@ -23,7 +23,8 @@ config_dsr_003 = EngineTestConfig(
         ScenarioCls=SAVScenarioDSR,
         BasePolicyCls=BGPFull,
         num_attackers=0,
-        victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+        source_prefix=Prefixes.ANYCAST_SERVER.value,
+        source_prefix_roa=True,
         override_user_asns=frozenset({1}),
         override_edge_server_asns=frozenset({2}),
         override_anycast_server_asns=frozenset({3}),

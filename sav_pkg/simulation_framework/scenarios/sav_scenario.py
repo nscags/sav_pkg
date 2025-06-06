@@ -1,6 +1,7 @@
 import math
 import random
 from typing import TYPE_CHECKING, Optional
+from frozendict import frozendict
 
 from bgpy.enums import (
     SpecialPercentAdoptions,
@@ -9,7 +10,7 @@ from bgpy.enums import (
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
-from frozendict import frozendict
+from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from roa_checker import ROA
 
 from sav_pkg.enums import Prefixes
@@ -158,7 +159,7 @@ class SAVScenario(Scenario):
         # NOTE: this logic doesn't allow for multiple victims/attackers since
         #       all victim/attacker ASes will originate the same prefix
         #       In our simulations we use 1 victim/attacker pair so this
-        #       functionality is unnecessary, will need to add in future
+        #       functionality is unnecessary, may need to add in future
         anns = list()
         for victim_asn in self.victim_asns:
             anns.append(
@@ -279,3 +280,25 @@ class SAVScenario(Scenario):
             | self._default_non_adopters
             | hardcoded_asns
         )
+
+    ################
+    # Get ROA Info #
+    ################
+
+    def _get_roa_infos(
+        self,
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional["BaseSimulationEngine"] = None,
+        prev_scenario: Optional["SAVScenario"] = None,
+    ) -> tuple[ROAInfo, ...]:
+        """Returns a tuple of ROAInfo's"""
+
+        if self.scenario_config.source_prefix_roa:
+            err: str = "Fix the roa_origins of the " "announcements for multiple victims"
+            assert len(self.victim_asns) == 1, err
+
+            roa_origin: int = next(iter(self.victim_asns))
+            return (ROAInfo(self.scenario_config.source_prefix, roa_origin),)
+        else:
+            return ()

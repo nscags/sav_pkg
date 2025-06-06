@@ -10,12 +10,14 @@ from sav_pkg.policies.sav.base_sav_policy import BaseSAVPolicy
 
 @dataclass(frozen=True)
 class SAVScenarioConfig(ScenarioConfig):
+    # reflectors
     num_reflectors: int = 1
     reflector_subcategory_attr: str | None = ASGroups.ALL_WOUT_IXPS.value
     override_reflector_asns: frozenset[int] | None = None
-
-    victim_source_prefix: str = Prefixes.VICTIM.value
-
+    # source prefix used for data packets
+    source_prefix: str = Prefixes.VICTIM.value
+    # roa toggle
+    source_prefix_roa: bool = False
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt
@@ -30,7 +32,6 @@ class SAVScenarioConfig(ScenarioConfig):
     # I hijacked the default percent_adopt for SAV policies
     special_percent_adoption: float = 0.0
     override_default_interface_dict: frozendict[str, frozenset] = None
-
     # DSR configs 
     # user 
     num_users: int = 1

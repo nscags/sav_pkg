@@ -4,6 +4,7 @@ import random
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
+from bgpy.enums import ASGroups
 
 import os
 import sys
@@ -49,6 +50,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="loose",
             ),
@@ -57,6 +59,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="strict",
             ),
@@ -65,6 +68,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="feasible",
             ),
@@ -73,6 +77,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="efp_alg_b",
             ),
@@ -81,6 +86,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="efp_alg_a",
             ),
@@ -89,6 +95,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="efp_alg_a_wo_peers",
             ),
@@ -97,6 +104,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="rfc8704",
             ),
@@ -105,6 +113,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr = ASGroups.STUBS_OR_MH.value,
                 num_reflectors=5,
                 scenario_label="refined_alg_a",
             ),
@@ -125,7 +134,7 @@ def main():
             #     scenario_label="bar_sav_ietf",
             # ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_rda_metrics").expanduser(),
+        output_dir=Path(f"~/sav/results/5_100_rda_edge").expanduser(),
         num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

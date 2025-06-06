@@ -1,5 +1,6 @@
 import random
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
+from frozendict import frozendict
 
 from bgpy.enums import (
     SpecialPercentAdoptions,
@@ -7,7 +8,7 @@ from bgpy.enums import (
 )
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
-from frozendict import frozendict
+from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from roa_checker import ROA
 
 from .sav_scenario import SAVScenario
@@ -20,14 +21,14 @@ if TYPE_CHECKING:
 
 
 class SAVScenarioDSR(SAVScenario):
-
+    
     def __init__(
         self,
         *,
         scenario_config: SAVScenarioConfig,
         percent_adoption: float | SpecialPercentAdoptions = 0,
         engine: BaseSimulationEngine | None = None,
-        prev_scenario: Optional["SAVScenarioDSR"] = None,
+        prev_scenario: Optional["SAVScenario"] = None,
         preprocess_anns_func=noop,
     ):
         """inits attrs
@@ -44,34 +45,21 @@ class SAVScenarioDSR(SAVScenario):
         self.scenario_config: SAVScenarioConfig = scenario_config
         self.percent_adoption: float | SpecialPercentAdoptions = percent_adoption
 
-        # for the DSR scenario we have three entities
-        # anycast server: announces the prefix (implied that user routes request here)
-        # edge server: in a separate AS, the anycast server routes a response using this server
-        #              this edge server does not announce the same prefix, but it routes data packets
-        #              using an IP address in the prefix announced by the anycast server
-        # user: destination for edge server, receives the response 
+        self.attacker_asns: frozenset[int] = frozenset()
 
-        # we will model the response traffic with SAV deployed
-        # since the AS is routing packets for a prefix it didn't announce, it causes issues for SAV filters
-        # anycast_server: simply announces prefix, but does nothing else
-        # edge_server: will use victim AS implementation, will automatically route packets and track metrics
-        # user: reflector, will announce its own separate prefix, destination, doesn't route packets
-
-        self.attacker_asns = frozenset()
+        self.anycast_server_asns: frozenset[int] = self._get_anycast_server_asns(
+            scenario_config.override_anycast_server_asns, engine, prev_scenario
+        )
 
         self.edge_server_asns: frozenset[int] = self._get_edge_server_asns(
             scenario_config.override_edge_server_asns, engine, prev_scenario
         )
         self.victim_asns = self.edge_server_asns
 
-        self.user_asns: frozenset[int] = self._get_reflector_asns(
+        self.user_asns: frozenset[int] = self._get_user_asns(
             scenario_config.override_user_asns, engine, prev_scenario
         )
         self.reflector_asns = self.user_asns
-
-        self.anycast_server_asns: frozenset[int] = self._get_anycast_server_asns(
-            scenario_config.override_anycast_server_asns, engine, prev_scenario
-        )
 
         self.sav_policy_asn_dict = self._get_sav_policies_asn_dict(engine)
 
@@ -101,7 +89,7 @@ class SAVScenarioDSR(SAVScenario):
         ] = self._get_ordered_prefix_subprefix_dict()
 
         self.policy_classes_used: frozenset[type[Policy]] = frozenset()
-    
+
     #######################
     # Get Anycast Servers #
     #######################
@@ -110,14 +98,14 @@ class SAVScenarioDSR(SAVScenario):
         self,
         override_anycast_server_asns: frozenset[int] | None,
         engine: BaseSimulationEngine | None,
-        prev_scenario: Optional["SAVScenarioDSR"],
+        prev_scenario: Optional["SAVScenario"],
     ) -> frozenset[int]:
-        """Returns anycast server ASN at random"""
+        """Returns anycast_server ASN at random"""
 
         # This is coming from YAML, do not recalculate
         if override_anycast_server_asns is not None:
             anycast_server_asns = override_anycast_server_asns
-        # Reuse the anycast servers from the last scenario for comparability
+        # Reuse the anycast_servers from the last scenario for comparability
         elif prev_scenario:
             anycast_server_asns = prev_scenario.anycast_server_asns
         # This is being initialized for the first time
@@ -133,7 +121,7 @@ class SAVScenarioDSR(SAVScenario):
                 )
             )
 
-        err = "Number of anycast servers is different from anycast_servers length"
+        err = "Number of anycast_servers is different from anycast_servers length"
         assert len(anycast_server_asns) == self.scenario_config.num_anycast_servers, err
 
         return anycast_server_asns
@@ -142,9 +130,9 @@ class SAVScenarioDSR(SAVScenario):
         self,
         engine: BaseSimulationEngine,
         percent_adoption: float | SpecialPercentAdoptions,
-        prev_scenario: Optional["SAVScenarioDSR"],
+        prev_scenario: Optional["SAVScenario"],
     ) -> frozenset[int]:
-        """Returns possible reflectors ASNs, defaulted from config"""
+        """Returns possible anycast_servers ASNs, defaulted from config"""
 
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.anycast_server_subcategory_attr
@@ -152,9 +140,6 @@ class SAVScenarioDSR(SAVScenario):
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
-        # Remove edge servers and users from possible anycast servers
-        possible_asns = possible_asns.difference(self.edge_server_asns)
-        possible_asns = possible_asns.difference(self.user_asns)
         return possible_asns
 
     ####################
@@ -163,16 +148,16 @@ class SAVScenarioDSR(SAVScenario):
 
     def _get_edge_server_asns(
         self,
-        override_edge_server_asns: Optional[frozenset[int]],
-        engine: Optional[BaseSimulationEngine],
-        prev_scenario: Optional["SAVScenarioDSR"],
+        override_edge_server_asns: frozenset[int] | None,
+        engine: BaseSimulationEngine | None,
+        prev_scenario: Optional["SAVScenario"],
     ) -> frozenset[int]:
-        """Returns edge server ASN at random"""
+        """Returns edge_server ASN at random"""
 
         # This is coming from YAML, do not recalculate
         if override_edge_server_asns is not None:
             edge_server_asns = override_edge_server_asns
-        # Reuse the edge server from the last scenario for comparability
+        # Reuse the edge_servers from the last scenario for comparability
         elif prev_scenario:
             edge_server_asns = prev_scenario.edge_server_asns
         # This is being initialized for the first time
@@ -188,7 +173,7 @@ class SAVScenarioDSR(SAVScenario):
                 )
             )
 
-        err = "Number of edge servers is different from edge_server length"
+        err = "Number of edge_servers is different from edge_servers length"
         assert len(edge_server_asns) == self.scenario_config.num_edge_servers, err
 
         return edge_server_asns
@@ -196,10 +181,10 @@ class SAVScenarioDSR(SAVScenario):
     def _get_possible_edge_server_asns(
         self,
         engine: BaseSimulationEngine,
-        percent_adoption: Union[float, SpecialPercentAdoptions],
+        percent_adoption: float | SpecialPercentAdoptions,
         prev_scenario: Optional["SAVScenario"],
     ) -> frozenset[int]:
-        """Returns possible edge server ASNs, defaulted from config"""
+        """Returns possible edge_servers ASNs, defaulted from config"""
 
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.edge_server_subcategory_attr
@@ -207,6 +192,62 @@ class SAVScenarioDSR(SAVScenario):
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
+        possible_asns = possible_asns.difference(self.anycast_server_asns)
+        return possible_asns
+
+    #############
+    # Get Users #
+    #############
+
+    def _get_user_asns(
+        self,
+        override_user_asns: frozenset[int] | None,
+        engine: BaseSimulationEngine | None,
+        prev_scenario: Optional["SAVScenario"],
+    ) -> frozenset[int]:
+        """Returns user ASN at random"""
+
+        # This is coming from YAML, do not recalculate
+        if override_user_asns is not None:
+            user_asns = override_user_asns
+        # Reuse the users from the last scenario for comparability
+        elif prev_scenario:
+            user_asns = prev_scenario.user_asns
+        # This is being initialized for the first time
+        else:
+            assert engine
+            possible_user_asns = self._get_possible_user_asns(
+                engine, self.percent_adoption, prev_scenario
+            )
+            # https://stackoverflow.com/a/15837796/8903959
+            user_asns = frozenset(
+                random.sample(
+                    tuple(possible_user_asns), self.scenario_config.num_users
+                )
+            )
+
+        err = "Number of users is different from users length"
+        assert len(user_asns) == self.scenario_config.num_users, err
+
+        return user_asns
+
+    def _get_possible_user_asns(
+        self,
+        engine: BaseSimulationEngine,
+        percent_adoption: float | SpecialPercentAdoptions,
+        prev_scenario: Optional["SAVScenario"],
+    ) -> frozenset[int]:
+        """Returns possible users ASNs, defaulted from config"""
+
+        possible_asns = engine.as_graph.asn_groups[
+            self.scenario_config.user_subcategory_attr
+        ]
+        err = "Make mypy happy"
+        assert all(isinstance(x, int) for x in possible_asns), err
+        assert isinstance(possible_asns, frozenset), err
+        # Remove anycast and edge servers from possible users
+        possible_asns = possible_asns.difference(self.anycast_server_asns)
+        possible_asns = possible_asns.difference(self.edge_server_asns)
         return possible_asns
 
     #####################
@@ -215,9 +256,13 @@ class SAVScenarioDSR(SAVScenario):
 
     def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """
-        All victims, attackers, and reflectors announce a unique prefix
+        All anycast servers, edge servers, and users announce a unique prefix
         """
 
+        # NOTE: this logic doesn't allow for multiple anycast/edge servers since
+        #       all anycast/edge ASes will originate the same prefix
+        #       In our simulations we use 1 anycast/edge server pair so this
+        #       functionality is unnecessary, may need to add in future
         anns = list()
         for anycast_server_asn in self.anycast_server_asns:
             anns.append(
@@ -237,13 +282,37 @@ class SAVScenarioDSR(SAVScenario):
                 )
             )
 
-        for user_asn in self.user_asns:
+        # NOTE: with this logic, we are limited to 256 users
+        #       For our simulations we typically run 5-10 users
+        for i, user_asn in enumerate(self.user_asns):
             anns.append(
                 self.scenario_config.AnnCls(
-                    prefix=Prefixes.USER.value,
+                    prefix=f"3.3.{i}.0/24",
                     as_path=(user_asn,),
                     timestamp=Timestamps.VICTIM.value,
                 )
             )
 
         return tuple(anns)
+
+    ################
+    # Get ROA Info #
+    ################
+
+    def _get_roa_infos(
+        self,
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional["BaseSimulationEngine"] = None,
+        prev_scenario: Optional["SAVScenario"] = None,
+    ) -> tuple[ROAInfo, ...]:
+        """Returns a tuple of ROAInfo's"""
+
+        if self.scenario_config.source_prefix_roa:
+            err: str = "Fix the roa_origins of the " "announcements for multiple edge servers"
+            assert len(self.edge_server_asns) == 1, err
+
+            roa_origin: int = next(iter(self.edge_server_asns))
+            return (ROAInfo(self.scenario_config.source_prefix, roa_origin),)
+        else:
+            return ()

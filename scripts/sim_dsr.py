@@ -13,7 +13,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from sav_pkg.simulation_framework import (
     SAVScenarioConfig, 
     SAVScenarioDSR,
-    SAVScenarioDSRROA,
     SAVASGraphAnalyzer, 
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
@@ -49,7 +48,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
@@ -58,7 +57,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
@@ -67,7 +66,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
@@ -76,7 +75,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
@@ -85,7 +84,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
@@ -94,7 +93,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
@@ -103,7 +102,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
@@ -112,16 +111,16 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
                 scenario_label="refined_alg_a",
             ),            
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioDSRROA,
+                ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
@@ -130,7 +129,7 @@ def main():
             # SAVScenarioConfig(
             #     ScenarioCls=SAVScenarioDSRROA,
             #     num_attackers=0,
-            #     victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+            #     source_prefix=Prefixes.ANYCAST_SERVER.value,
             #     num_users=5,
             #     BasePolicyCls=BGPFull,
             #     BaseSAVPolicyCls=BAR_SAV_PI,
@@ -139,14 +138,14 @@ def main():
             # SAVScenarioConfig(
             #     ScenarioCls=SAVScenarioDSRROA,
             #     num_attackers=0,
-            #     victim_source_prefix=Prefixes.ANYCAST_SERVER.value,
+            #     source_prefix=Prefixes.ANYCAST_SERVER.value,
             #     num_users=5,
             #     BasePolicyCls=BGPFull,
             #     BaseSAVPolicyCls=BAR_SAV_IETF,
             #     scenario_label="bar_sav_ietf",
             # ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_dsr_metrics").expanduser(),
+        output_dir=Path(f"~/sav/results/5_100_dsr_scenario_refactor").expanduser(),
         num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
