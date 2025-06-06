@@ -48,8 +48,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
                 scenario_label="loose",
@@ -57,8 +57,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
                 scenario_label="strict",
@@ -66,8 +66,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 scenario_label="feasible",
@@ -75,8 +75,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 scenario_label="efp_alg_b",
@@ -84,8 +84,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 scenario_label="efp_alg_a",
@@ -93,8 +93,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
                 scenario_label="efp_alg_a_wo_peers",
@@ -102,8 +102,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
                 scenario_label="rfc8704",
@@ -111,8 +111,8 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
                 scenario_label="refined_alg_a",
@@ -120,8 +120,9 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
                 num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
+                source_prefix_roa=True,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RefinedAlgA,
                 scenario_label="bar_sav",
