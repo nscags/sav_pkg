@@ -33,10 +33,11 @@ from .refined_alg_a_002 import refined_alg_a_002
 # from .test_000 import test_000
 from .test_015 import test_015
 from .test_016 import test_016
-
-
+from .test_017 import test_017
+from .test_018 import test_018
+from .test_019 import test_019
 engine_test_configs = [
-test_016,
+test_019,
     # config_015,
      # test_000,
     # config_000,
