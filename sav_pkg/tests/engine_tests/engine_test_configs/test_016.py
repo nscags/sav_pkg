@@ -10,12 +10,12 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
 )
 from sav_pkg.utils.diagram import SAVDiagram
-from .as_graph_info_015 import as_graph_info_015 ##choose as my wish
+from .as_graph_info_000 import as_graph_info_000 ##choose as my wish
 
 desc = "Loose uRPF with three reflectors, different SAV ASNs, new attacker/victim"
 
-test_015 = EngineTestConfig( #change name
-    name="test_015", #change name
+test_016 = EngineTestConfig( #change name
+    name="test_016", #change name
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
@@ -27,7 +27,7 @@ test_015 = EngineTestConfig( #change name
         override_sav_asns=frozenset({3, 4, 5, 12}),
         BaseSAVPolicyCls=LooseuRPF,
     ),
-    as_graph_info=as_graph_info_015,
+    as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
     MetricTrackerCls=SAVMetricTracker,
