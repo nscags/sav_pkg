@@ -2,7 +2,7 @@ from pathlib import Path
 from time import time
 import random
 
-from bgpy.simulation_framework import Simulation
+from bgpy.simulation_framework import Simulation, GraphFactory
 from bgpy.simulation_engine import BGP, BGPFull
 
 import os
@@ -153,7 +153,9 @@ def main():
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
     )
-    sim.run()
+    sim.run(
+        GraphFactoryCls=GraphFactory
+    )
 
 
 if __name__ == '__main__':

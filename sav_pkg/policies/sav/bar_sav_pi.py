@@ -44,8 +44,8 @@ class BAR_SAV_PI(BaseSAVPolicy):
         du = set().union(*(d for d, _ in dq_set))
         qu = set().union(*(q for _, q in dq_set))
 
-        print(f"Step 2: {du}", flush=True)
-        print(f"Step 2: {qu}", flush=True)
+        # print(f"Step 2: {du}", flush=True)
+        # print(f"Step 2: {qu}", flush=True)
 
         # 3.  Modify Pfx-set Qu to keep only the prefixes whose routes in the
         #     RIBs-In (of the customer interfaces in consideration) are all
@@ -73,7 +73,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
 
         qu = qu3
 
-        print(f"Step 3: {qu}", flush=True)
+        # print(f"Step 3: {qu}", flush=True)
 
 
         # 4.  Further modify Pfx-set Qu to keep only the prefixes that have all
@@ -82,7 +82,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
             if roa.origin not in du and roa.prefix in qu:
                 qu.remove(roa.prefix)
 
-        print(f"Step 4: {qu}", flush=True)
+        # print(f"Step 4: {qu}", flush=True)
 
 
         # 5.  Further modify Pfx-set Qu to keep only the prefixes with all
@@ -117,7 +117,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
                 if all_paths_valid:
                     s.add(prefix)
 
-        print(f"Step 5: {s}", flush=True)
+        # print(f"Step 5: {s}", flush=True)
 
         # 6.  Subtract Pfx-set S from the set of allowed prefixes that pertain
         #     to loose uRPF for the Provider interface in consideration.  Call
@@ -132,7 +132,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
         #     prefixes of the local AS.  Call the resulting set as Pfx-set G.
         g = ga
 
-        print(f"Step 7: {g}", flush=True)
+        # print(f"Step 7: {g}", flush=True)
 
         # 8.  Apply Pfx-set G as the allow list for ingress SAV at each
         #     provider interface of the local AS.  
