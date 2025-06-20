@@ -92,8 +92,8 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
     "EFP uRPF Alg B": frozenset([Interfaces.CUSTOMER.value]),
     "RFC8704": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Refined Alg A": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "BAR SAV PI": frozenset([Interfaces.PROVIDER.value]),
-    "BAR SAV IETF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "BAR-SAV PI": frozenset([Interfaces.PROVIDER.value]),
+    "BAR-SAV Full": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
 })
 

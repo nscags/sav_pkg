@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class BAR_SAV_PI(BaseSAVPolicy):
-    name: str = "BAR SAV PI"
+    name: str = "BAR-SAV PI"
 
     @staticmethod
     def _validate(
@@ -44,17 +44,15 @@ class BAR_SAV_PI(BaseSAVPolicy):
         du = set().union(*(d for d, _ in dq_set))
         qu = set().union(*(q for _, q in dq_set))
 
-        # print(f"Step 2: {du}", flush=True)
-        # print(f"Step 2: {qu}", flush=True)
-
         # 3.  Modify Pfx-set Qu to keep only the prefixes whose routes in the
         #     RIBs-In (of the customer interfaces in consideration) are all
         #     RPKI-ROV Valid and have Valid AS path per ASPA verification.
         qu3 = set()
         for prefix in qu:
             anns = []
-            for prefix_dict in as_obj.policy._ribs_in.data.values():
-                for ann_info in prefix_dict.values():
+            for customer_asn in as_obj.customer_asns:
+                rib_in = as_obj.policy._ribs_in.data.get(customer_asn, {})
+                for ann_info in rib_in.values():
                     if as_obj.policy._valid_ann(
                         ann_info.unprocessed_ann, ann_info.recv_relationship
                     ) and ann_info.unprocessed_ann.prefix == prefix:
@@ -63,8 +61,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
             if anns:
                 aspa = ASPA(as_=as_obj)
                 rov = ROV(as_=as_obj)
-                # TODO: change to filter aspa with path prepending for now
-                # gain better understanding of how this is addressed in ASPA policy
+                # NOTE: doesn't work with e2s since there is path prepending
                 if all(
                     aspa._valid_ann(ann.unprocessed_ann, ann.recv_relationship) and rov._valid_ann(ann.unprocessed_ann, ann.recv_relationship)
                     for ann in anns
@@ -73,17 +70,11 @@ class BAR_SAV_PI(BaseSAVPolicy):
 
         qu = qu3
 
-        # print(f"Step 3: {qu}", flush=True)
-
-
         # 4.  Further modify Pfx-set Qu to keep only the prefixes that have all
         #     their allowed origin ASes (per ROAs) contained within AS-set Du.
         for roa in scenario.roa_infos:
             if roa.origin not in du and roa.prefix in qu:
                 qu.remove(roa.prefix)
-
-        # print(f"Step 4: {qu}", flush=True)
-
 
         # 5.  Further modify Pfx-set Qu to keep only the prefixes with all
         #     feasible routes from their respective origin AS to the local AS
@@ -111,13 +102,13 @@ class BAR_SAV_PI(BaseSAVPolicy):
                             if any(provider not in du for provider in as_on_path_obj.provider_asns):
                                 all_paths_valid = False
                                 break
+                        else:
+                            all_paths_valid = False
+                            break 
                     if not all_paths_valid:
                         break
-
                 if all_paths_valid:
                     s.add(prefix)
-
-        # print(f"Step 5: {s}", flush=True)
 
         # 6.  Subtract Pfx-set S from the set of allowed prefixes that pertain
         #     to loose uRPF for the Provider interface in consideration.  Call
@@ -130,9 +121,9 @@ class BAR_SAV_PI(BaseSAVPolicy):
         # 7.  From Pfx-set Ga, subtract (a) any prefixes originated by the
         #     local AS that are single-homed, and (b) any internal-use-only
         #     prefixes of the local AS.  Call the resulting set as Pfx-set G.
-        g = ga
 
-        # print(f"Step 7: {g}", flush=True)
+        # To my knowledge we do not simulate either of these
+        g = ga
 
         # 8.  Apply Pfx-set G as the allow list for ingress SAV at each
         #     provider interface of the local AS.  

@@ -153,9 +153,7 @@ def main():
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
     )
-    sim.run(
-        GraphFactoryCls=GraphFactory
-    )
+    sim.run()
 
 
 if __name__ == '__main__':

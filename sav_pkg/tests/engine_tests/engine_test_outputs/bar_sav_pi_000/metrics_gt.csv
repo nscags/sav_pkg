@@ -1,0 +1,4 @@
+scenario_cls,BaseSAVPolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
+SAVScenario,BAR-SAV PI,DATA,all_wout_ixps,FALSE_POSITIVE_RATE,0,0,0.0,0.0,,PseudoBGPFull
+SAVScenario,BAR-SAV PI,DATA,all_wout_ixps,DETECTION_RATE,0,0,0.0,0.0,,PseudoBGPFull
+SAVScenario,BAR-SAV PI,DATA,all_wout_ixps,DISCONNECTED,0,0,50.0,0.0,,PseudoBGPFull

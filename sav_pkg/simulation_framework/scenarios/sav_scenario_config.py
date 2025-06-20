@@ -16,7 +16,7 @@ class SAVScenarioConfig(ScenarioConfig):
     override_reflector_asns: frozenset[int] | None = None
     # source prefix used for data packets
     source_prefix: str = Prefixes.VICTIM.value
-    # roa toggle
+    # issue ROA for specificed source prefix
     source_prefix_roa: bool = False
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
