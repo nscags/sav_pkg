@@ -41,9 +41,11 @@ from .test_021 import test_021
 from .test_022 import test_022
 from .test_023 import test_023
 from .test_024 import test_024
+from .test_025 import test_025
+from .test_027 import test_027
 
 engine_test_configs = [
-    test_024,
+
     # config_015,
      # test_000,
     # config_000,

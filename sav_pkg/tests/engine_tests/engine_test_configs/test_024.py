@@ -13,7 +13,7 @@ from sav_pkg.simulation_framework.scenarios import (
 from sav_pkg.utils.diagram import SAVDiagram
 from .as_graph_info_006 import as_graph_info_006 ##choose as my wish
 
-desc = "Loose uRPF with three reflectors, different SAV ASNs, new attacker/victim"
+desc = "StrictuRPF with three reflectors, different SAV ASNs, new attacker/victim"
 
  ## use in graph_006 = (1, 21976, 3, 46887), 205,12  (5, 8, 9, 10)
 test_024 = EngineTestConfig( #change name

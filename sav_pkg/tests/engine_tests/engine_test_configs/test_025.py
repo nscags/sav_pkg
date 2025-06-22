@@ -16,16 +16,16 @@ from .as_graph_info_006 import as_graph_info_006 ##choose as my wish
 desc = "StrictuRPF with three reflectors, different SAV ASNs, new attacker/victim"
 
  ## use in graph_006 = (1, 21976, 3, 46887), 205,12  (5, 8, 9, 10)
-test_023 = EngineTestConfig( #change name
-    name="test_023", #change name
+test_025 = EngineTestConfig( #change name
+    name="test_025", #change name
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
-        num_reflectors=4,
-        override_attacker_asns=frozenset({10}),
-        override_victim_asns=frozenset({8}),
-        override_reflector_asns=frozenset({9, 46887, 5,12}),
+        num_reflectors=5,
+        override_attacker_asns=frozenset({1}),
+        override_victim_asns=frozenset({10}),
+        override_reflector_asns=frozenset({9, 46887, 5,12,10}),
         override_sav_asns=frozenset({9, 8, 5, 12}),
         BaseSAVPolicyCls=StrictuRPF,
     ),
