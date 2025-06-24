@@ -2,19 +2,15 @@ import json
 import os
 import random
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from bgpy.enums import ASGroups, Plane
 from bgpy.simulation_engine import ROVFull
 from frozendict import frozendict
 
-from sav_pkg.enums import Interfaces, Outcomes
+from sav_pkg.enums import Outcomes
 
 # from rov_collector import rov_collector_classes
 from sav_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
-
-if TYPE_CHECKING:
-    from bgpy.as_graphs.base import AS
 
 
 # First attempt, didn't work with pickle (idk why?)
@@ -80,46 +76,6 @@ def get_real_world_rov_asn_cls_dict(
             if random.random() * 100 < max_percent:
                 hardcoded_dict[int(asn)] = ROVFull
     return frozendict(hardcoded_dict)
-
-
-DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
-    "No SAV": frozenset(),
-    "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
-    "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
-    "EFP uRPF Alg A": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "EFP uRPF Alg A wo Peers": frozenset([Interfaces.CUSTOMER.value]),
-    "EFP uRPF Alg B": frozenset([Interfaces.CUSTOMER.value]),
-    "RFC8704": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
-    "Refined Alg A": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "BAR-SAV PI": frozenset([Interfaces.PROVIDER.value]),
-    "BAR-SAV Full": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
-    "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-})
-
-def get_applied_interfaces(
-    as_obj: "AS",
-    scenario,
-    sav_policy
-):
-    """Gets the applied interfaces based on the given SAV policy."""
-
-    interfaces = (
-        scenario.scenario_config.override_default_interface_dict.get(sav_policy.name)
-        if scenario.scenario_config.override_default_interface_dict
-        else DEFAULT_SAV_POLICY_INTERFACE_DICT[sav_policy.name]
-    )
-
-    interface_map = {
-        Interfaces.CUSTOMER.value: as_obj.customer_asns,
-        Interfaces.PEER.value: as_obj.peer_asns,
-        Interfaces.PROVIDER.value: as_obj.provider_asns,
-    }
-
-    applied_interfaces = {interface_map[i] for i in interfaces if i in interface_map}
-
-    return applied_interfaces
-
 
 def get_export_to_some_dict(
     e2s_policy,
