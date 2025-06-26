@@ -32,21 +32,22 @@ from .refined_alg_a_000 import refined_alg_a_000
 from .refined_alg_a_001 import refined_alg_a_001
 from .refined_alg_a_002 import refined_alg_a_002
 # from .test_000 import test_000
-from .test_015 import test_015
-from .test_016 import test_016
-from .test_017 import test_017
-from .test_018 import test_018
-from .test_019 import test_019
-from .test_020 import test_020
-from .test_021 import test_021
-from .test_022 import test_022
-from .test_023 import test_023
-from .test_024 import test_024
+# from .test_015 import test_015
+# from .test_016 import test_016
+# from .test_017 import test_017
+# from .test_018 import test_018
+# from .test_019 import test_019
+# from .test_020 import test_020
+# from .test_021 import test_021
+# from .test_022 import test_022
+# from .test_023 import test_023
+# from .test_024 import test_024
 from .test_025 import test_025
-from .test_027 import test_027
-from .test_028 import test_028
+# from .test_027 import test_027
+# from .test_028 import test_028
 engine_test_configs = [
-test_028
+#test_028
+    test_025,
     # config_015,
      # test_000,
     # config_000,
