@@ -13,19 +13,19 @@ from sav_pkg.utils.diagram import SAVDiagram
 
 from ..as_graph_info.as_graph_info_000 import as_graph_info_000
 
-desc = "Loose uRPF with three reflectors, different SAV ASNs, new attacker/victim"
+desc = "Loose uRPF with 2 reflectors, different SAV ASNs, new attacker/victim"
 
-loose_001 = EngineTestConfig( #change name
-    name="loose_001", #change name
+loose_002 = EngineTestConfig( #change name
+    name="loose_002", #change name
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
-        num_reflectors=3,
-        override_attacker_asns=frozenset({9}),
+        num_reflectors=2,
+        override_attacker_asns=frozenset({3}),
         override_victim_asns=frozenset({8}),
-        override_reflector_asns=frozenset({3, 4, 5}),
-        override_sav_asns=frozenset({3, 4, 5, 12}),
+        override_reflector_asns=frozenset({4, 5}),
+        override_sav_asns=frozenset({9, 4, 5, 12}),
         BaseSAVPolicyCls=LooseuRPF,
     ),
     as_graph_info=as_graph_info_000,
