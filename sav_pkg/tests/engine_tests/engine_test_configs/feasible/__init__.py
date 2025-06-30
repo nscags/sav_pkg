@@ -5,10 +5,15 @@ from .feasible_004 import feasible_004
 from .feasible_005 import feasible_005
 from .feasible_006 import feasible_006
 from .feasible_007 import feasible_007
+from .feasible_008 import feasible_008
+from .feasible_009 import feasible_009
+from .feasible_010 import feasible_010
 feasible_test_configs = [
     # feasible_003,
     # feasible_001,
     # feasible_002,
-    feasible_007,
+    # feasible_007,
+    # feasible_009,
+    feasible_010
 
 ]
