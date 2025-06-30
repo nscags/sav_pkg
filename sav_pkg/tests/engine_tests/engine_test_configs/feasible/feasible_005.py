@@ -13,18 +13,18 @@ from sav_pkg.utils.diagram import SAVDiagram
 
 from ..as_graph_info.as_graph_info_000 import as_graph_info_000
 
-desc = "feasible  with 4 reflectors, different SAV ASNs, new attacker/victim"
+desc = "feasible  with 3 reflectors, different SAV ASNs, new attacker/victim"
 
-feasible_004 = EngineTestConfig( #change name
-    name="feasible_004", #change name
+feasible_005 = EngineTestConfig( #change name
+    name="feasible_005", #change name
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
-        num_reflectors=4,
-        override_attacker_asns=frozenset({12}),
-        override_victim_asns=frozenset({8}),
-        override_reflector_asns=frozenset({12,1,10,8}),
+        num_reflectors=3,
+        override_attacker_asns=frozenset({9}),
+        override_victim_asns=frozenset({12}),
+        override_reflector_asns=frozenset({1,10,8}),
         override_sav_asns=frozenset({9, 4, 5, 12}),
         BaseSAVPolicyCls=FeasiblePathuRPF, #change
     ),
