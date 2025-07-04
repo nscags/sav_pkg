@@ -37,8 +37,6 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Analyzes as graph to perform data plane traceback
         """
-        # print("Starting data plane analysis:", flush=True)
-
         for victim_asn in self.scenario.victim_asns:
             victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
             self._get_victim_outcome_data_plane(victim_as_obj)
