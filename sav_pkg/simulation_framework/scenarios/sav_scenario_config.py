@@ -19,6 +19,7 @@ class SAVScenarioConfig(ScenarioConfig):
     # issue ROA for specificed source prefix
     source_prefix_roa: bool = False
     attacker_providers_non_adopters: bool = False
+    # TODO: add toggle for victim provider announing 
     victim_providers_ann: bool = False
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
