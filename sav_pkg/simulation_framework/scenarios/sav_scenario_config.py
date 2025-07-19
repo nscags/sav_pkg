@@ -18,6 +18,8 @@ class SAVScenarioConfig(ScenarioConfig):
     source_prefix: str = Prefixes.VICTIM.value
     # issue ROA for specificed source prefix
     source_prefix_roa: bool = False
+    attacker_providers_non_adopters: bool = False
+    victim_providers_ann: bool = False
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt

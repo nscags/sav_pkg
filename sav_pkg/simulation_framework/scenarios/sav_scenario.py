@@ -307,8 +307,18 @@ class SAVScenario(Scenario):
                 assert isinstance(self.percent_adoption, float), err
                 k = math.ceil(len(possible_adopters) * self.percent_adoption)
 
+            # SAV policies work best close to the edge
+            # Attacker can choose to be customer of non SAV-adopting AS
+            if self.scenario_config.attacker_providers_non_adopters:
+                attacker_provider_asns = set()
+                for attacker_asn in self.attacker_asns:
+                    attacker_as_obj = engine.as_graph.as_dict[attacker_asn]
+                    attacker_provider_asns.update(attacker_as_obj.provider_asns)
+            else:
+                attacker_provider_asns = set()
+
             # https://stackoverflow.com/a/15837796/8903959
-            possible_adopters_tup = tuple(possible_adopters)
+            possible_adopters_tup = frozenset(possible_adopters - attacker_provider_asns)
             try:
                 for asn in random.sample(possible_adopters_tup, k):
                     asn_sav_cls_dict[asn] = self.scenario_config.BaseSAVPolicyCls

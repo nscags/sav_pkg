@@ -6,7 +6,7 @@
 #SBATCH --mail-user=nicholas.scaglione@uconn.edu    # Destination email address
 #SBATCH --mem=64G                                   # Request 64G of RAM
 # #SBATCH --mem-per-cpu=16G
-#SBATCH -o log_e2a.out
+#SBATCH -o log_apcna.out
 
 # Source Virtual Environment
 source ~/sav/venv/bin/activate
@@ -17,4 +17,4 @@ export PYTHONHASHSEED=$JOB_COMPLETION_INDEX
 # PYTHONHASHSEED=$SLURM_TASK_ID
 
 # Run the simulation
-python3 ~/sav/sav_pkg/scripts/sim_e2a.py
+python3 ~/sav/sav_pkg/scripts/sim_apcna.py
