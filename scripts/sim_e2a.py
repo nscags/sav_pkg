@@ -25,8 +25,7 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgA,
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     RFC8704,
-    RefinedAlgA,
-    BAR_SAV_PI,
+    BAR_SAV,
     BAR_SAV_Full,
 )
 from sav_pkg.utils.utils import get_metric_keys
@@ -104,18 +103,10 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RefinedAlgA,
+                BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
                 num_reflectors=5,
-                scenario_label="refined_alg_a",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI,
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="bar_sav_pi",
+                scenario_label="bar_sav",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,

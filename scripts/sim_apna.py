@@ -125,7 +125,7 @@ def main():
                 scenario_label="bar_sav_full",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_apcna").expanduser(),
+        output_dir=Path(f"~/sav/results/5_100_apna").expanduser(),
         num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
