@@ -145,7 +145,7 @@ def main():
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_Full,
-                scenario_label="bar_sav_Full",
+                scenario_label="bar_sav_full",
             ),
         ),
         output_dir=Path(f"~/sav/results/5_300_dsr").expanduser(),

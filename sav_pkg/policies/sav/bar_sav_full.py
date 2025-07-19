@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from .base_sav_policy import BaseSAVPolicy
-from .refined_alg_a import RefinedAlgA
+from .bar_sav import BAR_SAV
 from .bar_sav_pi import BAR_SAV_PI
 
 if TYPE_CHECKING:
@@ -23,7 +23,7 @@ class BAR_SAV_Full(BaseSAVPolicy):
         scenario: "SAVScenario",
     ):
         if prev_hop.asn in (as_obj.customer_asns | as_obj.peer_asns):
-            return RefinedAlgA._validate(
+            return BAR_SAV._validate(
                 as_obj=as_obj,
                 source_prefix=source_prefix,
                 prev_hop=prev_hop,

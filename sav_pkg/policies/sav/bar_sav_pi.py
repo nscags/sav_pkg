@@ -4,7 +4,7 @@ import ipaddress
 from bgpy.simulation_engine.policies import ASPA, ROV
 
 from .base_sav_policy import BaseSAVPolicy
-from .refined_alg_a import RefinedAlgA
+from .bar_sav import BAR_SAV
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
@@ -29,7 +29,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
         dq_set = []
         for customer_asn in as_obj.customer_asns:
             customer_as_obj = engine.as_graph.as_dict[customer_asn]
-            d, q = RefinedAlgA._get_as_prefix_set(
+            d, q = BAR_SAV._get_as_prefix_set(
                 as_obj=as_obj,
                 source_prefix=source_prefix,
                 prev_hop=customer_as_obj,

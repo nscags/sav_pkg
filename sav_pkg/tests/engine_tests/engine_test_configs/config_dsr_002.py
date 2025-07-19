@@ -9,7 +9,7 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.utils.diagram_dsr import SAVDiagramDSR
 from sav_pkg.enums import Prefixes
-from sav_pkg.policies.sav import RefinedAlgA
+from sav_pkg.policies.sav import BAR_SAV
 
 from .as_graph_info_009 import as_graph_info_009
 
@@ -28,7 +28,7 @@ config_dsr_002 = EngineTestConfig(
         override_edge_server_asns=frozenset({2}),
         override_anycast_server_asns=frozenset({3}),
         override_sav_asns=frozenset({4}),
-        BaseSAVPolicyCls=RefinedAlgA,
+        BaseSAVPolicyCls=BAR_SAV,
     ),
     as_graph_info=as_graph_info_009,
     DiagramCls=SAVDiagramDSR,

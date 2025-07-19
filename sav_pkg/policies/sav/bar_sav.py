@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
-class RefinedAlgA(BaseSAVPolicy):
-    name: str = "Refined Alg A"
+class BAR_SAV(BaseSAVPolicy):
+    name: str = "BAR-SAV"
 
     @staticmethod
     def _get_as_prefix_set(
@@ -116,13 +116,14 @@ class RefinedAlgA(BaseSAVPolicy):
         https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/
         """
 
-        _, q = RefinedAlgA._get_as_prefix_set(
+        _, q = BAR_SAV._get_as_prefix_set(
             as_obj=as_obj,
             source_prefix=source_prefix,
             prev_hop=prev_hop,
             engine=engine,
             scenario=scenario
         )
+        # print(q, flush=True)
 
         src_prefix = ipaddress.ip_network(source_prefix)
         return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in q)

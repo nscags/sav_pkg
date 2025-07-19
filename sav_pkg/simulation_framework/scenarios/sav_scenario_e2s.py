@@ -41,7 +41,7 @@ class SAVScenarioExport2Some(SAVScenario):
         asn_cls_dict = dict(self.scenario_config.hardcoded_asn_cls_dict)
         # Removing this line, instead we sample victims from hardcoded_asn_cls_dict
         # this line would override victim class with BGP
-        # alternatively could just set the AdoptPolicyCls, but then will
+        # alternatively could just set the AdoptPolicyCls
         # for asn in self._default_adopters:
         #     asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
 
