@@ -5,7 +5,7 @@
 # from .loose_004 import loose_004
 # from .loose_005 import loose_005
 # from .loose_006 import loose_006
-from .loose_009 import loose_009
+from .loose_010 import loose_010
 loose_test_configs = [
     # loose_000,
     # loose_001,
@@ -15,5 +15,5 @@ loose_test_configs = [
     # loose_005,
     # loose_006,
     # loose_007,
-#loose_009
+loose_010
 ]
