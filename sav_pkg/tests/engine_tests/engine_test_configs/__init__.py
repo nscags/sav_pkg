@@ -21,7 +21,7 @@ from .bar_sav_pi_002 import bar_sav_pi_002
 
 engine_test_configs = [
     # config_005,
-    # config_no_e2s_000,
+    config_no_e2s_000,
     config_no_e2s_001,
     config_no_e2s_002,
     # config_dsr_000,

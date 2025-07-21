@@ -21,12 +21,12 @@ class BGPNoExport2Some(BGP):
         # 56.22% of their providers 
         # NOTE: this measurement is not entirely accurate
         # percent = 0.5622
-        percent = 0.5622
 
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers
 
-            num = max(1, int(len(neighbors) * percent))
+            # num = max(1, int(len(neighbors) * percent))
+            num = max(1, int(len(neighbors) - 1))
             some_neighbors = sorted(neighbors, key=lambda n: n.asn)[:num]
 
             for _prefix, unprocessed_ann in self._local_rib.items():

@@ -27,7 +27,7 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     RFC8704,
     BAR_SAV,
-    # BAR_SAV_Full,
+    BAR_SAV_Full,
 )
 from sav_pkg.policies.bgp import BGPNoExport2Some, BGPFullNoExport2Some
 from sav_pkg.policies.aspa import ASPAFullNoExport2Some
@@ -137,18 +137,18 @@ def main():
                 num_reflectors=5,
                 scenario_label="bar_sav_aspa_provider_ann",
             ),
-            # SAVScenarioConfig(
-            #     ScenarioCls=SAVScenario,
-            #     BasePolicyCls=BGPFull,
-            #     AdoptPolicyCls=BGPFullNoExport2Some,
-            #     BaseSAVPolicyCls=BAR_SAV_Full,
-            #     reflector_default_adopters=True,
-            #     num_reflectors=5,
-            #     scenario_label="bar_sav_full",
-            # ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                BaseSAVPolicyCls=BAR_SAV_Full,
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_full",
+            ),
         ),
-        output_dir=Path(f"~/sav/results/5_300_no_e2s").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/5_500_no_e2s").expanduser(),
+        num_trials=500,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
