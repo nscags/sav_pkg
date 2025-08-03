@@ -8,6 +8,7 @@
 from .loose_010 import loose_010
 
 from .loose_012 import loose_012
+from .loose_013 import loose_013
 loose_test_configs = [
     # loose_000,
     # loose_001,
@@ -17,5 +18,5 @@ loose_test_configs = [
     # loose_005,
     # loose_006,
     # loose_007,
-loose_012
+loose_013
 ]
