@@ -39,6 +39,12 @@ def get_metric_keys(
             Outcomes.FALSE_POSITIVE_RATE,
             Outcomes.DETECTION_RATE,
             Outcomes.DISCONNECTED,
+            Outcomes.TRUE_NEGATIVE,
+            Outcomes.FALSE_NEGATIVE,
+            Outcomes.TRUE_POSITIVE,
+            Outcomes.FALSE_POSITIVE,
+            Outcomes.A_FILTERED_ON_PATH,
+            Outcomes.V_FILTERED_ON_PATH,
         ]
     ]
     return metric_keys

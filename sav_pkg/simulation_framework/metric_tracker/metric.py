@@ -126,24 +126,23 @@ class Metric:
         # Only track metrics at reflectors
         if as_obj.asn in scenario.reflector_asns:
             # ignore disconnections except for disconnected metric
-            if self.metric_key.outcome != Outcomes.DISCONNECTED:
-                relevant_entries = [
-                    (origin, outcome)
-                    for (asn, _, _, origin), outcome in data_plane_outcomes.items()
-                    if asn == as_obj.asn
-                ]
+            # if self.metric_key.outcome != Outcomes.DISCONNECTED:
+                # relevant_entries = [
+                #     (origin, outcome)
+                #     for (asn, _, _, origin), outcome in data_plane_outcomes.items()
+                #     if asn == as_obj.asn
+                # ]
 
-                # For Attacker and Victim success we ignore disconnected reflectors
-                attacker_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.attacker_asns]
-                if self.metric_key.outcome == Outcomes.DETECTION_RATE:
-                    if any(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
-                        return False
+                # # For Attacker and Victim success we ignore disconnected reflectors
+                # attacker_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.attacker_asns]
+                # if self.metric_key.outcome == Outcomes.DETECTION_RATE:
+                #     if any(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
+                #         return False
 
-                victim_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.victim_asns]
-                if self.metric_key.outcome == Outcomes.FALSE_POSITIVE_RATE:
-                    if any(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
-                        return False
-                    
+                # victim_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.victim_asns]
+                # if self.metric_key.outcome == Outcomes.FALSE_POSITIVE_RATE:
+                #     if any(outcome == Outcomes.DISCONNECTED.value for outcome in victim_outcomes):
+                #         return False
             self._denominator += 1
             return True
         else:

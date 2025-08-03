@@ -2,7 +2,7 @@ from pathlib import Path
 from time import time
 import random
 
-from bgpy.simulation_framework import Simulation, GraphFactory
+from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
 
 import os
@@ -24,8 +24,7 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgA,
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     RFC8704,
-    RefinedAlgA,
-    BAR_SAV_PI,
+    BAR_SAV,
     BAR_SAV_Full,
 )
 from sav_pkg.enums import Prefixes
@@ -114,8 +113,8 @@ def main():
                 num_users=5,
                 source_prefix=Prefixes.ANYCAST_SERVER.value,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RefinedAlgA,
-                scenario_label="refined_alg_a",
+                BaseSAVPolicyCls=BAR_SAV,
+                scenario_label="bar_sav",
             ),            
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -124,18 +123,8 @@ def main():
                 source_prefix=Prefixes.ANYCAST_SERVER.value,
                 source_prefix_roa=True,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RefinedAlgA,
-                scenario_label="bar_sav",
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenarioDSR,
-                num_attackers=0,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
-                source_prefix_roa=True,
-                num_users=5,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI,
-                scenario_label="bar_sav_pi",
+                BaseSAVPolicyCls=BAR_SAV,
+                scenario_label="bar_sav_roa",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -145,11 +134,11 @@ def main():
                 num_users=5,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_Full,
-                scenario_label="bar_sav_full",
+                scenario_label="bar_sav_full_roa",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_500_dsr").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/5_100_dsr").expanduser(),
+        num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

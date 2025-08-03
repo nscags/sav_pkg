@@ -25,7 +25,6 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     RFC8704,
     BAR_SAV,
-    # BAR_SAV_PI,
     # BAR_SAV_Full,
 )
 from sav_pkg.policies.bgp import (
@@ -123,8 +122,8 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_500_e2s").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/5_100_e2s").expanduser(),
+        num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

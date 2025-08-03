@@ -62,7 +62,6 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         for ann in as_obj.policy._local_rib.data.values():
             if ann.origin in self.scenario.reflector_asns:
                 dst = ann.prefix
-
                 self._propagate_packet(
                     as_obj, source_prefix, prev_hop, origin, dst
                 )
@@ -77,26 +76,26 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         source_prefix = self.scenario.scenario_config.source_prefix
         origin = as_obj.asn
+        # print(f"\nAttaker Origin: {origin}", flush=True)
 
-        # for ann in as_obj.policy._local_rib.data.values():
-        #     if ann.origin in self.scenario.reflector_asns:
-        #         dst = ann.prefix
-        #         for neighbor_as_obj in as_obj.neighbors:
-        #             # propagate packet to all neighbors with prev_hop = attacker
-        #             self._propagate_packet(
-        #                 neighbor_as_obj, source_prefix, as_obj, origin, dst
-        #             )
-
-        #         source_prefix = self.scenario.scenario_config.victim_source_prefix
-
-        prev_hop = None
+        # broadcasting strategy
         for ann in as_obj.policy._local_rib.data.values():
             if ann.origin in self.scenario.reflector_asns:
                 dst = ann.prefix
+                for neighbor_as_obj in as_obj.neighbors:
+                    # propagate packet to all neighbors with prev_hop = attacker
+                    self._propagate_packet(
+                        neighbor_as_obj, source_prefix, as_obj, origin, dst
+                    )
 
-                self._propagate_packet(
-                    as_obj, source_prefix, prev_hop, origin, dst
-                )
+        # best path routing
+        # prev_hop = None
+        # for ann in as_obj.policy._local_rib.data.values():
+        #     if ann.origin in self.scenario.reflector_asns:
+        #         dst = ann.prefix
+        #         self._propagate_packet(
+        #             as_obj, source_prefix, prev_hop, origin, dst
+        #         )
 
     def _propagate_packet(
         self,
@@ -113,39 +112,40 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         prev_hop_asn = prev_hop.asn if prev_hop is not None else None
 
-        if filtered and self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin)) is None:
-            if origin in self.scenario.victim_asns:
-                self._data_plane_outcomes[
-                    (as_obj.asn, source_prefix, prev_hop_asn, origin)
-                ] = Outcomes.V_FILTERED_ON_PATH.value
-            elif origin in self.scenario.attacker_asns:
-                self._data_plane_outcomes[
-                    (as_obj.asn, source_prefix, prev_hop_asn, origin)
-                ] = Outcomes.A_FILTERED_ON_PATH.value
-        else:
-            # check if outcome was previously determined
-            outcome_int = self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin))
-
-            if outcome_int is None:
-                outcome_int = self._determine_as_outcome_data_plane(
-                    as_obj, source_prefix, prev_hop, origin, filtered
-                )
-                self._data_plane_outcomes[(as_obj.asn, source_prefix, prev_hop_asn, origin)] = outcome_int
-
-                if outcome_int in (Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value):
-                    # If the packet was invalidated & filtered, we will propagate the remaining path
-                    # assigning each remaining AS the outcome filtered_on_path
-                    filtered = True
-
-            elif outcome_int in [Outcomes.V_FILTERED_ON_PATH.value, Outcomes.A_FILTERED_ON_PATH.value]:
-                new_outcome_int = self._determine_as_outcome_data_plane(
-                    as_obj, source_prefix, prev_hop, origin, filtered
-                )
-                # We use the min of the two outcomes due to how outcomes are enumerated
-                # filtered_on_path > all other outcomes
-                self._data_plane_outcomes[
-                    (as_obj.asn, source_prefix, prev_hop_asn, origin)
-                ] = min(outcome_int, new_outcome_int)
+        outcome_int = self._data_plane_outcomes.get((as_obj.asn, source_prefix, prev_hop_asn, origin))
+        # if no outcome, determine outcome
+        if outcome_int is None:
+            outcome_int = self._determine_as_outcome_data_plane(
+                as_obj=as_obj,
+                source_prefix=source_prefix,
+                prev_hop=prev_hop,
+                origin=origin,
+                dst=dst,
+                filtered=filtered,
+            )
+            self._data_plane_outcomes[(as_obj.asn, source_prefix, prev_hop_asn, origin)] = outcome_int
+            # if packet was filtered, set flag equal to true so packets won't be revalidated later in the path
+            if outcome_int in (Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value):
+                filtered = True
+        # if the outcome was previously determined to be filtered on path and the current packet is not filtered, 
+        # revalidate the packet on said interfaces 
+        elif outcome_int in (Outcomes.A_FILTERED_ON_PATH.value, Outcomes.V_FILTERED_ON_PATH.value) and not filtered:
+            new_outcome_int = self._determine_as_outcome_data_plane(
+                as_obj=as_obj,
+                source_prefix=source_prefix,
+                prev_hop=prev_hop,
+                origin=origin,
+                dst=dst,
+                filtered=filtered,
+            )
+            self._data_plane_outcomes[
+                (as_obj.asn, source_prefix, prev_hop_asn, origin)
+            ] = min(outcome_int, new_outcome_int)
+            if new_outcome_int in (Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value):
+                filtered = True
+        # if the packet was previously determined to be filtered, set filtered=True to prevent validating the packet later
+        elif outcome_int in (Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value):
+            filtered = True
 
         # route packet to dst
         dst_ann = as_obj.policy._local_rib.get(dst)
@@ -163,22 +163,28 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         prev_hop: "AS",
         origin: int,
         dst: str,
-        filtered: bool = False
+        filtered: bool,
     ):
         """
         Call AS SAV policy's validation function, determine outcome
         """
-
         # Origins do not validate their own packets
         if as_obj.asn == origin:
             return Outcomes.ORIGIN.value
 
+        # determine if packet is spoofed based on origin AS
         if origin in self.scenario.victim_asns:
             spoofed_packet = False
         elif origin in self.scenario.attacker_asns:
             spoofed_packet = True
         else:
             raise ValueError("Origin must be in victim_asns or attacker_asns.")
+
+        # if packet is filtered, propagated corresponding outcome
+        if filtered and spoofed_packet:
+            return Outcomes.A_FILTERED_ON_PATH.value
+        if filtered and not spoofed_packet:
+            return Outcomes.V_FILTERED_ON_PATH.value
 
         sav_policy = self.scenario.sav_policy_asn_dict.get(as_obj.asn)
         if sav_policy:

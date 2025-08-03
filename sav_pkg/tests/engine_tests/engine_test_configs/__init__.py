@@ -1,3 +1,4 @@
+from .config_000 import config_000
 from .config_005 import config_005
 
 from .config_no_e2s_000 import config_no_e2s_000
@@ -20,10 +21,11 @@ from .bar_sav_pi_002 import bar_sav_pi_002
 
 
 engine_test_configs = [
+    config_000,
     # config_005,
-    config_no_e2s_000,
-    config_no_e2s_001,
-    config_no_e2s_002,
+    # config_no_e2s_000,
+    # config_no_e2s_001,
+    # config_no_e2s_002,
     # config_dsr_000,
     # config_dsr_001,
     # config_dsr_002,
