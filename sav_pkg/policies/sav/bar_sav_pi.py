@@ -65,16 +65,18 @@ class BAR_SAV_PI(BaseSAVPolicy):
 
                 for ann in anns:
                     if len(set(ann.unprocessed_ann.as_path)) != len(ann.unprocessed_ann.as_path):  # path prepending
-                        path_no_prepending = ann.unprocessed_ann.as_path[:-2]
+                        seen = set()
+                        path_no_prepending = tuple([x for x in ann.unprocessed_ann.as_path if not (x in seen or seen.add(x))])
+                        unprocessed_ann_no_prepending = replace(ann.unprocessed_ann, as_path=path_no_prepending)
+                        valid = (
+                            aspa._valid_ann(unprocessed_ann_no_prepending, ann.recv_relationship) and
+                            rov._valid_ann(unprocessed_ann_no_prepending, ann.recv_relationship)
+                        )
                     else:
-                        path_no_prepending = ann.unprocessed_ann.as_path
-
-                    unprocessed_ann_no_prepending = replace(ann.unprocessed_ann, as_path=path_no_prepending)
-
-                    valid = (
-                        aspa._valid_ann(unprocessed_ann_no_prepending, ann.recv_relationship) and
-                        rov._valid_ann(unprocessed_ann_no_prepending, ann.recv_relationship)
-                    )
+                        valid = (
+                            aspa._valid_ann(ann.unprocessed_ann, ann.recv_relationship) and
+                            rov._valid_ann(ann.unprocessed_ann, ann.recv_relationship)
+                        )
 
                     if not valid:
                         invalid_prefixes.add(prefix)
