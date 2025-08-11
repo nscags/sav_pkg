@@ -11,7 +11,7 @@ from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
 from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from roa_checker import ROA
 
-from .sav_scenario import SAVScenario
+from .sav_scenario_e2s import SAVScenarioExport2Some
 from sav_pkg.simulation_framework.scenarios.sav_scenario_config import SAVScenarioConfig
 from sav_pkg.enums import Prefixes
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import BaseSimulationEngine
 
 
-class SAVScenarioDSR(SAVScenario):
+class SAVScenarioDSR(SAVScenarioExport2Some):
     
     def __init__(
         self,
@@ -28,7 +28,7 @@ class SAVScenarioDSR(SAVScenario):
         scenario_config: SAVScenarioConfig,
         percent_adoption: float | SpecialPercentAdoptions = 0,
         engine: BaseSimulationEngine | None = None,
-        prev_scenario: Optional["SAVScenario"] = None,
+        prev_scenario: Optional["SAVScenarioDSR"] = None,
         preprocess_anns_func=noop,
     ):
         """inits attrs
@@ -98,7 +98,7 @@ class SAVScenarioDSR(SAVScenario):
         self,
         override_anycast_server_asns: frozenset[int] | None,
         engine: BaseSimulationEngine | None,
-        prev_scenario: Optional["SAVScenario"],
+        prev_scenario: Optional["SAVScenarioDSR"],
     ) -> frozenset[int]:
         """Returns anycast_server ASN at random"""
 
@@ -130,18 +130,18 @@ class SAVScenarioDSR(SAVScenario):
         self,
         engine: BaseSimulationEngine,
         percent_adoption: float | SpecialPercentAdoptions,
-        prev_scenario: Optional["SAVScenario"],
+        prev_scenario: Optional["SAVScenarioDSR"],
     ) -> frozenset[int]:
         """Returns possible anycast_servers ASNs, defaulted from config"""
-
-        possible_asns = engine.as_graph.asn_groups[
-            self.scenario_config.anycast_server_subcategory_attr
-        ]
+        group_asns = engine.as_graph.asn_groups[self.scenario_config.anycast_server_subcategory_attr]
+        hardcoded_asns = self.scenario_config.hardcoded_asn_cls_dict.keys()
+        possible_asns = frozenset(set(hardcoded_asns) & set(group_asns))
+        assert possible_asns
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
         return possible_asns
-
+    
     ####################
     # Get Edge Servers #
     ####################
@@ -150,7 +150,7 @@ class SAVScenarioDSR(SAVScenario):
         self,
         override_edge_server_asns: frozenset[int] | None,
         engine: BaseSimulationEngine | None,
-        prev_scenario: Optional["SAVScenario"],
+        prev_scenario: Optional["SAVScenarioDSR"],
     ) -> frozenset[int]:
         """Returns edge_server ASN at random"""
 
@@ -182,13 +182,14 @@ class SAVScenarioDSR(SAVScenario):
         self,
         engine: BaseSimulationEngine,
         percent_adoption: float | SpecialPercentAdoptions,
-        prev_scenario: Optional["SAVScenario"],
+        prev_scenario: Optional["SAVScenarioDSR"],
     ) -> frozenset[int]:
         """Returns possible edge_servers ASNs, defaulted from config"""
 
-        possible_asns = engine.as_graph.asn_groups[
-            self.scenario_config.edge_server_subcategory_attr
-        ]
+        group_asns = engine.as_graph.asn_groups[self.scenario_config.edge_server_subcategory_attr]
+        hardcoded_asns = self.scenario_config.hardcoded_asn_cls_dict.keys()
+        possible_asns = frozenset(set(hardcoded_asns) & set(group_asns))
+        assert possible_asns
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
@@ -203,7 +204,7 @@ class SAVScenarioDSR(SAVScenario):
         self,
         override_user_asns: frozenset[int] | None,
         engine: BaseSimulationEngine | None,
-        prev_scenario: Optional["SAVScenario"],
+        prev_scenario: Optional["SAVScenarioDSR"],
     ) -> frozenset[int]:
         """Returns user ASN at random"""
 
@@ -235,7 +236,7 @@ class SAVScenarioDSR(SAVScenario):
         self,
         engine: BaseSimulationEngine,
         percent_adoption: float | SpecialPercentAdoptions,
-        prev_scenario: Optional["SAVScenario"],
+        prev_scenario: Optional["SAVScenarioDSR"],
     ) -> frozenset[int]:
         """Returns possible users ASNs, defaulted from config"""
 
@@ -304,7 +305,7 @@ class SAVScenarioDSR(SAVScenario):
         *,
         announcements: tuple["Ann", ...] = (),
         engine: Optional["BaseSimulationEngine"] = None,
-        prev_scenario: Optional["SAVScenario"] = None,
+        prev_scenario: Optional["SAVScenarioDSR"] = None,
     ) -> tuple[ROAInfo, ...]:
         """Returns a tuple of ROAInfo's"""
 

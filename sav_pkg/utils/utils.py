@@ -156,9 +156,9 @@ def get_e2s_asn_provider_weight_dict(
     """
 
     if not json_path.exists():
-        # print("oh no")
-        # raise FileNotFoundError(f"File: 'e2s_asn_provider_weights.json' not found in {json_path}.")
-        return frozendict
+        print("oh no")
+        raise FileNotFoundError(f"File: 'e2s_asn_provider_weights.json' not found in {json_path}.")
+        # return frozendict
 
     with open(json_path) as f:
         raw_data = json.load(f)
@@ -177,9 +177,9 @@ def get_e2s_asn_provider_prepending_dict(
     """
 
     if not json_path.exists():
-        # print("oh no")
-        # raise FileNotFoundError(f"File: 'asn_e2s_provider_weights.json' not found in {json_path}.")
-        return frozendict
+        print("oh no")
+        raise FileNotFoundError(f"File: 'mh_2p_export_to_some_prepending.json' not found in {json_path}.")
+        # return frozendict
 
     with open(json_path) as f:
         raw_data = json.load(f)
@@ -190,7 +190,7 @@ def get_e2s_asn_provider_prepending_dict(
     return frozendict(formatted_data)
 
 
-def get_e2s_superprefix_weight_dict(
+def get_e2s_asn_superprefix_weight_dict(
     json_path: Path = Path.home() / "data/mh_2p_superprefix_weights.json",
 ) -> frozendict:
     """
@@ -201,9 +201,9 @@ def get_e2s_superprefix_weight_dict(
     """
 
     if not json_path.exists():
-        # print("oh no")
-        # raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
-        return frozendict
+        print("oh no")
+        raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
+        # return frozendict
 
     with open(json_path) as f:
         raw_data = json.load(f)

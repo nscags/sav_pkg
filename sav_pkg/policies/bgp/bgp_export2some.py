@@ -8,17 +8,17 @@ from sav_pkg.enums import Prefixes
 from sav_pkg.utils.utils import (
     get_e2s_asn_provider_prepending_dict,
     get_e2s_asn_provider_weight_dict,
-    get_e2s_superprefix_weight_dict,
+    get_e2s_asn_superprefix_weight_dict,
 )
 
 
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
 
-    DEFAULT_EXPORT_WEIGHT = 0.5739
-    e2s_asn_provider_weight_dict = get_e2s_asn_provider_weight_dict()
-    e2s_asn_provider_prepending_dict = get_e2s_asn_provider_prepending_dict()
-    e2s_asn_provider_superprefix_dict = get_e2s_superprefix_weight_dict()
+    DEFAULT_EXPORT_WEIGHT = 0.5
+    e2s_asn_provider_weight_dict = get_e2s_asn_provider_weight_dict()          # provider export ratio
+    e2s_asn_provider_prepending_dict = get_e2s_asn_provider_prepending_dict()  # provider prepending bool
+    e2s_asn_provider_superprefix_dict = get_e2s_asn_superprefix_weight_dict()  # provider superprefix export ratio
 
     def _provider_export_control(
         self
@@ -135,12 +135,9 @@ class BGPExport2Some(BGP):
 
             # NOTE: using this method means victim MUST use dedicated prefix
             #       this also means we must modify this to do DSR with e2s
-            if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
+            if ann.recv_relationship == Relationships.ORIGIN and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]:
                 weight = (superprefix_weight_dict or {}).get(neighbor.asn, 0)
-                if random.random() < weight:
-                    other_ann = ann.copy({"prefix": "7.7.0.0/16"})
-                else:
-                    other_ann = ann.copy({"prefix": "9.9.0.0/23"})
+                other_ann = self._get_super_sep_prefix_ann(ann, weight)
             else:
                 other_ann = ann
 
@@ -154,9 +151,33 @@ class BGPExport2Some(BGP):
                 other_ann2 = other_ann
                 if (self._path_prepending(neighbor)
                     and ann.recv_relationship == Relationships.ORIGIN
-                    and ann.prefix == Prefixes.VICTIM.value
+                    and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]
                 ):
                     as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
                     other_ann2 = other_ann.copy({"as_path": as_path})
 
                 self._process_outgoing_ann(neighbor, other_ann2, propagate_to, send_rels)
+
+    def _get_super_sep_prefix_ann(self, ann: Ann, weight):
+        # VICTIM: str = "7.7.7.0/24"
+        # ANYCAST_SERVER: str = "2.1.0.0/24"
+        # EDGE_SERVER: str = "2.2.0.0/24"
+        ip, mask = ann.prefix.split('/')
+        octets = ip.split('.')
+
+        if random.random() < weight:
+            # Super prefix case: set 3rd octet to 0, mask to /16
+            # VICTIM: str = "7.7.0.0/16"
+            # ANYCAST_SERVER: str = "2.1.0.0/16"
+            # EDGE_SERVER: str = "2.2.0.0/16"
+            octets[2] = '0'
+            mask = '16'
+        else:
+            # Other prefix case: increment 1st octet by 1
+            # VICTIM: str = "8.7.7.0/24"
+            # ANYCAST_SERVER: str = "3.1.0.0/24"
+            # EDGE_SERVER: str = "3.2.0.0/24"
+            octets[0] = str(int(octets[0]) + 1)
+
+        new_prefix = '.'.join(octets) + '/' + mask
+        return ann.copy({"prefix": new_prefix})

@@ -4,6 +4,7 @@ import random
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
+from bgpy.enums import ASGroups
 
 import os
 import sys
@@ -25,7 +26,7 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     RFC8704,
     BAR_SAV,
-    # BAR_SAV_Full,
+    BAR_SAV_Full,
 )
 from sav_pkg.policies.bgp import (
     BGPExport2Some,
@@ -53,6 +54,7 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="loose",
@@ -62,6 +64,7 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="strict",
@@ -71,6 +74,7 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="feasible",
@@ -80,6 +84,7 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_b",
@@ -89,6 +94,7 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_a",
@@ -98,6 +104,7 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_alg_a_wo_peers",
@@ -107,6 +114,7 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="rfc8704",
@@ -116,14 +124,25 @@ def main():
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="bar_sav",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenarioExport2Some,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV_Full,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_full",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_e2s").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/5_500_e2s").expanduser(),
+        num_trials=500,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
