@@ -21,6 +21,8 @@ class SAVScenarioConfig(ScenarioConfig):
     attacker_providers_non_adopters: bool = False
     # TODO: add toggle for victim provider announing 
     victim_providers_ann: bool = False
+    # toggle for attacker's strategy, either broadcasting or best path routing
+    attacker_broadcast: bool = True
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt

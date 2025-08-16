@@ -108,14 +108,14 @@ class BAR_SAV_PI(BaseSAVPolicy):
             if anns:
                 for ann in anns:
                     for asn in ann.as_path:
+                        if asn not in du:
+                            valid = False
+                            break
                         as_on_path_obj = engine.as_graph.as_dict.get(asn)
                         if isinstance(as_on_path_obj.policy, ASPA):
                             if any(provider not in du for provider in as_on_path_obj.provider_asns):
                                 valid = False
                                 break
-                        elif asn not in du:
-                            valid = False
-                            break
                     if not valid:
                         break
                 if valid:

@@ -1,6 +1,7 @@
 from pathlib import Path
 from time import time
 import random
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -33,6 +34,7 @@ from sav_pkg.policies.bgp import (
     BGPFullExport2Some,
 )
 from sav_pkg.utils.utils import get_metric_keys, get_export_to_some_dict
+from sav_pkg.enums import Interfaces
 
 
 def main():
@@ -78,6 +80,19 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="feasible",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenarioExport2Some,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_wo_peers",
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": [Interfaces.CUSTOMER.value, Interfaces.PEER.value],
+                }),
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
@@ -141,8 +156,8 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_500_e2s").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/5_100_e2s").expanduser(),
+        num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

@@ -1,4 +1,3 @@
-from frozendict import frozendict
 from pathlib import Path
 from time import time
 import random
@@ -29,7 +28,6 @@ from sav_pkg.policies.sav import (
     BAR_SAV,
     BAR_SAV_Full,
 )
-from sav_pkg.enums import Interfaces
 from sav_pkg.utils.utils import get_metric_keys
 
 
@@ -51,6 +49,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=LooseuRPF,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value,                 
                 num_reflectors=5,
@@ -61,6 +60,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
@@ -71,6 +71,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
@@ -79,21 +80,9 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=FeasiblePathuRPF,
-                reflector_default_adopters=True,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                num_reflectors=5,
-                scenario_label="feasible_wo_peers",
-                override_default_interface_dict=frozendict({
-                    "Feasible-Path uRPF": [Interfaces.CUSTOMER.value, Interfaces.PEER.value],
-                }),
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
@@ -104,6 +93,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
@@ -114,6 +104,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
@@ -124,6 +115,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=RFC8704,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
@@ -134,6 +126,7 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
@@ -144,13 +137,14 @@ def main():
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_Full,
                 reflector_default_adopters=True,
+                attacker_broadcast=False,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 num_reflectors=5,
                 scenario_label="bar_sav_full",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_e2a").expanduser(),
+        output_dir=Path(f"~/sav/results/5_100_e2a_bp").expanduser(),
         num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

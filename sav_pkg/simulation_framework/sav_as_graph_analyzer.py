@@ -78,24 +78,25 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         origin = as_obj.asn
         # print(f"\nAttaker Origin: {origin}", flush=True)
 
-        # broadcasting strategy
-        for ann in as_obj.policy._local_rib.data.values():
-            if ann.origin in self.scenario.reflector_asns:
-                dst = ann.prefix
-                for neighbor_as_obj in as_obj.neighbors:
-                    # propagate packet to all neighbors with prev_hop = attacker
+        if self.scenario.scenario_config.attacker_broadcast:
+            # broadcasting strategy
+            for ann in as_obj.policy._local_rib.data.values():
+                if ann.origin in self.scenario.reflector_asns:
+                    dst = ann.prefix
+                    for neighbor_as_obj in as_obj.neighbors:
+                        # propagate packet to all neighbors with prev_hop = attacker
+                        self._propagate_packet(
+                            neighbor_as_obj, source_prefix, as_obj, origin, dst
+                        )
+        else:
+            # best path routing
+            prev_hop = None
+            for ann in as_obj.policy._local_rib.data.values():
+                if ann.origin in self.scenario.reflector_asns:
+                    dst = ann.prefix
                     self._propagate_packet(
-                        neighbor_as_obj, source_prefix, as_obj, origin, dst
+                        as_obj, source_prefix, prev_hop, origin, dst
                     )
-
-        # best path routing
-        # prev_hop = None
-        # for ann in as_obj.policy._local_rib.data.values():
-        #     if ann.origin in self.scenario.reflector_asns:
-        #         dst = ann.prefix
-        #         self._propagate_packet(
-        #             as_obj, source_prefix, prev_hop, origin, dst
-        #         )
 
     def _propagate_packet(
         self,
