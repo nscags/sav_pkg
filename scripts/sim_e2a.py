@@ -68,6 +68,19 @@ def main():
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
+                BasePolicyCls=BGP,
+                BaseSAVPolicyCls=StrictuRPF,
+                reflector_default_adopters=True,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                num_reflectors=5,
+                scenario_label="strict_wo_peers",
+                override_default_interface_dict=frozendict({
+                    "Strict uRPF": tuple(Interfaces.CUSTOMER.value, Interfaces.PEER.value),
+                }),
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 reflector_default_adopters=True,
@@ -86,7 +99,7 @@ def main():
                 num_reflectors=5,
                 scenario_label="feasible_wo_peers",
                 override_default_interface_dict=frozendict({
-                    "Feasible-Path uRPF": [Interfaces.CUSTOMER.value, Interfaces.PEER.value],
+                    "Feasible-Path uRPF": tuple(Interfaces.CUSTOMER.value, Interfaces.PEER.value),
                 }),
             ),
             SAVScenarioConfig(

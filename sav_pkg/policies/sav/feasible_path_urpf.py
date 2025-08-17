@@ -32,6 +32,6 @@ class FeasiblePathuRPF(BaseSAVPolicy):
                 if as_obj.policy._valid_ann(
                     ann_info.unprocessed_ann, ann_info.recv_relationship
                 ):
-                    print(ann_info, flush=True)
+                    # print(ann_info, flush=True)
                     return True
         return False

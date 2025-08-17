@@ -28,12 +28,12 @@ class BAR_SAV_PI(BaseSAVPolicy):
 #   1.  Per procedure in Section 4, compute AS-set D and Pfx-set Q for
 #       each customer interface of the AS in consideration.
         dq_set = []
-        for customer_asn in as_obj.customer_asns:
-            customer_as_obj = engine.as_graph.as_dict[customer_asn]
+        for customer_or_peer_asn in (as_obj.customer_asns | as_obj.peer_asns):
+            customer_or_peer_as_obj = engine.as_graph.as_dict[customer_or_peer_asn]
             d, q = BAR_SAV._get_as_prefix_set(
                 as_obj=as_obj,
                 source_prefix=source_prefix,
-                prev_hop=customer_as_obj,
+                prev_hop=customer_or_peer_as_obj,
                 engine=engine,
                 scenario=scenario,
             )

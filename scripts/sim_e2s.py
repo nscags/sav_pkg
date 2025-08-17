@@ -85,19 +85,6 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=FeasiblePathuRPF,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="feasible_wo_peers",
-                override_default_interface_dict=frozendict({
-                    "Feasible-Path uRPF": [Interfaces.CUSTOMER.value, Interfaces.PEER.value],
-                }),
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenarioExport2Some,
-                BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
