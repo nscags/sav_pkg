@@ -28,14 +28,15 @@ from .bar_sav_pi_002 import bar_sav_pi_002
 from .bar_sav_pi_003 import bar_sav_pi_003
 from .bar_sav_pi_004 import bar_sav_pi_004
 from .bar_sav_pi_005 import bar_sav_pi_005
+from .bar_sav_pi_006 import bar_sav_pi_006
 
 
 engine_test_configs = [
     # config_000,
     # config_001,
     # config_002,
-    config_003,
-    config_004,
+    # config_003,
+    # config_004,
     # config_005,
     # config_e2s_000,
     # config_e2s_001,
@@ -50,12 +51,13 @@ engine_test_configs = [
     # config_dsr_005,
     # efp_alg_a_000,
     # efp_alg_b_000,
-    # bar_sav_pi_000,
-    # bar_sav_pi_001,
-    # bar_sav_pi_002,
-    # bar_sav_pi_003,
-    # bar_sav_pi_004,
-    # bar_sav_pi_005,
+    bar_sav_pi_000,
+    bar_sav_pi_001,
+    bar_sav_pi_002,
+    bar_sav_pi_003,
+    bar_sav_pi_004,
+    bar_sav_pi_005,
+    bar_sav_pi_006,
 ]
 
 __all__ = ["engine_test_configs"]

@@ -1,6 +1,7 @@
 from pathlib import Path
 from time import time
 import random
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -18,7 +19,7 @@ from sav_pkg.simulation_framework import (
     SAVASGraphAnalyzer, 
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.policies.sav import (
+from sav_pkg.policies import (
     LooseuRPF,
     StrictuRPF,
     FeasiblePathuRPF,
@@ -28,9 +29,11 @@ from sav_pkg.policies.sav import (
     RFC8704,
     BAR_SAV,
     BAR_SAV_Full,
+    BGPNoExport2Some,
+    BGPFullNoExport2Some,
+    ASPAFullNoExport2Some,
 )
-from sav_pkg.policies.bgp import BGPNoExport2Some, BGPFullNoExport2Some
-from sav_pkg.policies.aspa import ASPAFullNoExport2Some
+from sav_pkg.enums import Interfaces
 from sav_pkg.utils.utils import get_metric_keys
 
 
@@ -84,6 +87,20 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 AdoptPolicyCls=BGPFullNoExport2Some,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_wo_providers",
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value),
+                }),
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
@@ -113,17 +130,17 @@ def main():
                 num_reflectors=5,
                 scenario_label="efp_alg_a_wo_peers",
             ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                AdoptPolicyCls=BGPFullNoExport2Some,
-                BaseSAVPolicyCls=RFC8704,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="rfc8704",
-            ),
+            # SAVScenarioConfig(
+            #     ScenarioCls=SAVScenario,
+            #     BasePolicyCls=BGPFull,
+            #     AdoptPolicyCls=BGPFullNoExport2Some,
+            #     BaseSAVPolicyCls=RFC8704,
+            #     victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+            #     attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+            #     reflector_default_adopters=True,
+            #     num_reflectors=5,
+            #     scenario_label="rfc8704",
+            # ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
@@ -144,7 +161,7 @@ def main():
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
-                scenario_label="bar_sav_aspa_provider_ann",
+                scenario_label="bar_sav_aspa",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -166,12 +183,12 @@ def main():
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
-                scenario_label="bar_sav_full_aspa_provider_ann",
+                scenario_label="bar_sav_full_aspa",
             ),
         ),
         output_dir=Path(f"~/sav/results/5_500_no_e2s").expanduser(),
         num_trials=500,
-        parse_cpus=40,
+        parse_cpus=50,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

@@ -1,6 +1,7 @@
 from pathlib import Path
 from time import time
 import random
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -32,7 +33,7 @@ from sav_pkg.policies.bgp import (
     BGPExport2Some,
     BGPFullExport2Some,
 )
-from sav_pkg.enums import Prefixes
+from sav_pkg.enums import Prefixes, Interfaces
 from sav_pkg.utils.utils import get_metric_keys, get_export_to_some_dict
 
 
@@ -90,6 +91,21 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                num_attackers=0,
+                num_users=5,
+                source_prefix=Prefixes.ANYCAST_SERVER.value,
+                anycast_server_subcategory_attr=ASGroups.MULTIHOMED.value,
+                edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                scenario_label="feasible",
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value),
+                }),
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenarioDSR,
+                BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
                 num_attackers=0,
                 num_users=5,
@@ -123,18 +139,18 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="efp_alg_b",
             ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenarioDSR,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RFC8704,
-                num_attackers=0,
-                num_users=5,
-                source_prefix=Prefixes.ANYCAST_SERVER.value,
-                anycast_server_subcategory_attr=ASGroups.MULTIHOMED.value,
-                edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                scenario_label="rfc8704",
-            ),
+            # SAVScenarioConfig(
+            #     ScenarioCls=SAVScenarioDSR,
+            #     BasePolicyCls=BGPFull,
+            #     BaseSAVPolicyCls=RFC8704,
+            #     num_attackers=0,
+            #     num_users=5,
+            #     source_prefix=Prefixes.ANYCAST_SERVER.value,
+            #     anycast_server_subcategory_attr=ASGroups.MULTIHOMED.value,
+            #     edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
+            #     hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            #     scenario_label="rfc8704",
+            # ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 BasePolicyCls=BGPFull,
@@ -188,7 +204,7 @@ def main():
         ),
         output_dir=Path(f"~/sav/results/5_500_dsr").expanduser(),
         num_trials=500,
-        parse_cpus=40,
+        parse_cpus=50,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

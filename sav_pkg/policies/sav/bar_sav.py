@@ -51,7 +51,7 @@ class BAR_SAV(BaseSAVPolicy):
                         ann = ann_info.unprocessed_ann
                         as_path = ann.as_path
                         for j in range(len(as_path) - 1):
-                            if as_path[j] in z_i[i - 1]: # and as_path[j + 1] in engine.as_graph.as_dict[as_path[j]].customer_asns:
+                            if as_path[j] in z_i[i - 1]:
                                 b_i.add(as_path[j + 1])
 
             # "Form the union of AS-sets A(i) and B(i) and call it AS-set C.

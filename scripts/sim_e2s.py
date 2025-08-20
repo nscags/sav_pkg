@@ -33,8 +33,8 @@ from sav_pkg.policies.bgp import (
     BGPExport2Some,
     BGPFullExport2Some,
 )
-from sav_pkg.utils.utils import get_metric_keys, get_export_to_some_dict
 from sav_pkg.enums import Interfaces
+from sav_pkg.utils.utils import get_metric_keys, get_export_to_some_dict
 
 
 def main():
@@ -85,6 +85,19 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_wo_providers",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value),
+                }),
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenarioExport2Some,
+                BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -112,16 +125,16 @@ def main():
                 scenario_label="efp_alg_a_wo_peers",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenarioExport2Some,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RFC8704,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="rfc8704",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-            ),
+            # SAVScenarioConfig(
+            #     ScenarioCls=SAVScenarioExport2Some,
+            #     BasePolicyCls=BGPFull,
+            #     BaseSAVPolicyCls=RFC8704,
+            #     attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+            #     reflector_default_adopters=True,
+            #     num_reflectors=5,
+            #     scenario_label="rfc8704",
+            #     hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            # ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioExport2Some,
                 BasePolicyCls=BGPFull,
@@ -143,9 +156,9 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_e2s").expanduser(),
-        num_trials=100,
-        parse_cpus=40,
+        output_dir=Path(f"~/sav/results/5_500_e2s").expanduser(),
+        num_trials=500,
+        parse_cpus=50,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

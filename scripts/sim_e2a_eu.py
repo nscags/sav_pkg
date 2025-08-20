@@ -1,3 +1,4 @@
+from frozendict import frozendict
 from pathlib import Path
 from time import time
 import random
@@ -28,6 +29,7 @@ from sav_pkg.policies.sav import (
     BAR_SAV,
     BAR_SAV_Full,
 )
+from sav_pkg.enums import Interfaces
 from sav_pkg.utils.utils import get_metric_keys
 
 
@@ -80,6 +82,19 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                reflector_default_adopters=True,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                num_reflectors=5,
+                scenario_label="feasible_wo_providers",
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value),
+                }),
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
                 reflector_default_adopters=True,
                 attacker_broadcast=False,
@@ -110,17 +125,17 @@ def main():
                 num_reflectors=5,
                 scenario_label="efp_alg_a_wo_peers",
             ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=RFC8704,
-                reflector_default_adopters=True,
-                attacker_broadcast=False,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                num_reflectors=5,
-                scenario_label="rfc8704",
-            ),
+            # SAVScenarioConfig(
+            #     ScenarioCls=SAVScenario,
+            #     BasePolicyCls=BGPFull,
+            #     BaseSAVPolicyCls=RFC8704,
+            #     reflector_default_adopters=True,
+            #     attacker_broadcast=False,
+            #     victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+            #     attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+            #     num_reflectors=5,
+            #     scenario_label="rfc8704",
+            # ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
@@ -144,9 +159,9 @@ def main():
                 scenario_label="bar_sav_full",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_100_e2a_bp").expanduser(),
+        output_dir=Path(f"~/sav/results/5_500_e2a_eu").expanduser(),
         num_trials=100,
-        parse_cpus=40,
+        parse_cpus=50,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),

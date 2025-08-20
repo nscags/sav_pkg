@@ -28,12 +28,12 @@ class BAR_SAV_PI(BaseSAVPolicy):
 #   1.  Per procedure in Section 4, compute AS-set D and Pfx-set Q for
 #       each customer interface of the AS in consideration.
         dq_set = []
-        for customer_or_peer_asn in (as_obj.customer_asns | as_obj.peer_asns):
-            customer_or_peer_as_obj = engine.as_graph.as_dict[customer_or_peer_asn]
+        for customer_asn in as_obj.customer_asns:
+            customer_as_obj = engine.as_graph.as_dict[customer_asn]
             d, q = BAR_SAV._get_as_prefix_set(
                 as_obj=as_obj,
                 source_prefix=source_prefix,
-                prev_hop=customer_or_peer_as_obj,
+                prev_hop=customer_as_obj,
                 engine=engine,
                 scenario=scenario,
             )
@@ -95,31 +95,48 @@ class BAR_SAV_PI(BaseSAVPolicy):
 #       (i.e., AS doing SAV) such that each AS in the AS path of each
 #       route has all its Provider ASes (per ASPAs) contained within AS-
 #       set Du.  Call the resulting modified set as Pfx-set S.
-        s = set()
-        for prefix in qu:
-            anns = []
-            valid = True
-            for prefix_dict in as_obj.policy._ribs_in.data.values():
-                for ann_info in prefix_dict.values():
-                    ann = ann_info.unprocessed_ann
-                    if ann.prefix == prefix and as_obj.policy._valid_ann(ann, ann_info.recv_relationship):
-                        anns.append(ann)
+        s = qu
+        for prefix_dict in as_obj.policy._ribs_in.data.values():
+            for ann_info in prefix_dict.values():
+                ann = ann_info.unprocessed_ann
+                prefix = ann.prefix
+                if prefix not in s:
+                    continue
 
-            if anns:
-                for ann in anns:
-                    for asn in ann.as_path:
-                        if asn not in du:
-                            valid = False
-                            break
-                        as_on_path_obj = engine.as_graph.as_dict.get(asn)
-                        if isinstance(as_on_path_obj.policy, ASPA):
-                            if any(provider not in du for provider in as_on_path_obj.provider_asns):
-                                valid = False
-                                break
-                    if not valid:
+                for asn in ann.as_path:
+                    if asn not in du:
+                        s.remove(prefix)
                         break
-                if valid:
-                    s.add(prefix)
+                    as_on_path_obj = engine.as_graph.as_dict.get(asn)
+                    if isinstance(as_on_path_obj.policy, ASPA):
+                        if any(provider not in du for provider in as_on_path_obj.provider_asns):
+                            s.remove(prefix)
+                            break
+
+        # for prefix in qu:
+        #     anns = []
+        #     valid = True
+        #     for prefix_dict in as_obj.policy._ribs_in.data.values():
+        #         for ann_info in prefix_dict.values():
+        #             ann = ann_info.unprocessed_ann
+        #             if ann.prefix == prefix and as_obj.policy._valid_ann(ann, ann_info.recv_relationship):
+        #                 anns.append(ann)
+
+        #     if anns:
+        #         for ann in anns:
+        #             for asn in ann.as_path:
+        #                 if asn not in du:
+        #                     valid = False
+        #                     break
+        #                 as_on_path_obj = engine.as_graph.as_dict.get(asn)
+        #                 if isinstance(as_on_path_obj.policy, ASPA):
+        #                     if any(provider not in du for provider in as_on_path_obj.provider_asns):
+        #                         valid = False
+        #                         break
+        #             if not valid:
+        #                 break
+        #         if valid:
+        #             s.add(prefix)
 
 #   6.  Subtract Pfx-set S from the set of allowed prefixes that pertain
 #       to loose uRPF for the Provider interfaces.  Call this reduced set
