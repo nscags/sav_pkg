@@ -8,7 +8,7 @@ from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetric
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
-    SAVScenarioExport2Some,
+    SAVScenario,
 )
 from sav_pkg.utils.diagram import SAVDiagram
 
@@ -28,7 +28,7 @@ config_e2s_000 = EngineTestConfig(
     name="config_e2s_000",
     desc=desc,
     scenario_config=SAVScenarioConfig(
-        ScenarioCls=SAVScenarioExport2Some,
+        ScenarioCls=SAVScenario,
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),

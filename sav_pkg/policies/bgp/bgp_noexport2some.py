@@ -15,13 +15,6 @@ class BGPNoExport2Some(BGP):
         send_rels is the relationships that are acceptable to send
         """
 
-        # percent of providers to export to 
-        # Measurement of routes from RIPE route collectors showed that
-        # on average an AS which does not export to all will export to
-        # 56.22% of their providers 
-        # NOTE: this measurement is not entirely accurate
-        # percent = 0.5622
-
         if propagate_to.value == Relationships.PROVIDERS.value:
             neighbors = self.as_.providers
 

@@ -18,13 +18,15 @@ class SAVScenarioConfig(ScenarioConfig):
     source_prefix: str = Prefixes.VICTIM.value
     # issue ROA for specificed source prefix
     source_prefix_roa: bool = False
+    # attacker's providers can be set to not adopt any SAV policy
     attacker_providers_non_adopters: bool = False
-    # TODO: add toggle for victim provider announing 
+    # TODO: add toggle for victim's providers announing 
     victim_providers_ann: bool = False
     # toggle for attacker's strategy, either broadcasting or best path routing
     attacker_broadcast: bool = True
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
+    victim_default_adopters: bool | None = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt
     override_sav_asns: frozenset[int] | None = None
     # Optional hardcode asn with SAV in case of testing with multiple ASes running

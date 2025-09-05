@@ -5,73 +5,60 @@ from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine.policies.bgp import BGP
 
 from sav_pkg.enums import Prefixes
-from sav_pkg.utils.utils import (
-    get_e2s_asn_provider_prepending_dict,
-    get_e2s_asn_provider_weight_dict,
-    get_e2s_asn_superprefix_weight_dict,
-)
+from sav_pkg.utils.utils import get_traffic_engineering_behaviors_dict
+
 
 
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
 
-    DEFAULT_EXPORT_WEIGHT = 0.5
-    e2s_asn_provider_weight_dict = get_e2s_asn_provider_weight_dict()          # provider export ratio
-    e2s_asn_provider_prepending_dict = get_e2s_asn_provider_prepending_dict()  # provider prepending bool
-    e2s_asn_provider_superprefix_dict = get_e2s_asn_superprefix_weight_dict()  # provider superprefix export ratio
+    DEFAULT_EXPORT_RATIO = 0.5
+    traffic_engineering_behaviors_dict = get_traffic_engineering_behaviors_dict()
 
-    def _provider_export_control(
-        self
-    ) -> set:
+    def _provider_export_control(self) -> set:
         """
-        Determine subset of providers the AS will export to.
+        Determine subset of providers the AS will export to using the export ratios
+        from the traffic engineering behaviors data.
         """
-        provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn, {})
-
+        provider_weight_dict = self.traffic_engineering_behaviors_dict.get(self.as_.asn, {})
         export_set = set()
         for provider in self.as_.provider_asns:
-            # if provider doesn't have a weight
-            # due to differences between measurement data and CAIDA topology
-            # default to the avg percent of of providers exported to per AS
-            weight = (provider_weight_dict or {}).get(provider, self.DEFAULT_EXPORT_WEIGHT)
-            if random.random() < weight:
+            provider_data = provider_weight_dict.get(str(provider), {})
+            export_ratio = provider_data.get("export_ratio", self.DEFAULT_EXPORT_RATIO)
+            if export_ratio > 0 and random.random() < export_ratio:
                 export_set.add(provider)
-        if export_set:
-            return export_set
 
-        # Ensure that at least one provider is selected
-        if provider_weight_dict:
-            valid_weights = {p: provider_weight_dict.get(p, self.DEFAULT_EXPORT_WEIGHT) for p in self.as_.provider_asns}
-            if valid_weights:
-                providers_list = list(valid_weights.keys())
-                weights_list = list(valid_weights.values())
-                if sum(weights_list) > 0:
-                    export_set.add(random.choices(providers_list, weights=weights_list, k=1)[0])
-                else:
-                    # All weights are 0, just pick one provider at random
-                    # I don't know if this is an error somewhere in my code or if its the data (probably not)
-                    # but this is needed to prevent errors
-                    # if all weights are 0, then an AS would export to none of its providers
-                    # for a mh AS, this doesn't really make sense
-                    # (technically mh includes peer interfaces, so it could work)
-                    export_set.add(random.choice(providers_list))
-        else:
-            export_set.add(random.choice(list(self.as_.provider_asns)))
+        # Ensure at least one provider with weight > 0 is selected
+        valid_weights = {
+            p: provider_weight_dict.get(str(p), {}).get("export_ratio", self.DEFAULT_EXPORT_RATIO)
+            for p in self.as_.provider_asns
+            if provider_weight_dict.get(str(p), {}).get("export_ratio", self.DEFAULT_EXPORT_RATIO) > 0
+        }
+        if not export_set and valid_weights:
+            providers_list = list(valid_weights.keys())
+            weights_list = list(valid_weights.values())
+            export_set.add(random.choices(providers_list, weights=weights_list, k=1)[0])
 
         return export_set
 
-    def _path_prepending(
-        self,
-        provider,
-    ) -> bool:
+    def _path_prepending(self, provider) -> bool:
         """
-        Dict lookup to determine if AS performs path prepending to given provider
+        Determine if AS performs path prepending to the given provider.
         """
-        prepending_list = (self.e2s_asn_provider_prepending_dict.get(self.as_.asn, {}).get(provider.asn))
+        prepending_list = (
+            self.traffic_engineering_behaviors_dict.get(self.as_.asn, {}).get(str(provider.asn), {}).get("prepending", [])
+        )
+
         if not prepending_list:
             return False
 
-        return random.choice(prepending_list)
+        unique_vals = set(prepending_list)
+        if unique_vals == {False}:
+            return False
+        elif unique_vals == {True}:
+            return True
+        else:
+            return random.choice(prepending_list)
 
     def _propagate(
         self: "BGPExport2Some",
@@ -93,7 +80,7 @@ class BGPExport2Some(BGP):
             some_neighbors = [neighbor for neighbor in neighbors if neighbor.asn in some_neighbors_asns]
 
             for _prefix, unprocessed_ann in self._local_rib.items():
-                if neighbors and unprocessed_ann.recv_relationship in send_rels:
+                if some_neighbors and unprocessed_ann.recv_relationship in send_rels:
                     ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
                 else:
                     continue
@@ -105,6 +92,7 @@ class BGPExport2Some(BGP):
                         ann2 = ann
                         # add path prepending based on measurement data
                         if self._path_prepending(neighbor):
+                            # TODO: experiment with 10 ASes in the AS path
                             as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
                             ann2 = ann.copy({"as_path": as_path})
                         self._process_outgoing_ann(neighbor, ann2, propagate_to, send_rels)
@@ -126,18 +114,25 @@ class BGPExport2Some(BGP):
         """
         Propagation logic for providers which did not receive the original announcement
         """
-        provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn, {})
-        superprefix_weight_dict = self.e2s_asn_provider_superprefix_dict.get(self.as_.asn, {})
+        asn_data = self.traffic_engineering_behaviors_dict.get(self.as_.asn, {})
+
         for neighbor in other_neighbors:
-            # If the neighbor is weighted with 0, do not export anything to them
-            if provider_weight_dict.get(neighbor.asn) == 0:
+            provider_data = asn_data.get(str(neighbor.asn), {})
+
+            # Skip if export ratio is 0
+            export_ratio = provider_data.get("export_ratio", self.DEFAULT_EXPORT_RATIO)
+            if export_ratio == 0:
                 continue
 
             # NOTE: using this method means victim MUST use dedicated prefix
             #       this also means we must modify this to do DSR with e2s
-            if ann.recv_relationship == Relationships.ORIGIN and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]:
-                weight = (superprefix_weight_dict or {}).get(neighbor.asn, 0)
-                other_ann = self._get_super_sep_prefix_ann(ann, weight)
+            if (
+                ann.recv_relationship == Relationships.ORIGIN
+                and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]
+            ):
+                # Use superprefix ratio to determine separate announcement
+                superprefix_ratio = provider_data.get("superprefix_ratio", 0)
+                other_ann = self._get_super_sep_prefix_ann(ann, superprefix_ratio)
             else:
                 other_ann = ann
 

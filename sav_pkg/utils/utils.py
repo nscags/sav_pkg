@@ -127,88 +127,89 @@ def get_applied_interfaces(
     return applied_interfaces
 
 
-def get_export_to_some_dict(
-    e2s_policy,
-    json_path: Path = Path.home() / "data/e2s_asn_provider_weights.json",
+def get_traffic_engineering_behavior_asn_cls_dict(
+    export_policy,
+    traffic_engineering_subcategory=None,  # default None = return all ASNs
+    json_path: Path = Path.home() / "data/traffic_engineering_behaviors.json",
 ):
+    """"""
+    
     if not json_path.exists():
-        print("oh no")
         raise FileNotFoundError(f"File not found: {json_path}")
 
     with open(json_path) as f:
-        export2some_raw = json.load(f)
+        data = json.load(f)
 
-    export2some_asn_cls_dict = frozendict({
-        int(asn): e2s_policy for asn in export2some_raw.keys()
-    })
+    if traffic_engineering_subcategory in (None, "all"):
+        filtered_asns = {int(asn): export_policy for asn in data.keys()}
+    else:
+        filtered_asns = {
+            int(asn): export_policy
+            for asn, providers in data.items()
+            if any(provider_data["category"] == traffic_engineering_subcategory
+                   for provider_data in providers.values())
+        }
 
-    return export2some_asn_cls_dict
+    return frozendict(filtered_asns)
 
 
-def get_e2s_asn_provider_weight_dict(
-    json_path: Path = Path.home() / "data/e2s_asn_provider_weights.json",
+def get_traffic_engineering_behaviors_dict(
+    json_path: Path = Path.home() / "data/traffic_engineering_behaviors.json",
 ) -> frozendict:
-    """
-    Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
-
-    Weights are percentage of unique IPv4 prefixes received on that interface divided 
-    by the total number of unique prefixes exported by the AS.
-    """
+    """"""
 
     if not json_path.exists():
         print("oh no")
-        raise FileNotFoundError(f"File: 'e2s_asn_provider_weights.json' not found in {json_path}.")
-        # return frozendict
+        raise FileNotFoundError(f"File: 'traffic_engineering_behaviors.json' not found in {json_path}.")
 
     with open(json_path) as f:
-        raw_data = json.load(f)
+        data = json.load(f)
 
-    formatted_data = dict()
-    for asn, inner_dict in raw_data.items():
-        formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
+    formatted_data = {int(asn): providers for asn, providers in data.items()}
+
     return frozendict(formatted_data)
 
 
-def get_e2s_asn_provider_prepending_dict(
-    json_path: Path = Path.home() / "data/mh_2p_export_to_some_prepending.json",
-) -> frozendict:
-    """
-    Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
-    """
+# def get_e2s_asn_provider_prepending_dict(
+#     json_path: Path = Path.home() / "data/mh_2p_export_to_some_prepending.json",
+# ) -> frozendict:
+#     """
+#     Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
+#     """
 
-    if not json_path.exists():
-        print("oh no")
-        raise FileNotFoundError(f"File: 'mh_2p_export_to_some_prepending.json' not found in {json_path}.")
-        # return frozendict
+#     if not json_path.exists():
+#         print("oh no")
+#         raise FileNotFoundError(f"File: 'mh_2p_export_to_some_prepending.json' not found in {json_path}.")
+#         # return frozendict
 
-    with open(json_path) as f:
-        raw_data = json.load(f)
+#     with open(json_path) as f:
+#         raw_data = json.load(f)
 
-    formatted_data = dict()
-    for asn, inner_dict in raw_data.items():
-        formatted_data[int(asn)] = {int(k): [bool(x) for x in v] for k, v in inner_dict.items()}
-    return frozendict(formatted_data)
+#     formatted_data = dict()
+#     for asn, inner_dict in raw_data.items():
+#         formatted_data[int(asn)] = {int(k): [bool(x) for x in v] for k, v in inner_dict.items()}
+#     return frozendict(formatted_data)
 
 
-def get_e2s_asn_superprefix_weight_dict(
-    json_path: Path = Path.home() / "data/mh_2p_superprefix_weights.json",
-) -> frozendict:
-    """
-    Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
+# def get_e2s_asn_superprefix_weight_dict(
+#     json_path: Path = Path.home() / "data/mh_2p_superprefix_weights.json",
+# ) -> frozendict:
+#     """
+#     Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
 
-    Weights are percentage of unique IPv4 prefixes received on that interface which
-    are a superprefix of another IPv4 prefix announced by that AS
-    """
+#     Weights are percentage of unique IPv4 prefixes received on that interface which
+#     are a superprefix of another IPv4 prefix announced by that AS
+#     """
 
-    if not json_path.exists():
-        print("oh no")
-        raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
-        # return frozendict
+#     if not json_path.exists():
+#         print("oh no")
+#         raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
+#         # return frozendict
 
-    with open(json_path) as f:
-        raw_data = json.load(f)
+#     with open(json_path) as f:
+#         raw_data = json.load(f)
 
-    formatted_data = dict()
-    for asn, inner_dict in raw_data.items():
-        formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
-    return frozendict(formatted_data)
+#     formatted_data = dict()
+#     for asn, inner_dict in raw_data.items():
+#         formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
+#     return frozendict(formatted_data)

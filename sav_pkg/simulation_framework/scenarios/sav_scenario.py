@@ -89,6 +89,27 @@ class SAVScenario(Scenario):
         self.policy_classes_used: frozenset[type[Policy]] = frozenset()
         # print("Initializing SAVScenario done", flush=True)
 
+    ###############
+    # Get Victims #
+    ###############
+
+    def _get_possible_victim_asns(
+        self,
+        engine,
+        percent_adoption,
+        prev_scenario
+    ) -> frozenset[int]:
+        # victims are selected either from subcategory or from hardcoded_asns
+        group_asns = engine.as_graph.asn_groups[self.scenario_config.victim_subcategory_attr]
+        hardcoded_asns = self.scenario_config.hardcoded_asn_cls_dict.keys()
+        possible_asns = frozenset(set(hardcoded_asns) & set(group_asns))
+        if not possible_asns:
+            possible_asns = super()._get_possible_victim_asns(engine, percent_adoption, prev_scenario)
+        err = "Make mypy happy"
+        assert all(isinstance(x, int) for x in possible_asns), err
+        assert isinstance(possible_asns, frozenset), err
+        return possible_asns
+
     ##################
     # Get Reflectors #
     ##################
@@ -173,6 +194,16 @@ class SAVScenario(Scenario):
                     timestamp=Timestamps.VICTIM.value,
                 )
             )
+            if self.scenario_config.victim_providers_ann:
+                victim_as_obj = engine.as_graph.as_dict[victim_asn]
+                for i, provider_asn in enumerate(victim_as_obj.provider_asns):
+                    anns.append(
+                        self.scenario_config.AnnCls(
+                            prefix=f"5.6.{i}.0/24",
+                            as_path=(provider_asn,),
+                            timestamp=Timestamps.VICTIM.value,
+                        )
+                    )
 
         for attacker_asn in self.attacker_asns:
             anns.append(
@@ -324,6 +355,15 @@ class SAVScenario(Scenario):
             except ValueError:
                 raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
         return asn_sav_cls_dict
+    
+    @property
+    def _default_adopters(self) -> frozenset[int]:
+        """Toggle if victims adopt by defualt"""
+
+        if self.scenario_config.victim_default_adopters:
+            return self.victim_asns
+        else:
+            return frozenset()
 
     @property
     def _default_sav_adopters(self) -> frozenset[int]:
