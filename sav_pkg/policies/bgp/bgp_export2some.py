@@ -93,7 +93,7 @@ class BGPExport2Some(BGP):
                         # add path prepending based on measurement data
                         if self._path_prepending(neighbor):
                             # TODO: experiment with 10 ASes in the AS path
-                            as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
+                            as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
                             ann2 = ann.copy({"as_path": as_path})
                         self._process_outgoing_ann(neighbor, ann2, propagate_to, send_rels)
                 # decide what to send to other nieghbors who did not receive the original announcement

@@ -15,6 +15,8 @@ from .bgp import BGPFullExport2Some
 from .bgp import BGPNoExport2Some
 from .bgp import BGPFullNoExport2Some
 
+from .aspa import ASPAExport2Some
+from .aspa import ASPAFullExport2Some
 from .aspa import ASPANoExport2Some
 from .aspa import ASPAFullNoExport2Some
 
@@ -35,6 +37,8 @@ __all__ = [
     "BGPFullExport2Some",
     "BGPNoExport2Some",
     "BGPFullNoExport2Some",
+    "ASPAExport2Some",
+    "ASPAFullExport2Some",
     "ASPANoExport2Some",
     "ASPAFullNoExport2Some",
 ]
