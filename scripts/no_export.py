@@ -58,17 +58,17 @@ def main():
             0.99,
         ),
         scenario_configs=(
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGP,
-                BaseSAVPolicyCls=LooseuRPF,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="loose",
-                hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
-            ),
+            # SAVScenarioConfig(
+            #     ScenarioCls=SAVScenario,
+            #     BasePolicyCls=BGP,
+            #     BaseSAVPolicyCls=LooseuRPF,
+            #     victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+            #     attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+            #     reflector_default_adopters=True,
+            #     num_reflectors=5,
+            #     scenario_label="loose",
+            #     hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict
+            # ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,

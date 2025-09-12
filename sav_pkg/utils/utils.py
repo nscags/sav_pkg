@@ -130,25 +130,41 @@ def get_applied_interfaces(
 def get_traffic_engineering_behavior_asn_cls_dict(
     export_policy,
     traffic_engineering_subcategory=None,  # default None = return all ASNs
+    path_prepending: bool = True,
     json_path: Path = Path.home() / "data/traffic_engineering_behaviors.json",
 ):
-    """"""
-    
+    """
+    Return ASNs filtered by traffic engineering behavior and optional path prepending.
+    """
     if not json_path.exists():
         raise FileNotFoundError(f"File not found: {json_path}")
 
     with open(json_path) as f:
         data = json.load(f)
 
-    if traffic_engineering_subcategory in (None, "all"):
-        filtered_asns = {int(asn): export_policy for asn in data.keys()}
-    else:
-        filtered_asns = {
-            int(asn): export_policy
-            for asn, providers in data.items()
-            if any(provider_data["category"] == traffic_engineering_subcategory
-                   for provider_data in providers.values())
-        }
+    filtered_asns = {}
+
+    for asn, providers in data.items():
+        # If returning all ASNs
+        if traffic_engineering_subcategory in (None, "all"):
+            filtered_asns[int(asn)] = export_policy
+            continue
+
+        # Only consider ASNs that have at least one provider in the requested category
+        providers_in_category = [
+            p_data for p_data in providers.values()
+            if p_data["category"] == traffic_engineering_subcategory
+        ]
+        if not providers_in_category:
+            continue
+
+        if path_prepending:
+            # Include all ASNs in this category
+            filtered_asns[int(asn)] = export_policy
+        else:
+            # Include only if none of the providers prepend
+            if all(not any(p_data.get("prepending", [])) for p_data in providers_in_category):
+                filtered_asns[int(asn)] = export_policy
 
     return frozendict(filtered_asns)
 
