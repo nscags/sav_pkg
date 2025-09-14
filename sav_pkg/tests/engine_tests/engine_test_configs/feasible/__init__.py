@@ -11,6 +11,8 @@ from .feasible_010 import feasible_010
 from .feasible_011 import feasible_011
 from .feasible_012 import feasible_012
 from .feasible_013 import feasible_013
+from .feasible_014 import feasible_014
+from .feasible_015 import feasible_015
 feasible_test_configs = [
     # feasible_003,
     # feasible_001,
@@ -18,6 +20,8 @@ feasible_test_configs = [
     # feasible_007,
     # feasible_009,
    # feasible_013,
+feasible_015
+
 
 
 ]
