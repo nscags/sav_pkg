@@ -11,7 +11,7 @@ from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
 from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from roa_checker import ROA
 
-from .sav_scenario_e2s import SAVScenario
+from .sav_scenario import SAVScenario
 from sav_pkg.simulation_framework.scenarios.sav_scenario_config import SAVScenarioConfig
 from sav_pkg.enums import Prefixes
 

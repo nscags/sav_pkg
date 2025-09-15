@@ -195,6 +195,13 @@ class SAVScenario(Scenario):
                 )
             )
             if self.scenario_config.victim_providers_ann:
+                # Providers of the victim announce their own prefix. This is because 
+                # policies such as BAR-SAV use all announcement received to build 
+                # a customer cone. In the case of no-export to some, the providers of
+                # the victim announcing routes allows the verifier deploying BAR-SAV to
+                # reconstuct the customer cone up to the provider of the vicitm AS. This
+                # allow a victim AS to be included in the verifiers customer cone if they
+                # adopt ASPA. This better simulates the impact when only the origin adopting ASPA. 
                 victim_as_obj = engine.as_graph.as_dict[victim_asn]
                 for i, provider_asn in enumerate(victim_as_obj.provider_asns):
                     anns.append(
@@ -245,6 +252,10 @@ class SAVScenario(Scenario):
         asn_cls_dict = dict(self.scenario_config.hardcoded_asn_cls_dict)
         for asn in self._default_adopters:
             asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
+
+        
+        # for attacker_asn in self.attacker_asns:
+        #     asn_cls_dict[attacker_asn] = self.scenario_config.BasePolicyCls
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:

@@ -10,9 +10,9 @@ class BGPNoExport2Some(BGP):
         propagate_to: Relationships,
         send_rels: set[Relationships],
     ) -> None:
-        """Propogates announcements from local rib to other ASes
-
-        send_rels is the relationships that are acceptable to send
+        """
+        Do not propagate any announcements to a provider. 
+        As implemented, this selects the highest asn to not export to
         """
 
         if propagate_to.value == Relationships.PROVIDERS.value:

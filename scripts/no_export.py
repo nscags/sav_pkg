@@ -19,7 +19,7 @@ from sav_pkg.simulation_framework import (
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
-    LooseuRPF,
+    # LooseuRPF,
     StrictuRPF,
     FeasiblePathuRPF,
     EnhancedFeasiblePathuRPFAlgB,
@@ -39,7 +39,7 @@ from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavio
 
 def main():
     # Simulation for the paper
-    random.seed(os.environ['JOB_COMPLETION_INDEX'])
+    # random.seed(os.environ['JOB_COMPLETION_INDEX'])
     bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
         export_policy=BGPExport2Some,
         traffic_engineering_subcategory="no-export"

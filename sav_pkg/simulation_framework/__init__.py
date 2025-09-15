@@ -4,9 +4,7 @@ from .sav_graph_factory import SAVGraphFactory
 
 from .scenarios import SAVScenario
 from .scenarios import SAVScenarioConfig
-from .scenarios import SAVScenarioExport2Some
 from .scenarios import SAVScenarioDSR
-from .scenarios import SAVScenarioNoExport2Some
 
 
 __all__ = [
@@ -14,7 +12,5 @@ __all__ = [
     "SAVGraphFactory",
     "SAVScenario",
     "SAVScenarioConfig",
-    "SAVScenarioExport2Some",
     "SAVScenarioDSR",
-    "SAVScenarioNoExport2Some",
 ]

@@ -19,7 +19,7 @@ from sav_pkg.simulation_framework import (
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
-    LooseuRPF,
+    # LooseuRPF,
     StrictuRPF,
     FeasiblePathuRPF,
     EnhancedFeasiblePathuRPFAlgB,
