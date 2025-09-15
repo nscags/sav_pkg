@@ -253,17 +253,20 @@ class SAVScenario(Scenario):
         for asn in self._default_adopters:
             asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
 
-        
-        # for attacker_asn in self.attacker_asns:
-        #     asn_cls_dict[attacker_asn] = self.scenario_config.BasePolicyCls
-
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
             asns = engine.as_graph.asn_groups[subcategory]
+            
             # Remove ASes that are already pre-set
             # Ex: Attacker and victim
             # Ex: ROV Nodes (in certain situations)
             possible_adopters = asns.difference(self._preset_asns)
+
+            # adding this for now
+            # we do not use control plane policies at this moments
+            # can/will change later
+            # for asn in possible_adopters:
+            #     asn_cls_dict[asn] = self.scenario_config.BasePolicyCls
 
             # Get how many ASes should be adopting
 
