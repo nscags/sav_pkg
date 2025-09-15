@@ -29,23 +29,23 @@ from sav_pkg.policies.sav import (
     BAR_SAV_Full,
 )
 from sav_pkg.policies.bgp import (
-    BGPExport2Some,
-    BGPFullExport2Some,
+    BGPNoExport2Some,
+    BGPFullNoExport2Some,
 )
-from sav_pkg.policies.aspa import ASPAFullExport2Some 
+from sav_pkg.policies.aspa import ASPAFullNoExport2Some 
 from sav_pkg.enums import Interfaces
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
 
 
 def main():
     # Simulation for the paper
-    # random.seed(os.environ['JOB_COMPLETION_INDEX'])
+    random.seed(os.environ['JOB_COMPLETION_INDEX'])
     bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-        export_policy=BGPExport2Some,
+        export_policy=BGP,
         traffic_engineering_subcategory="no-export"
     )
     bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-        export_policy=BGPFullExport2Some,
+        export_policy=BGPFull,
         traffic_engineering_subcategory="no-export"
     )
     sim = Simulation(
@@ -62,6 +62,8 @@ def main():
             #     ScenarioCls=SAVScenario,
             #     BasePolicyCls=BGP,
             #     BaseSAVPolicyCls=LooseuRPF,
+            #     AdoptPolicyCls=BGPNoExport2Some,
+            #     victim_default_adopters=True,
             #     victim_subcategory_attr=ASGroups.MULTIHOMED.value,
             #     attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
             #     reflector_default_adopters=True,
@@ -73,6 +75,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
+                AdoptPolicyCls=BGPNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -84,6 +88,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
+                AdoptPolicyCls=BGPNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -98,6 +104,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -109,6 +117,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -123,6 +133,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -137,6 +149,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgB,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -148,6 +162,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgA,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -159,6 +175,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=EnhancedFeasiblePathuRPFAlgAwoPeers,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -170,6 +188,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -181,7 +201,7 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
-                AdoptPolicyCls=ASPAFullExport2Some,
+                AdoptPolicyCls=ASPAFullNoExport2Some,
                 victim_default_adopters=True,
                 victim_providers_ann=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
@@ -195,6 +215,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_Full,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -206,7 +228,7 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_Full,
-                AdoptPolicyCls=ASPAFullExport2Some,
+                AdoptPolicyCls=ASPAFullNoExport2Some,
                 victim_default_adopters=True,
                 victim_providers_ann=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
