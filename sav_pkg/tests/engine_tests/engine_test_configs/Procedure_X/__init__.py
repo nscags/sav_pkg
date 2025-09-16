@@ -1,5 +1,6 @@
 
-strict_test_configs = [
+strict_test_configs = \
+    [
 
 
 ]
