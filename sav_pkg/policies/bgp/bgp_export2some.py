@@ -15,6 +15,55 @@ class BGPExport2Some(BGP):
     DEFAULT_EXPORT_RATIO = 0.5
     traffic_engineering_behaviors_dict = get_traffic_engineering_behaviors_dict()
 
+    def _propagate(
+        self: "BGPExport2Some",
+        propagate_to: Relationships,
+        send_rels: set[Relationships],
+    ) -> None:
+        """
+        Modified propagtion logic to export to subset of providers
+        """
+        # export to some (providers), i.e. export-to-some is only applied to provider interfaces
+        # remaining customer+peer interfaces are export-to-all
+        if propagate_to.value == Relationships.PROVIDERS.value:
+            neighbors = self.as_.providers
+            if not neighbors: # no neighbors, bye bye
+                return
+            # Decide the "some" neighbors to export to,
+            # this is based off weights assigned from measurement data
+            some_neighbors_asns = self._provider_export_control()
+            some_neighbors = [neighbor for neighbor in neighbors if neighbor.asn in some_neighbors_asns]
+
+            for _prefix, unprocessed_ann in self._local_rib.items():
+                if some_neighbors and unprocessed_ann.recv_relationship in send_rels:
+                    ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
+                else:
+                    continue
+
+                for neighbor in some_neighbors:
+                    if ann.recv_relationship in send_rels and not self._prev_sent(
+                        neighbor, ann
+                    ):
+                        ann2 = ann
+                        # add path prepending based on measurement data
+                        if (self._path_prepending(neighbor)
+                            and ann.recv_relationship == Relationships.ORIGIN
+                            and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]
+                        ):
+                            # avg = 3
+                            # as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
+                            # upper 99th percentile = 8
+                            as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
+                            ann2 = ann.copy({"as_path": as_path})
+                        self._process_outgoing_ann(neighbor, ann2, propagate_to, send_rels)
+                # decide what to send to other nieghbors who did not receive the original announcement
+                # either: superprefix, separate prefix, or nothing
+                # additionally these annoucnements can also be sent with path prepending
+                other_neighbors = [n for n in neighbors if n not in some_neighbors]
+                self._propagate_to_others(propagate_to, send_rels, other_neighbors, ann)
+        else:
+            super()._propagate(propagate_to, send_rels)
+
     def _provider_export_control(self) -> set:
         """
         Determine subset of providers the AS will export to using the export ratios
@@ -60,50 +109,6 @@ class BGPExport2Some(BGP):
         else:
             return random.choice(prepending_list)
 
-    def _propagate(
-        self: "BGPExport2Some",
-        propagate_to: Relationships,
-        send_rels: set[Relationships],
-    ) -> None:
-        """
-        Modified propagtion logic to export to subset of providers
-        """
-        # export to some (providers), i.e. export-to-some is only applied to provider interfaces
-        # remaining customer+peer interfaces are export-to-all
-        if propagate_to.value == Relationships.PROVIDERS.value:
-            neighbors = self.as_.providers
-            if not neighbors: # no neighbors, bye bye
-                return
-            # Decide the "some" neighbors to export to,
-            # this is based off weights assigned from measurement data
-            some_neighbors_asns = self._provider_export_control()
-            some_neighbors = [neighbor for neighbor in neighbors if neighbor.asn in some_neighbors_asns]
-
-            for _prefix, unprocessed_ann in self._local_rib.items():
-                if some_neighbors and unprocessed_ann.recv_relationship in send_rels:
-                    ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
-                else:
-                    continue
-
-                for neighbor in some_neighbors:
-                    if ann.recv_relationship in send_rels and not self._prev_sent(
-                        neighbor, ann
-                    ):
-                        ann2 = ann
-                        # add path prepending based on measurement data
-                        if self._path_prepending(neighbor):
-                            # TODO: experiment with 10 ASes in the AS path
-                            as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
-                            ann2 = ann.copy({"as_path": as_path})
-                        self._process_outgoing_ann(neighbor, ann2, propagate_to, send_rels)
-                # decide what to send to other nieghbors who did not receive the original announcement
-                # either: superprefix, separate prefix, or nothing
-                # additionally these annoucnements can also be sent with path prepending
-                other_neighbors = [n for n in neighbors if n not in some_neighbors]
-                self._propagate_to_others(propagate_to, send_rels, other_neighbors, ann)
-        else:
-            super()._propagate(propagate_to, send_rels)
-
     def _propagate_to_others(
         self: "BGPExport2Some",
         propagate_to: Relationships,
@@ -146,9 +151,22 @@ class BGPExport2Some(BGP):
                 other_ann2 = other_ann
                 if (self._path_prepending(neighbor)
                     and ann.recv_relationship == Relationships.ORIGIN
-                    and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]
+                    and ann.prefix in [
+                        Prefixes.VICTIM.value, 
+                        Prefixes.ANYCAST_SERVER.value, 
+                        Prefixes.EDGE_SERVER.value, 
+                        "7.7.0.0/16", # superprefixes
+                        "2.1.0.0/16",
+                        "2.2.0.0/16",
+                        "8.7.7.0/24", # separate prefixes                                                                                                            
+                        "3.1.0.0/24",
+                        "3.2.0.0/24",
+                    ]
                 ):
-                    as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
+                    # avg = 3
+                    # as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
+                    # upper 99th percentile = 8
+                    as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path        
                     other_ann2 = other_ann.copy({"as_path": as_path})
 
                 self._process_outgoing_ann(neighbor, other_ann2, propagate_to, send_rels)
