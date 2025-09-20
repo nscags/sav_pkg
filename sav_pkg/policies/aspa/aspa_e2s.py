@@ -18,8 +18,8 @@ class ASPAExport2Some(ASPA, BGPExport2Some):
 
         if len(set(ann.as_path)) != len(ann.as_path):
             seen = set()
-            path_no_prepending = tuple([x for x in ann.unprocessed_ann.as_path if not (x in seen or seen.add(x))])
-            unprocessed_ann_no_prepending = replace(ann.unprocessed_ann, as_path=path_no_prepending)
+            path_no_prepending = tuple([x for x in ann.as_path if not (x in seen or seen.add(x))])
+            unprocessed_ann_no_prepending = replace(ann, as_path=path_no_prepending)
             return super()._valid_ann(unprocessed_ann_no_prepending, from_rel)
 
         return super()._valid_ann(ann, from_rel)

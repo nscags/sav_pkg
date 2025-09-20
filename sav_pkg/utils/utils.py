@@ -129,7 +129,7 @@ def get_applied_interfaces(
 
 def get_traffic_engineering_behavior_asn_cls_dict(
     export_policy,
-    traffic_engineering_subcategory=None,  # default None = return all ASNs
+    traffic_engineering_subcategory = None,  # default None = return all ASNs
     path_prepending: bool = True,
     json_path: Path = Path.home() / "data/traffic_engineering_behaviors.json",
 ):
