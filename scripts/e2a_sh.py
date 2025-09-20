@@ -19,7 +19,7 @@ from sav_pkg.simulation_framework import (
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
-    LooseuRPF,
+    # LooseuRPF,
     StrictuRPF,
     FeasiblePathuRPF,
     EnhancedFeasiblePathuRPFAlgB,
@@ -57,18 +57,18 @@ def main():
             0.99,
         ),
         scenario_configs=(
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGP,
-                BaseSAVPolicyCls=LooseuRPF,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="loose",
-                hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
-                attacker_broadcast=False,
-            ),
+            # SAVScenarioConfig(
+            #     ScenarioCls=SAVScenario,
+            #     BasePolicyCls=BGP,
+            #     BaseSAVPolicyCls=LooseuRPF,
+            #     victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+            #     attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+            #     reflector_default_adopters=True,
+            #     num_reflectors=5,
+            #     scenario_label="loose",
+            #     hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
+            #     attacker_broadcast=False,
+            # ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
@@ -199,8 +199,8 @@ def main():
                 attacker_broadcast=False,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_500_e2a_sh").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/5_1000_e2a_sh").expanduser(),
+        num_trials=1000,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

@@ -19,7 +19,7 @@ from sav_pkg.simulation_framework import (
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
-    LooseuRPF,
+    # LooseuRPF,
     StrictuRPF,
     FeasiblePathuRPF,
     EnhancedFeasiblePathuRPFAlgB,
@@ -223,8 +223,8 @@ def main():
                 scenario_label="bar_sav_full_roa",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5_500_dsr").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/5_1000_dsr").expanduser(),
+        num_trials=1000,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

@@ -18,7 +18,7 @@ from sav_pkg.simulation_framework import (
     SAVASGraphAnalyzer, 
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.policies.sav import (
+from sav_pkg.policies import (
     # LooseuRPF,
     StrictuRPF,
     FeasiblePathuRPF,
@@ -27,10 +27,9 @@ from sav_pkg.policies.sav import (
     EnhancedFeasiblePathuRPFAlgAwoPeers,
     BAR_SAV,
     BAR_SAV_Full,
-)
-from sav_pkg.policies.bgp import (
     BGPExport2Some,
     BGPFullExport2Some,
+    ASPAFullExport2Some,
 )
 from sav_pkg.enums import Interfaces
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
@@ -71,6 +70,7 @@ def main():
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="strict",
@@ -177,6 +177,20 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV,
+                AdoptPolicyCls=ASPAFullExport2Some,
+                victim_default_adopters=True,
+                victim_providers_ann=True,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_full_aspa",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_Full,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
@@ -185,9 +199,23 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 attacker_broadcast=False,
             ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV_Full,
+                AdoptPolicyCls=ASPAFullExport2Some,
+                victim_default_adopters=True,
+                victim_providers_ann=True,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_full_aspa",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            ),
         ),
-        output_dir=Path(f"~/sav/results/5_500_te_sh").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/5_1000_te_sh").expanduser(),
+        num_trials=1000,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
