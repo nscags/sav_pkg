@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ```
 You may want to use a virtual environment:
 ```
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate   # On Linux/Mac
 venv\Scripts\activate      # On Windows
 ```
@@ -30,6 +30,7 @@ python3 test.py
 # NOTE: you can also use pypy3
 ```
 For more configurations, such as the ones used in the paper, see the scripts/ folder.
+
 ---
 
 ## Citation
