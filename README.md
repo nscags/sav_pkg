@@ -11,7 +11,10 @@ Clone the repository and install dependencies:
 
 ```
 git clone git@github.com:nscags/sav_pkg.git
+cd sav_pkg
 pip install -r requirements.txt
+# alternatively, you can download BGPy directly
+pip install bgpy_pkg==8.1.1
 ```
 You may want to use a virtual environment:
 ```
