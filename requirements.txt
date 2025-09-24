@@ -1,12 +1,1 @@
-beautifulsoup4==4.12.3
-requests==2.31.0
-requests-cache==1.2.0
-roa-checker==1.1.4
-frozendict==2.4.0
-graphviz==0.20.1
-pillow==10.2.0
-matplotlib==3.8.3
-pytest==8.0.1
-PyYAML~=6.0
-tqdm==4.66.2
-yamlable==1.1.1
+bgpy==8.1.1

@@ -1,19 +1,21 @@
+from .as_graph_info_002 import as_graph_info_002
+
 from frozendict import frozendict
-from .as_graph_info_000 import as_graph_info_000
 
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
 
-from sav_pkg.enums import ASNs
+from sav_pkg.policies.sav import FeasiblePathuRPF
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenario,
 )
 from sav_pkg.simulation_framework import SAVASGraphAnalyzer
-from sav_pkg.utils import SAVDiagram
-from sav_pkg.simulation_engine import EnhancedFeasiblePathuRPF
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from sav_pkg.utils.diagram import SAVDiagram
+from sav_pkg.enums import Interfaces
 
-desc = "Single reflector, single transit AS running Enhanced Feasible Path uRPF"
+desc = "False positive test for Feasible Path uRPF with Export-to-All"
 
 config_003 = EngineTestConfig(
     name="config_003",
@@ -21,14 +23,15 @@ config_003 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
-        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
-        override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_reflector_asns=frozenset({ASNs.REFLECTOR.value}),
-        override_non_default_asn_cls_dict=frozendict(),
-        override_sav_asns=frozenset({1}),
-        BaseSAVPolicyCls=EnhancedFeasiblePathuRPF,
+        num_attackers=0,
+        num_reflectors=1,
+        override_victim_asns=frozenset({1}),
+        override_reflector_asns=frozenset({5}),
+        override_sav_asns=frozenset({5}),
+        BaseSAVPolicyCls=FeasiblePathuRPF,
     ),
-    as_graph_info=as_graph_info_000,
+    as_graph_info=as_graph_info_002,
     DiagramCls=SAVDiagram,
-    ASGraphAnalyzerCls=SAVASGraphAnalyzer
+    ASGraphAnalyzerCls=SAVASGraphAnalyzer,
+    MetricTrackerCls=MetricTracker,
 )

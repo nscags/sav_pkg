@@ -1,31 +1,29 @@
-from collections import defaultdict
 import csv
+import pickle
+from collections import defaultdict
 from math import sqrt
 from pathlib import Path
-import pickle
-from statistics import mean
-from statistics import stdev
-from typing import Any, Optional, Union
-from time import time
+from statistics import mean, stdev
+from typing import Any
 
 from bgpy.enums import Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework import MetricTracker
+from bgpy.simulation_framework.scenarios import Scenario
+
+from sav_pkg.utils.utils import get_metric_keys
 
 from .data_key import DataKey
 from .metric import Metric
 from .metric_key import MetricKey
 
-from sav_pkg.simulation_framework.utils import get_metric_keys
 
-
-class MetricTracker(MetricTracker):
+class SAVMetricTracker(MetricTracker):
     """Tracks metrics used in graphs across trials"""
 
     def __init__(
         self,
-        data: Optional[defaultdict[DataKey, list[Metric]]] = None,
+        data: defaultdict[DataKey, list[Metric]] | None = None,
         metric_keys: tuple[MetricKey, ...] = tuple(list(get_metric_keys())),
     ):
         """Inits data"""
@@ -52,7 +50,7 @@ class MetricTracker(MetricTracker):
         This gets called when we need to merge all the MetricTrackers
         from the various processes that were spawned
         """
-
+        # print("Adding metrics", flush=True)
         if isinstance(other, MetricTracker):
             # Deepcopy is slow, but fine here since it's only called once after sims
             # For BGPy __main__ using 100 trials, 3 percent adoptions, 1 scenario
@@ -68,6 +66,8 @@ class MetricTracker(MetricTracker):
             for obj in (self, other):
                 for k, v in obj.data.items():
                     new_data[k].extend(v)
+
+            # print("All done adding metrics", flush=True)
             return self.__class__(data=new_data)
         else:
             return NotImplemented
@@ -146,12 +146,12 @@ class MetricTracker(MetricTracker):
                 agg_data.append(row)
         return agg_data
 
-    def _get_yerr(self, trial_data: list[float]) -> float:
+    def _get_yerr(self, percent_list: list[float]) -> float:
         """Returns 90% confidence interval for graphing"""
 
-        if len(trial_data) > 1:
-            yerr_num = 1.645 * 2 * stdev(trial_data)
-            yerr_denom = sqrt(len(trial_data))
+        if len(percent_list) > 1:
+            yerr_num = 1.645 * 2 * stdev(percent_list)
+            yerr_denom = sqrt(len(percent_list))
             return float(yerr_num / yerr_denom)
         else:
             return 0
@@ -164,7 +164,7 @@ class MetricTracker(MetricTracker):
         self,
         *,
         engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
+        percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
         propagation_round: int,
@@ -176,8 +176,6 @@ class MetricTracker(MetricTracker):
         The reason we don't simply save the engine to track metrics later
         is because the engines are very large and this would take a lot longer
         """
-        print(f"Tracking trial metrics:\nPercent adoption: {percent_adopt}\ntrial: {trial}\nSAV Policy: {scenario.scenario_config.BaseSAVPolicyCls.name}")
-        start = time()
         self._track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
@@ -186,14 +184,12 @@ class MetricTracker(MetricTracker):
             propagation_round=propagation_round,
             outcomes=outcomes,
         )
-        end = time()
-        print(f"RUNTIME: {end - start}\n")
 
     def _track_trial_metrics(
         self,
         *,
         engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
+        percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
         propagation_round: int,
@@ -206,11 +202,9 @@ class MetricTracker(MetricTracker):
         # Ensure metric_keys are initialized properly before each run
         if not hasattr(self, 'metric_keys') or not self.metric_keys:
             self.metric_keys = tuple(list(get_metric_keys()))
-        else:
-            self.metric_keys = tuple(list(self.metric_keys))
 
         metrics = [Metric(x) for x in self.metric_keys]
-        print(f"Metrics: {metrics}")
+        # print(f"Metrics: {metrics}", flush=True)
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )
@@ -243,10 +237,6 @@ class MetricTracker(MetricTracker):
         for reflector_asn in scenario.reflector_asns:
             as_obj = engine.as_graph.as_dict[reflector_asn]
             for metric in metrics:
-
-                # we are now passing in the entire outcome dict to the add_data func
-                # TODO: I don't think we HAVE to pass the whole dict, could get the
-                #       {origin: {prev_hop: outcome}} dict and pass that into the Metric
                 metric.add_data(
                     as_obj=as_obj,
                     engine=engine,
@@ -254,7 +244,6 @@ class MetricTracker(MetricTracker):
                     data_plane_outcomes=data_plane_outcomes,
                 )
 
-        # Only call this once or else it adds significant amounts of time
+        # Only call this once or else it adds significant amount of time
         for metric in metrics:
             metric.save_percents()
-            print(f"Percents: {metric.percents}")
