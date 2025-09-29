@@ -53,7 +53,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         as_obj: "AS"
     ) -> None:
         """
-        Victim sends packet to each reflector
+        Victim sends packet to each reflector according to its best path in local RIB
         """
         source_prefix = self.scenario.scenario_config.source_prefix
         origin = as_obj.asn
@@ -71,13 +71,18 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         as_obj: "AS"
     ) -> None:
         """
-        Attacker will send packets to each of its neighbors for every reflector
-        This provides attacker with greater opportunity for success
+        We model two different attackers: spoofing host and spoofing AS
+
+        Spoofing Host: attacker controls machine inside of spoofing-allowing AS, 
+        the attack can send packets to reflectors according to AS's local RIB (same as victim)
+
+        Spoofing AS: attacker controls malicious AS from which they can route spoofed packets
+        to all of its neighbors with destination IP of the reflector
         """
         source_prefix = self.scenario.scenario_config.source_prefix
         origin = as_obj.asn
-        # print(f"\nAttaker Origin: {origin}", flush=True)
 
+        # Spoofing AS model is referred to as "broadasting strategy" in code due to legacy reasons
         if self.scenario.scenario_config.attacker_broadcast:
             # broadcasting strategy
             for ann in as_obj.policy._local_rib.data.values():
@@ -88,6 +93,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                         self._propagate_packet(
                             neighbor_as_obj, source_prefix, as_obj, origin, dst
                         )
+        # Spoofing Host model
         else:
             # best path routing
             prev_hop = None

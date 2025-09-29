@@ -1,13 +1,13 @@
 from .sav import LooseuRPF
 from .sav import StrictuRPF
 from .sav import FeasiblePathuRPF
-from .sav import EnhancedFeasiblePathuRPFAlgA
-from .sav import EnhancedFeasiblePathuRPFAlgAwoPeers
-from .sav import EnhancedFeasiblePathuRPFAlgB
+from .sav import EFP_A
+from .sav import EFP_A_wPeers
+from .sav import EFP_B
 from .sav import RFC8704
 from .sav import BAR_SAV
 from .sav import BAR_SAV_PI
-from .sav import BAR_SAV_Full
+from .sav import BAR_SAV_wPI
 from .sav import ProcedureX
 
 from .bgp import BGPExport2Some
@@ -25,13 +25,13 @@ __all__ = [
     "LooseuRPF",
     "StrictuRPF",
     "FeasiblePathuRPF",
-    "EnhancedFeasiblePathuRPFAlgA",
-    "EnhancedFeasiblePathuRPFAlgAwoPeers",
-    "EnhancedFeasiblePathuRPFAlgB",
+    "EFP_A",
+    "EFP_A_wPeers",
+    "EFP_B",
     "RFC8704",
     "BAR_SAV",
     "BAR_SAV_PI",
-    "BAR_SAV_Full",
+    "BAR_SAV_wPI",
     "ProcedureX",
     "BGPExport2Some",
     "BGPFullExport2Some",

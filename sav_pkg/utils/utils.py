@@ -93,13 +93,13 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
     "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
-    "EFP uRPF Alg A": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "EFP uRPF Alg A wo Peers": frozenset([Interfaces.CUSTOMER.value]),
-    "EFP uRPF Alg B": frozenset([Interfaces.CUSTOMER.value]),
+    "EFP-A": frozenset([Interfaces.CUSTOMER.value]),
+    "EFP-A w/ Peers": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "EFP-B": frozenset([Interfaces.CUSTOMER.value]),
     "RFC8704": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "BAR-SAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "BAR-SAV PI": frozenset([Interfaces.PROVIDER.value]),
-    "BAR-SAV Full": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "BAR-SAV w/ PI": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
 })
 
@@ -184,48 +184,3 @@ def get_traffic_engineering_behaviors_dict(
     formatted_data = {int(asn): providers for asn, providers in data.items()}
 
     return frozendict(formatted_data)
-
-
-# def get_e2s_asn_provider_prepending_dict(
-#     json_path: Path = Path.home() / "data/mh_2p_export_to_some_prepending.json",
-# ) -> frozendict:
-#     """
-#     Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
-#     """
-
-#     if not json_path.exists():
-#         print("oh no")
-#         raise FileNotFoundError(f"File: 'mh_2p_export_to_some_prepending.json' not found in {json_path}.")
-#         # return frozendict
-
-#     with open(json_path) as f:
-#         raw_data = json.load(f)
-
-#     formatted_data = dict()
-#     for asn, inner_dict in raw_data.items():
-#         formatted_data[int(asn)] = {int(k): [bool(x) for x in v] for k, v in inner_dict.items()}
-#     return frozendict(formatted_data)
-
-
-# def get_e2s_asn_superprefix_weight_dict(
-#     json_path: Path = Path.home() / "data/mh_2p_superprefix_weights.json",
-# ) -> frozendict:
-#     """
-#     Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
-
-#     Weights are percentage of unique IPv4 prefixes received on that interface which
-#     are a superprefix of another IPv4 prefix announced by that AS
-#     """
-
-#     if not json_path.exists():
-#         print("oh no")
-#         raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
-#         # return frozendict
-
-#     with open(json_path) as f:
-#         raw_data = json.load(f)
-
-#     formatted_data = dict()
-#     for asn, inner_dict in raw_data.items():
-#         formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
-#     return frozendict(formatted_data)

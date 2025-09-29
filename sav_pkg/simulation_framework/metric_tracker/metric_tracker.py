@@ -204,7 +204,6 @@ class SAVMetricTracker(MetricTracker):
             self.metric_keys = tuple(list(get_metric_keys()))
 
         metrics = [Metric(x) for x in self.metric_keys]
-        # print(f"Metrics: {metrics}", flush=True)
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )

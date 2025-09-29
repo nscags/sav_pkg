@@ -36,7 +36,6 @@ class SAVScenario(Scenario):
 
         Any kwarg prefixed with default is only required for the test suite/YAML
         """
-        # print("Initializing SAVScenario", flush=True)
         # Config's ScenarioCls must be the same as instantiated Scenario
         assert scenario_config.ScenarioCls == self.__class__, (
             "The config's scenario class is "
@@ -87,7 +86,6 @@ class SAVScenario(Scenario):
         ] = self._get_ordered_prefix_subprefix_dict()
 
         self.policy_classes_used: frozenset[type[Policy]] = frozenset()
-        # print("Initializing SAVScenario done", flush=True)
 
     ###############
     # Get Victims #
@@ -222,7 +220,7 @@ class SAVScenario(Scenario):
             )
 
         # NOTE: with this logic, we are limited to 256 reflectors
-        #       For our simulations we typically run 5-10 reflectors
+        #       For our simulations we typically run 5-10 reflectors for efficiency
         for i, reflector_asn in enumerate(self.reflector_asns):
             anns.append(
                 self.scenario_config.AnnCls(

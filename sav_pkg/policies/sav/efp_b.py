@@ -10,8 +10,8 @@ if TYPE_CHECKING:
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 
-class EnhancedFeasiblePathuRPFAlgB(BaseSAVPolicy):
-    name: str = "EFP uRPF Alg B"
+class EFP_B(BaseSAVPolicy):
+    name: str = "EFP-B"
 
     @staticmethod
     def _validate(
