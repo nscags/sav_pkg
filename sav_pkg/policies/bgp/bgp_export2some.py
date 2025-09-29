@@ -8,7 +8,6 @@ from sav_pkg.enums import Prefixes
 from sav_pkg.utils.utils import get_traffic_engineering_behaviors_dict
 
 
-
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
 
@@ -164,9 +163,9 @@ class BGPExport2Some(BGP):
                     ]
                 ):
                     # avg = 3
-                    # as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
+                    as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
                     # upper 99th percentile = 8
-                    as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path        
+                    # as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path        
                     other_ann2 = other_ann.copy({"as_path": as_path})
 
                 self._process_outgoing_ann(neighbor, other_ann2, propagate_to, send_rels)

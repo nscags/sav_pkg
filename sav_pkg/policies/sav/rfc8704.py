@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from bgpy.enums import ASGroups
 
 from .base_sav_policy import BaseSAVPolicy
-from .efp_urpf_alg_b import EnhancedFeasiblePathuRPFAlgB
+from .efp_b import EFP_B
 from .loose_urpf import LooseuRPF
 from .strict_urpf import StrictuRPF
 
@@ -39,7 +39,7 @@ class RFC8704(BaseSAVPolicy):
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         elif prev_hop.asn in as_obj.customer_asns:
-            return EnhancedFeasiblePathuRPFAlgB._validate(
+            return EFP_B._validate(
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         elif prev_hop.asn in (as_obj.peer_asns | as_obj.provider_asns):
