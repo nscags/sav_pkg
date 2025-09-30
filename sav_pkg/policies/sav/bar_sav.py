@@ -123,7 +123,6 @@ class BAR_SAV(BaseSAVPolicy):
             engine=engine,
             scenario=scenario
         )
-        # print(q, flush=True)
 
         src_prefix = ipaddress.ip_network(source_prefix)
         return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in q)

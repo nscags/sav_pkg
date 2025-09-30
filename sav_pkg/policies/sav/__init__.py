@@ -7,7 +7,7 @@ from .efp_b import EFP_B
 from .rfc8704 import RFC8704
 from .bar_sav import BAR_SAV
 from .bar_sav_pi import BAR_SAV_PI
-from .bar_sav_w_pi import BAR_SAV_wPI
+from .bar_sav_w_bspi import BAR_SAV_wBSPI
 from .procedure_x import ProcedureX
 
 
@@ -21,6 +21,6 @@ __all__ = [
     "RFC8704",
     "BAR_SAV",
     "BAR_SAV_PI",
-    "BAR_SAV_wPI",
+    "BAR_SAV_wBSPI",
     "ProcedureX",
 ]

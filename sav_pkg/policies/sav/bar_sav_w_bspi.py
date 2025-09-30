@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 
-class BAR_SAV_wPI(BaseSAVPolicy):
-    name: str = "BAR-SAV w/ PI"
+class BAR_SAV_wBSPI(BaseSAVPolicy):
+    name: str = "BAR-SAV w/ BSPI"
 
     @staticmethod
     def _validate( 
