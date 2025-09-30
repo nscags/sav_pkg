@@ -199,22 +199,35 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                 as_obj, source_prefix, prev_hop, self.engine, self.scenario
             )
             if validated:
-                return (
-                    Outcomes.FALSE_NEGATIVE.value
-                    if spoofed_packet
-                    else Outcomes.TRUE_NEGATIVE.value
-                )
+                outcome = Outcomes.FALSE_NEGATIVE.value if spoofed_packet else Outcomes.TRUE_NEGATIVE.value
             elif not validated:
-                return (
-                    Outcomes.TRUE_POSITIVE.value
-                    if spoofed_packet
-                    else Outcomes.FALSE_POSITIVE.value
-                )
+                outcome = Outcomes.TRUE_POSITIVE.value if spoofed_packet else Outcomes.FALSE_POSITIVE.value            
             else:
                 raise ValueError("Packet did not receive an outcome?")
         # Not adopting SAV, no validation, forward packet
         else:
-            return Outcomes.FORWARD.value
+            outcome = Outcomes.FORWARD.value
+
+        # connectivity check
+        if outcome == Outcomes.FALSE_POSITIVE.value:
+            victim_anns = set()
+            for prefix_dict in as_obj.policy._ribs_in.data.values():
+                for ann_info in prefix_dict.values():
+                    if as_obj.policy._valid_ann(
+                        ann_info.unprocessed_ann, ann_info.recv_relationship
+                    ):
+                        ann = ann_info.unprocessed_ann
+                        if ann.origin in self.scenario.victim_asns:
+                            victim_anns.add(ann)
+            if source_prefix in {ann.prefix for ann in victim_anns}:
+                print(f"False Positive, disconnected.", flush=True)
+                outcome = Outcomes.DISCONNECTED.value
+            elif source_prefix in {ann.prefix for ann in victim_anns}:
+                print(f"Validating AS: {as_obj.asn}", flush=True)
+                print(f"Prev_hop: {prev_hop.asn} from {'customer' if prev_hop.asn in as_obj.customer_asns else 'peer'}", flush=True)
+                print(f"Victim Anns: {victim_anns}", flush=True)
+
+        return outcome
 
     def _has_outcome(
         self,

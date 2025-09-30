@@ -176,6 +176,7 @@ class SAVMetricTracker(MetricTracker):
         The reason we don't simply save the engine to track metrics later
         is because the engines are very large and this would take a lot longer
         """
+        print(f"Metrics: {scenario.percent_adoption*100}%, trial {trial} for {scenario.scenario_config.scenario_label}", flush=True)
         self._track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
