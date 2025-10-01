@@ -153,7 +153,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         # if the packet was previously determined to be filtered, set filtered=True to prevent validating the packet later
         elif outcome_int in (Outcomes.FALSE_POSITIVE.value, Outcomes.TRUE_POSITIVE.value):
             filtered = True
-
+        
         # route packet to dst
         dst_ann = as_obj.policy._local_rib.get(dst)
         if dst_ann and (dst_ann.recv_relationship.value != Relationships.ORIGIN.value):
@@ -219,7 +219,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
                         ann = ann_info.unprocessed_ann
                         if ann.origin in self.scenario.victim_asns:
                             victim_anns.add(ann)
-            if source_prefix in {ann.prefix for ann in victim_anns}:
+            if source_prefix not in {ann.prefix for ann in victim_anns}:
                 print(f"False Positive, disconnected.", flush=True)
                 outcome = Outcomes.DISCONNECTED.value
             elif source_prefix in {ann.prefix for ann in victim_anns}:
