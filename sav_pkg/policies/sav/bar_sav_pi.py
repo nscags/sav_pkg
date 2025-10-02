@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class BAR_SAV_PI(BaseSAVPolicy):
-    name: str = "BAR-SAV PI"
+    name: str = "BAR-SAV-PI"
 
     @staticmethod
     def _validate(

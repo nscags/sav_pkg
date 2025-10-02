@@ -92,14 +92,14 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
     "No SAV": frozenset(),
     "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "EFP-A": frozenset([Interfaces.CUSTOMER.value]),
     "EFP-A w/ Peers": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
     "EFP-B": frozenset([Interfaces.CUSTOMER.value]),
     "RFC8704": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "BAR-SAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "BAR-SAV PI": frozenset([Interfaces.PROVIDER.value]),
-    "BAR-SAV w/ PI": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "BAR-SAV-PI": frozenset([Interfaces.PROVIDER.value]),
+    "BAR-SAV w/ BSPI": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
 })
 

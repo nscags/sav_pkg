@@ -86,6 +86,8 @@ class SAVMetricTracker(MetricTracker):
     ) -> None:
         """Writes data to CSV and pickles it"""
 
+        print("Writing Metrics", flush=True)
+
         with csv_path.open("w") as f:
             rows = self.get_csv_rows()
             writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
