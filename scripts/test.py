@@ -18,7 +18,8 @@ from sav_pkg.simulation_framework import (
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies.sav import (
-    BAR_SAV,
+    FeasiblePathuRPF
+    # BAR_SAV,
 )
 from sav_pkg.policies.bgp import (
     BGPFullExport2Some,
@@ -29,10 +30,6 @@ from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavio
 def main():
     # Simulation for the paper
     random.seed(os.environ['JOB_COMPLETION_INDEX'])
-    # bgpfull_e2a_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-    #     export_policy=BGPFullExport2Some,
-    #     traffic_engineering_subcategory="export-to-all"
-    # )
     bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
         export_policy=BGPFullExport2Some,
         traffic_engineering_subcategory="export-to-some"
@@ -47,34 +44,21 @@ def main():
             0.99,
         ),
         scenario_configs=(
-            # SAVScenarioConfig(
-            #     ScenarioCls=SAVScenario,
-            #     BasePolicyCls=BGPFull,
-            #     BaseSAVPolicyCls=BAR_SAV,
-            #     victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-            #     attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-            #     reflector_default_adopters=True,
-            #     num_attackers=0,
-            #     num_reflectors=5,
-            #     scenario_label="bar_sav_e2a",
-            #     hardcoded_asn_cls_dict=bgpfull_e2a_asn_cls_dict,
-            # ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
-                num_attackers=0,
                 num_reflectors=5,
-                scenario_label="bar_sav_e2s",
+                scenario_label="feasible",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/bar_sav_fp_e2s_c_100").expanduser(),
-        num_trials=100,
-        parse_cpus=50,
+        output_dir=Path(f"~/sav/results/test").expanduser(),
+        num_trials=1,
+        parse_cpus=1,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
