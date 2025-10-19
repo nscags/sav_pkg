@@ -13,12 +13,12 @@ Graph is too complex for an ascii drawing, just view the PDF
 """
 
 
-as_graph_info_000 = ASGraphInfo(
+as_graph_info_002 = ASGraphInfo(
     peer_links=frozenset(
         {
-            #PeerLink(8, 9),
+            PeerLink(8, 9),
             PeerLink(9, 10),
-            PeerLink(9, 3),
+           # PeerLink(9, 3),
         }
     ),
     customer_provider_links=frozenset(
