@@ -5,7 +5,7 @@ import os
 import sys
 
 from bgpy.simulation_framework import Simulation
-from bgpy.simulation_engine import BGP, BGPFull
+from bgpy.simulation_engine import BGPFull, BGP
 from bgpy.enums import ASGroups
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -36,11 +36,11 @@ def main():
     random.seed(os.environ['JOB_COMPLETION_INDEX'])
     bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
         export_policy=BGPExport2Some,
-        traffic_engineering_subcategory="no-export"
+        traffic_engineering_subcategory="no-export",
     )
     bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
         export_policy=BGPFullExport2Some,
-        traffic_engineering_subcategory="no-export"
+        traffic_engineering_subcategory="no-export",
     )
     sim = Simulation(
         percent_adoptions = (
@@ -56,8 +56,8 @@ def main():
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
                 BaseSAVPolicyCls=StrictuRPF,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="strict",
@@ -167,7 +167,7 @@ def main():
                 attacker_broadcast=False,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_no_e2s_sh").expanduser(),
+        output_dir=Path(f"~/sav/results/5r_100t_ne_sh").expanduser(),
         num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

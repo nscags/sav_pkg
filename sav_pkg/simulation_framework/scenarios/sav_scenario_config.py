@@ -20,7 +20,7 @@ class SAVScenarioConfig(ScenarioConfig):
     source_prefix_roa: bool = False
     # attacker's providers can be set to not adopt any SAV policy
     attacker_providers_non_adopters: bool = False
-    # TODO: add toggle for victim's providers announing 
+    # toggle for victim's providers announing 
     victim_providers_ann: bool = False
     # toggle for attacker's strategy, either broadcasting or best path routing
     attacker_broadcast: bool = True

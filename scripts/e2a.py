@@ -3,6 +3,7 @@ from time import time
 import random
 import os
 import sys
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -30,19 +31,20 @@ from sav_pkg.policies.bgp import (
     BGPFullExport2Some,
 )
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
+from sav_pkg.enums import Interfaces
 
 
 def main():
     # Simulation for the paper
     random.seed(os.environ['JOB_COMPLETION_INDEX'])
-    bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-        export_policy=BGPExport2Some,
-        traffic_engineering_subcategory="export-to-all"
-    )
-    bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-        export_policy=BGPFullExport2Some,
-        traffic_engineering_subcategory="export-to-all"
-    )
+    # bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
+    #     export_policy=BGP,
+    #     traffic_engineering_subcategory="export-to-all"
+    # )
+    # bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
+    #     export_policy=BGPFull,
+    #     traffic_engineering_subcategory="export-to-all"
+    # )
     sim = Simulation(
         percent_adoptions = (
             0.0,
@@ -62,18 +64,46 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="strict",
-                hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
+                # hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
+                BasePolicyCls=BGPFull, 
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="feasible",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull, 
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_otc",
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value,)
+                })
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull, 
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_all",
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.CUSTOMER.value)
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -83,8 +113,8 @@ def main():
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
-                scenario_label="efp_alg_a",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                scenario_label="efp_a",
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -95,7 +125,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_a_w_peers",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -106,7 +136,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_b",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -117,7 +147,7 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="bar_sav",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -128,11 +158,11 @@ def main():
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="bar_sav_full",
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_e2a").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/5r_500t_e2a").expanduser(),
+        num_trials=500,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

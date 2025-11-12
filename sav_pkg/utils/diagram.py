@@ -268,11 +268,13 @@ class SAVDiagram(Diagram):
                 <TD BGCOLOR="#90ee90" WIDTH="30" HEIGHT="30" FIXEDSIZE="TRUE" ALIGN="CENTER" VALIGN="MIDDLE">{victim_str}</TD>
             </TR>
             <TR>
-                <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{as_obj.policy.name}</TD>
+                <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">BGP</TD>
             </TR>
             <TR>
                 <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{sav_policy_str}</TD>
             </TR>"""
+
+
 
         local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
         local_rib_anns = tuple(
@@ -293,8 +295,7 @@ class SAVDiagram(Diagram):
                 victim_provider_asns.update(victim_as_obj.provider_asns)
 
             for ann in local_rib_anns:
-                # if ann.origin in (scenario.attacker_asns | scenario.victim_asns):
-                    # print(f"\nDIAG: \nAnn: \n{ann}")
+                if ann.origin in (scenario.victim_asns):
                     mask = "/" + ann.prefix.split("/")[-1]
                     path = ", ".join(str(x) for x in ann.as_path)
                     ann_help = ""

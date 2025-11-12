@@ -3,6 +3,7 @@ from time import time
 import random
 import os
 import sys
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -29,6 +30,7 @@ from sav_pkg.policies import (
     ASPAFullExport2Some,
 )
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
+from sav_pkg.enums import Interfaces
 
 
 def main():
@@ -75,6 +77,34 @@ def main():
                 scenario_label="feasible",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 attacker_broadcast=False,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_otc",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value,)
+                })
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_all",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value)
+                })
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -167,8 +197,8 @@ def main():
                 attacker_broadcast=False,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_e2s_sh").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/5r_500t_e2s_sh").expanduser(),
+        num_trials=500,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

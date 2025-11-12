@@ -36,11 +36,11 @@ def main():
     random.seed(os.environ['JOB_COMPLETION_INDEX'])
     bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
         export_policy=BGPExport2Some,
-        traffic_engineering_subcategory="no-export"
+        traffic_engineering_subcategory="no-export",
     )
     bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
         export_policy=BGPFullExport2Some,
-        traffic_engineering_subcategory="no-export"
+        traffic_engineering_subcategory="no-export",
     )
     sim = Simulation(
         percent_adoptions = (
@@ -158,7 +158,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_no_e2s").expanduser(),
+        output_dir=Path(f"~/sav/results/5r_100t_ne").expanduser(),
         num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

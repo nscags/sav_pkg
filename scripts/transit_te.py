@@ -3,7 +3,6 @@ from time import time
 import random
 import os
 import sys
-from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -17,7 +16,7 @@ from sav_pkg.simulation_framework import (
     SAVASGraphAnalyzer, 
 )
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.policies.sav import (
+from sav_pkg.policies import (
     StrictuRPF,
     FeasiblePathuRPF,
     EFP_A,
@@ -25,26 +24,27 @@ from sav_pkg.policies.sav import (
     EFP_B,
     BAR_SAV,
     BAR_SAV_wBSPI,
-)
-from sav_pkg.policies.bgp import (
     BGPExport2Some,
     BGPFullExport2Some,
+    BGPNoExport2Some,
+    BGPFullNoExport2Some,
+    ASPAFullExport2Some,
 )
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
-from sav_pkg.enums import Interfaces
 
 
 def main():
     # Simulation for the paper
     random.seed(os.environ['JOB_COMPLETION_INDEX'])
-    # bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-    #     export_policy=BGPExport2Some,
-    #     traffic_engineering_subcategory="export-to-all"
-    # )
-    # bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-    #     export_policy=BGPFullExport2Some,
-    #     traffic_engineering_subcategory="export-to-all"
-    # )
+    bgp_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
+        export_policy=BGPExport2Some,
+    )
+    bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
+        export_policy=BGPFullExport2Some,
+    )
+    aspafull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
+        export_policy=ASPAFullExport2Some,
+    )
     sim = Simulation(
         percent_adoptions = (
             0.0,
@@ -58,117 +58,124 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGP,
+                AdoptPolicyCls=BGPNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
                 BaseSAVPolicyCls=StrictuRPF,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="strict",
-                # hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
-                attacker_broadcast=False,
+                hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
                 BaseSAVPolicyCls=FeasiblePathuRPF,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="feasible",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                attacker_broadcast=False,
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull, 
-                BaseSAVPolicyCls=FeasiblePathuRPF,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="feasible_otc",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                override_default_interface_dict=frozendict({
-                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value,)
-                })
-            ),
-            SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull, 
-                BaseSAVPolicyCls=FeasiblePathuRPF,
-                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
-                reflector_default_adopters=True,
-                num_reflectors=5,
-                scenario_label="feasible_all",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                override_default_interface_dict=frozendict({
-                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.CUSTOMER.value)
-                })
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
                 BaseSAVPolicyCls=EFP_A,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_a",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                attacker_broadcast=False,
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
                 BaseSAVPolicyCls=EFP_A_wPeers,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_a_w_peers",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                attacker_broadcast=False,
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
                 BaseSAVPolicyCls=EFP_B,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="efp_b",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                attacker_broadcast=False,
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
                 BaseSAVPolicyCls=BAR_SAV,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="bar_sav",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                attacker_broadcast=False,
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
                 BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
+                BaseSAVPolicyCls=BAR_SAV,
+                victim_providers_ann=True,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_aspa",
+                hardcoded_asn_cls_dict=aspafull_e2s_asn_cls_dict,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
                 BaseSAVPolicyCls=BAR_SAV_wBSPI,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
                 reflector_default_adopters=True,
                 num_reflectors=5,
                 scenario_label="bar_sav_full",
-                # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
-                attacker_broadcast=False,
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                AdoptPolicyCls=BGPFullNoExport2Some,
+                ctrl_plane_percent_adoption=0.5,
+                BaseSAVPolicyCls=BAR_SAV_wBSPI,
+                victim_providers_ann=True,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="bar_sav_full_aspa",
+                hardcoded_asn_cls_dict=aspafull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_500t_e2a_sh").expanduser(),
+        output_dir=Path(f"~/sav/results/5r_500t_50pa_tte").expanduser(),
         num_trials=500,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

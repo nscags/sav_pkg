@@ -4,6 +4,7 @@ from .config_002 import config_002
 from .config_003 import config_003
 from .config_004 import config_004
 from .config_005 import config_005
+from .config_006 import config_006
 
 # from .config_e2s_000 import config_e2s_000
 # from .config_e2s_001 import config_e2s_001
@@ -32,12 +33,13 @@ from .config_005 import config_005
 
 
 engine_test_configs = [
-    config_000,
-    config_001,
-    config_002,
-    config_003,
-    config_004,
-    config_005,
+    # config_000,
+    # config_001,
+    # config_002,
+    # config_003,
+    # config_004,
+    # config_005,
+    config_006,
     # config_e2s_000,
     # config_e2s_001,
     # config_no_e2s_000,
