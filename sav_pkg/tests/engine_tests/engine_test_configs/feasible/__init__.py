@@ -14,12 +14,23 @@ from .feasible_013 import feasible_013
 from .feasible_014 import feasible_014
 from .feasible_015 import feasible_015
 from .feasible_016 import feasible_016
+
+
 feasible_test_configs = [
-    # feasible_003,
-    # feasible_001,
-#    feasible_016,
-
-
-
-
+    feasible_001,
+    feasible_002,
+    feasible_003,
+    feasible_004,
+    feasible_005,
+    feasible_006,
+    feasible_007,
+    feasible_008,
+    feasible_009,
+    feasible_010,
+    feasible_011,
+    feasible_012,
+    feasible_013,
+    feasible_014,
+    feasible_015,
+    feasible_016,
 ]

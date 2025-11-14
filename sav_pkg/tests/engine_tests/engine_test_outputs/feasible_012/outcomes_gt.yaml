@@ -23,12 +23,6 @@
 - 10
 : 3
 ? !!python/tuple
-- 8
-- null
-- null
-- 12
-: 2
-? !!python/tuple
 - 1
 - null
 - null
@@ -42,6 +36,12 @@
 : 2
 ? !!python/tuple
 - 3
+- null
+- null
+- 12
+: 2
+? !!python/tuple
+- 8
 - null
 - null
 - 12

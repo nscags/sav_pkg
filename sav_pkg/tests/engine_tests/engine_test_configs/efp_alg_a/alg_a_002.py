@@ -15,8 +15,8 @@ from ..as_graph_info.as_graph_info_000 import as_graph_info_000
 
 desc = "alg a  with 1 reflectors, different SAV ASNs, new attacker/victim"
 
-algo_a_002 = EngineTestConfig( #change name
-    name="algo_a_002", #change name
+alg_a_002 = EngineTestConfig( #change name
+    name="alg_a_002", #change name
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
