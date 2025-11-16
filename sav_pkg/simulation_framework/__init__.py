@@ -5,6 +5,7 @@ from .sav_graph_factory import SAVGraphFactory
 from .scenarios import SAVScenario
 from .scenarios import SAVScenarioConfig
 from .scenarios import SAVScenarioDSR
+from .scenarios import SAVScenarioBAT
 
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     "SAVScenario",
     "SAVScenarioConfig",
     "SAVScenarioDSR",
+    "SAVScenarioBAT",
 ]
