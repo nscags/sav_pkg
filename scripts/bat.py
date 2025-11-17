@@ -20,7 +20,7 @@ from sav_pkg.simulation_framework import (
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies import (
     BAR_SAV,
-    ASPAFullExport2Some,
+    ASPAFullNoExport2Some,
 )
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
 
@@ -29,7 +29,7 @@ def main():
     # Simulation for the paper
     random.seed(os.environ['JOB_COMPLETION_INDEX'])
     bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
-        export_policy=ASPAFullExport2Some,
+        export_policy=ASPAFullNoExport2Some,
     )
     sim = Simulation(
         percent_adoptions = (
