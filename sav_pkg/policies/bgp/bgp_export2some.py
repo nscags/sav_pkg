@@ -5,14 +5,73 @@ from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine.policies.bgp import BGP
 
 from sav_pkg.enums import Prefixes
-from sav_pkg.utils.utils import get_traffic_engineering_behaviors_dict
+from sav_pkg.utils.utils import (
+    get_e2s_asn_provider_prepending_dict,
+    get_e2s_asn_provider_weight_dict,
+    get_e2s_superprefix_weight_dict,
+)
 
 
 class BGPExport2Some(BGP):
     name: str = "BGP E2S"
 
-    DEFAULT_EXPORT_RATIO = 0.5
-    traffic_engineering_behaviors_dict = get_traffic_engineering_behaviors_dict()
+    DEFAULT_EXPORT_WEIGHT = 0.5739
+    e2s_asn_provider_weight_dict = get_e2s_asn_provider_weight_dict()
+    e2s_asn_provider_prepending_dict = get_e2s_asn_provider_prepending_dict()
+    e2s_asn_provider_superprefix_dict = get_e2s_superprefix_weight_dict()
+
+    def _provider_export_control(
+        self
+    ) -> set:
+        """
+        Determine subset of providers the AS will export to.
+        """
+        provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn, {})
+
+        export_set = set()
+        for provider in self.as_.provider_asns:
+            # if provider doesn't have a weight
+            # due to differences between measurement data and CAIDA topology
+            # default to the avg percent of of providers exported to per AS
+            weight = (provider_weight_dict or {}).get(provider, self.DEFAULT_EXPORT_WEIGHT)
+            if random.random() < weight:
+                export_set.add(provider)
+        if export_set:
+            return export_set
+
+        # Ensure that at least one provider is selected
+        if provider_weight_dict:
+            valid_weights = {p: provider_weight_dict.get(p, self.DEFAULT_EXPORT_WEIGHT) for p in self.as_.provider_asns}
+            if valid_weights:
+                providers_list = list(valid_weights.keys())
+                weights_list = list(valid_weights.values())
+                if sum(weights_list) > 0:
+                    export_set.add(random.choices(providers_list, weights=weights_list, k=1)[0])
+                else:
+                    # All weights are 0, just pick one provider at random
+                    # I don't know if this is an error somewhere in my code or if its the data (probably not)
+                    # but this is needed to prevent errors
+                    # if all weights are 0, then an AS would export to none of its providers
+                    # for a mh AS, this doesn't really make sense
+                    # (technically mh includes peer interfaces, so it could work)
+                    export_set.add(random.choice(providers_list))
+        else:
+            export_set.add(random.choice(list(self.as_.provider_asns)))
+
+        return export_set
+
+    def _path_prepending(
+        self,
+        provider,
+    ) -> bool:
+        """
+        Dict lookup to determine if AS performs path prepending to given provider
+        """
+        prepending_list = (self.e2s_asn_provider_prepending_dict.get(self.as_.asn, {}).get(provider.asn))
+        if not prepending_list:
+            return False
+
+        return random.choice(prepending_list)
 
     def _propagate(
         self: "BGPExport2Some",
@@ -34,7 +93,7 @@ class BGPExport2Some(BGP):
             some_neighbors = [neighbor for neighbor in neighbors if neighbor.asn in some_neighbors_asns]
 
             for _prefix, unprocessed_ann in self._local_rib.items():
-                if some_neighbors and unprocessed_ann.recv_relationship in send_rels:
+                if neighbors and unprocessed_ann.recv_relationship in send_rels:
                     ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
                 else:
                     continue
@@ -45,14 +104,8 @@ class BGPExport2Some(BGP):
                     ):
                         ann2 = ann
                         # add path prepending based on measurement data
-                        if (self._path_prepending(neighbor)
-                            and ann.recv_relationship == Relationships.ORIGIN
-                            and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]
-                        ):
-                            # avg = 3
-                            # as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
-                            # upper 99th percentile = 8
-                            as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
+                        if self._path_prepending(neighbor):
+                            as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
                             ann2 = ann.copy({"as_path": as_path})
                         self._process_outgoing_ann(neighbor, ann2, propagate_to, send_rels)
                 # decide what to send to other nieghbors who did not receive the original announcement
@@ -62,51 +115,6 @@ class BGPExport2Some(BGP):
                 self._propagate_to_others(propagate_to, send_rels, other_neighbors, ann)
         else:
             super()._propagate(propagate_to, send_rels)
-
-    def _provider_export_control(self) -> set:
-        """
-        Determine subset of providers the AS will export to using the export ratios
-        from the traffic engineering behaviors data.
-        """
-        provider_weight_dict = self.traffic_engineering_behaviors_dict.get(self.as_.asn, {})
-        export_set = set()
-        for provider in self.as_.provider_asns:
-            provider_data = provider_weight_dict.get(str(provider), {})
-            export_ratio = provider_data.get("export_ratio", self.DEFAULT_EXPORT_RATIO)
-            if export_ratio > 0 and random.random() < export_ratio:
-                export_set.add(provider)
-
-        # Ensure at least one provider with weight > 0 is selected
-        valid_weights = {
-            p: provider_weight_dict.get(str(p), {}).get("export_ratio", self.DEFAULT_EXPORT_RATIO)
-            for p in self.as_.provider_asns
-            if provider_weight_dict.get(str(p), {}).get("export_ratio", self.DEFAULT_EXPORT_RATIO) > 0
-        }
-        if not export_set and valid_weights:
-            providers_list = list(valid_weights.keys())
-            weights_list = list(valid_weights.values())
-            export_set.add(random.choices(providers_list, weights=weights_list, k=1)[0])
-
-        return export_set
-
-    def _path_prepending(self, provider) -> bool:
-        """
-        Determine if AS performs path prepending to the given provider.
-        """
-        prepending_list = (
-            self.traffic_engineering_behaviors_dict.get(self.as_.asn, {}).get(str(provider.asn), {}).get("prepending", [])
-        )
-
-        if not prepending_list:
-            return False
-
-        unique_vals = set(prepending_list)
-        if unique_vals == {False}:
-            return False
-        elif unique_vals == {True}:
-            return True
-        else:
-            return random.choice(prepending_list)
 
     def _propagate_to_others(
         self: "BGPExport2Some",
@@ -118,25 +126,21 @@ class BGPExport2Some(BGP):
         """
         Propagation logic for providers which did not receive the original announcement
         """
-        asn_data = self.traffic_engineering_behaviors_dict.get(self.as_.asn, {})
-
+        provider_weight_dict = self.e2s_asn_provider_weight_dict.get(self.as_.asn, {})
+        superprefix_weight_dict = self.e2s_asn_provider_superprefix_dict.get(self.as_.asn, {})
         for neighbor in other_neighbors:
-            provider_data = asn_data.get(str(neighbor.asn), {})
-
-            # Skip if export ratio is 0
-            export_ratio = provider_data.get("export_ratio", self.DEFAULT_EXPORT_RATIO)
-            if export_ratio == 0:
+            # If the neighbor is weighted with 0, do not export anything to them
+            if provider_weight_dict.get(neighbor.asn) == 0:
                 continue
 
             # NOTE: using this method means victim MUST use dedicated prefix
             #       this also means we must modify this to do DSR with e2s
-            if (
-                ann.recv_relationship == Relationships.ORIGIN
-                and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]
-            ):
-                # Use superprefix ratio to determine separate announcement
-                superprefix_ratio = provider_data.get("superprefix_ratio", 0)
-                other_ann = self._get_super_sep_prefix_ann(ann, superprefix_ratio)
+            if ann.recv_relationship == Relationships.ORIGIN and ann.prefix == Prefixes.VICTIM.value:
+                weight = (superprefix_weight_dict or {}).get(neighbor.asn, 0)
+                if random.random() < weight:
+                    other_ann = ann.copy({"prefix": "7.7.0.0/16"})
+                else:
+                    other_ann = ann.copy({"prefix": "9.9.0.0/23"})
             else:
                 other_ann = ann
 
@@ -150,46 +154,9 @@ class BGPExport2Some(BGP):
                 other_ann2 = other_ann
                 if (self._path_prepending(neighbor)
                     and ann.recv_relationship == Relationships.ORIGIN
-                    and ann.prefix in [
-                        Prefixes.VICTIM.value, 
-                        Prefixes.ANYCAST_SERVER.value, 
-                        Prefixes.EDGE_SERVER.value, 
-                        "7.7.0.0/16", # superprefixes
-                        "2.1.0.0/16",
-                        "2.2.0.0/16",
-                        "8.7.7.0/24", # separate prefixes                                                                                                            
-                        "3.1.0.0/24",
-                        "3.2.0.0/24",
-                    ]
+                    and ann.prefix == Prefixes.VICTIM.value
                 ):
-                    # avg = 3
-                    as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
-                    # upper 99th percentile = 8
-                    # as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path        
+                    as_path = (self.as_.asn, self.as_.asn,) + ann.as_path
                     other_ann2 = other_ann.copy({"as_path": as_path})
 
                 self._process_outgoing_ann(neighbor, other_ann2, propagate_to, send_rels)
-
-    def _get_super_sep_prefix_ann(self, ann: Ann, weight):
-        # VICTIM: str = "7.7.7.0/24"
-        # ANYCAST_SERVER: str = "2.1.0.0/24"
-        # EDGE_SERVER: str = "2.2.0.0/24"
-        ip, mask = ann.prefix.split('/')
-        octets = ip.split('.')
-
-        if random.random() < weight:
-            # Super prefix case: set 3rd octet to 0, mask to /16
-            # VICTIM: str = "7.7.0.0/16"
-            # ANYCAST_SERVER: str = "2.1.0.0/16"
-            # EDGE_SERVER: str = "2.2.0.0/16"
-            octets[2] = '0'
-            mask = '16'
-        else:
-            # Other prefix case: increment 1st octet by 1
-            # VICTIM: str = "8.7.7.0/24"
-            # ANYCAST_SERVER: str = "3.1.0.0/24"
-            # EDGE_SERVER: str = "3.2.0.0/24"
-            octets[0] = str(int(octets[0]) + 1)
-
-        new_prefix = '.'.join(octets) + '/' + mask
-        return ann.copy({"prefix": new_prefix})
