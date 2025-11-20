@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING
 from bgpy.enums import ASGroups, Plane
 from bgpy.simulation_engine import ROVFull
 from frozendict import frozendict
+from typing import TYPE_CHECKING
 
 from sav_pkg.enums import Interfaces, Outcomes
 
-# from rov_collector import rov_collector_classes
-from sav_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
+    from sav_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
 
 
 # First attempt, didn't work with pickle (idk why?)
@@ -24,30 +24,24 @@ if TYPE_CHECKING:
 #             for outcome in [Outcomes.FALSE_NEGATIVE, Outcomes.TRUE_POSITIVE]:
 #                 yield MetricKey(plane=plane, outcome=outcome, as_group=as_group)
 
-def get_metric_keys(
-    planes: list[Plane] | None = None,
-    as_groups: list[ASGroups] | None = None
-) -> list[MetricKey]:
-    planes = planes or [Plane.DATA]
-    as_groups = as_groups or [ASGroups.ALL_WOUT_IXPS]
+    def get_metric_keys(
+        planes: list[Plane] | None = None,
+        as_groups: list[ASGroups] | None = None
+    ) -> list["MetricKey"]:
+        planes = planes or [Plane.DATA]
+        as_groups = as_groups or [ASGroups.ALL_WOUT_IXPS]
 
-    metric_keys = [
-        MetricKey(plane=plane, outcome=outcome, as_group=as_group)
-        for plane in planes
-        for as_group in as_groups
-        for outcome in [
-            Outcomes.FALSE_POSITIVE_RATE,
-            Outcomes.DETECTION_RATE,
-            # Outcomes.DISCONNECTED,
-            # Outcomes.TRUE_NEGATIVE,
-            # Outcomes.FALSE_NEGATIVE,
-            # Outcomes.TRUE_POSITIVE,
-            # Outcomes.FALSE_POSITIVE,
-            # Outcomes.A_FILTERED_ON_PATH,
-            # Outcomes.V_FILTERED_ON_PATH,
+        metric_keys = [
+            MetricKey(plane=plane, outcome=outcome, as_group=as_group)
+            for plane in planes
+            for as_group in as_groups
+            for outcome in [
+                Outcomes.FALSE_POSITIVE_RATE,
+                Outcomes.DETECTION_RATE,
+                Outcomes.DISCONNECTED,
+            ]
         ]
-    ]
-    return metric_keys
+        return metric_keys
 
 
 # NOTE: for BAR SAV, ROV adoption doesn't actually matter
@@ -92,14 +86,14 @@ DEFAULT_SAV_POLICY_INTERFACE_DICT: frozendict[str, frozenset] = frozendict({
     "No SAV": frozenset(),
     "Loose uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Strict uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "EFP-A": frozenset([Interfaces.CUSTOMER.value]),
-    "EFP-A w/ Peers": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "EFP-B": frozenset([Interfaces.CUSTOMER.value]),
+    "Feasible-Path uRPF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "EFP uRPF Alg A": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "EFP uRPF Alg A wo Peers": frozenset([Interfaces.CUSTOMER.value]),
+    "EFP uRPF Alg B": frozenset([Interfaces.CUSTOMER.value]),
     "RFC8704": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
-    "BAR-SAV": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
-    "BAR-SAV-PI": frozenset([Interfaces.PROVIDER.value]),
-    "BAR-SAV w/ BSPI": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
+    "Refined Alg A": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
+    "BAR SAV PI": frozenset([Interfaces.PROVIDER.value]),
+    "BAR SAV IETF": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value]),
     "Procedure X": frozenset([Interfaces.CUSTOMER.value, Interfaces.PEER.value]),
 })
 
@@ -122,65 +116,98 @@ def get_applied_interfaces(
         Interfaces.PROVIDER.value: as_obj.provider_asns,
     }
 
-    applied_interfaces = {interface_map[i] for i in interfaces if i in interface_map}
+    # סט של frozenset-ים במקום סט של set-ים (שגורם ל-TypeError)
+    applied_interfaces = {
+        frozenset(interface_map[i])
+        for i in interfaces
+        if i in interface_map
+    }
 
     return applied_interfaces
 
 
-def get_traffic_engineering_behavior_asn_cls_dict(
-    export_policy,
-    traffic_engineering_subcategory = None,  # default None = return all ASNs
-    path_prepending: bool = True,
-    json_path: Path = Path.home() / "data/traffic_engineering_behaviors.json",
+def get_export_to_some_dict(
+    e2s_policy,
+    json_path: Path = Path.home() / "data/e2s_asn_provider_weights.json",
 ):
-    """
-    Return ASNs filtered by traffic engineering behavior and optional path prepending.
-    """
     if not json_path.exists():
+        print("oh no")
         raise FileNotFoundError(f"File not found: {json_path}")
 
     with open(json_path) as f:
-        data = json.load(f)
+        export2some_raw = json.load(f)
 
-    filtered_asns = {}
+    export2some_asn_cls_dict = frozendict({
+        int(asn): e2s_policy for asn in export2some_raw.keys()
+    })
 
-    for asn, providers in data.items():
-        # If returning all ASNs
-        if traffic_engineering_subcategory in (None, "all"):
-            filtered_asns[int(asn)] = export_policy
-            continue
-
-        # Only consider ASNs that have at least one provider in the requested category
-        providers_in_category = [
-            p_data for p_data in providers.values()
-            if p_data["category"] == traffic_engineering_subcategory
-        ]
-        if not providers_in_category:
-            continue
-
-        if path_prepending:
-            # Include all ASNs in this category
-            filtered_asns[int(asn)] = export_policy
-        else:
-            # Include only if none of the providers prepend
-            if all(not any(p_data.get("prepending", [])) for p_data in providers_in_category):
-                filtered_asns[int(asn)] = export_policy
-
-    return frozendict(filtered_asns)
+    return export2some_asn_cls_dict
 
 
-def get_traffic_engineering_behaviors_dict(
-    json_path: Path = Path.home() / "data/traffic_engineering_behaviors.json",
+def get_e2s_asn_provider_weight_dict(
+    json_path: Path = Path.home() / "data/e2s_asn_provider_weights.json",
 ) -> frozendict:
-    """"""
+    """
+    Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
+
+    Weights are percentage of unique IPv4 prefixes received on that interface divided 
+    by the total number of unique prefixes exported by the AS.
+    """
 
     if not json_path.exists():
-        print("oh no")
-        raise FileNotFoundError(f"File: 'traffic_engineering_behaviors.json' not found in {json_path}.")
+        # print("oh no")
+        # raise FileNotFoundError(f"File: 'e2s_asn_provider_weights.json' not found in {json_path}.")
+        return frozendict
 
     with open(json_path) as f:
-        data = json.load(f)
+        raw_data = json.load(f)
 
-    formatted_data = {int(asn): providers for asn, providers in data.items()}
+    formatted_data = dict()
+    for asn, inner_dict in raw_data.items():
+        formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
+    return frozendict(formatted_data)
 
+
+def get_e2s_asn_provider_prepending_dict(
+    json_path: Path = Path.home() / "data/mh_2p_export_to_some_prepending.json",
+) -> frozendict:
+    """
+    Retrieves dictionary of ASN, provider ASNs, and if there is path preprending on that interface
+    """
+
+    if not json_path.exists():
+        # print("oh no")
+        # raise FileNotFoundError(f"File: 'asn_e2s_provider_weights.json' not found in {json_path}.")
+        return frozendict
+
+    with open(json_path) as f:
+        raw_data = json.load(f)
+
+    formatted_data = dict()
+    for asn, inner_dict in raw_data.items():
+        formatted_data[int(asn)] = {int(k): [bool(x) for x in v] for k, v in inner_dict.items()}
+    return frozendict(formatted_data)
+
+
+def get_e2s_superprefix_weight_dict(
+    json_path: Path = Path.home() / "data/mh_2p_superprefix_weights.json",
+) -> frozendict:
+    """
+    Retrieves dictionary of ASN, provider ASNs, and their corresponding weights
+
+    Weights are percentage of unique IPv4 prefixes received on that interface which
+    are a superprefix of another IPv4 prefix announced by that AS
+    """
+
+    if not json_path.exists():
+        # print("oh no")
+        # raise FileNotFoundError(f"File: 'mh_2p_superprefix_weights.json' not found in {json_path}.")
+        return frozendict
+
+    with open(json_path) as f:
+        raw_data = json.load(f)
+
+    formatted_data = dict()
+    for asn, inner_dict in raw_data.items():
+        formatted_data[int(asn)] = {int(k): float(v) for k, v in inner_dict.items()}
     return frozendict(formatted_data)
