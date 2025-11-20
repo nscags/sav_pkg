@@ -38,7 +38,7 @@ class SAVScenarioBAT(SAVScenario):
         possible_transit_adopters = transit_asns.difference(self._preset_asns)
         # for now just hardcoded, k2 is the percent adoption of TE by transit ASes
         k2 = math.ceil(len(possible_transit_adopters) * 0.5)
-        possible_transit_adopters_tup = tuple(possible_adopters)
+        possible_transit_adopters_tup = tuple(possible_transit_adopters)
         try:
             # random sampling of ASPA adopters, separate from TE
             for asn in random.sample(possible_transit_adopters_tup, k2):
@@ -48,7 +48,7 @@ class SAVScenarioBAT(SAVScenario):
                 else:
                     asn_cls_dict[asn] = BGPFullNoExport2Some # does not adopt BAR-SAV, performs TE
         except ValueError:
-            raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
+            raise ValueError(f"{k} can't be sampled from {len(possible_transit_adopters)}")
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
