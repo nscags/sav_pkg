@@ -18,8 +18,7 @@ from sav_pkg.simulation_framework.scenarios.sav_scenario_config import SAVScenar
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
-    from bgpy.simulation_engine import BaseSimulationEngine
-
+    
 
 class SAVScenario(Scenario):
     

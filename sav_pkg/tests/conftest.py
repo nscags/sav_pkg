@@ -1,6 +1,7 @@
 import subprocess
 import sys
 from pathlib import Path
+from datetime import date
 
 import pytest
 from bgpy.as_graphs import CAIDAASGraphCollector
@@ -16,7 +17,7 @@ def pytest_configure(config):
     # Prevent workers from running the same code
     if not hasattr(config, "workerinput"):
         # Caches CAIDA downloaded file only once before tests run
-        CAIDAASGraphCollector().run()
+        CAIDAASGraphCollector(dl_time=date(2025, 9, 1)).run()
 
 
 def pytest_sessionfinish(session, exitstatus):

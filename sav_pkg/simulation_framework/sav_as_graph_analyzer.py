@@ -6,11 +6,10 @@ from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import BaseASGraphAnalyzer
 
 from sav_pkg.enums import Outcomes
-from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
-    from bgpy.simulation_framework.scenarios import Scenario
+    from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 
 class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
@@ -19,7 +18,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
     def __init__(
         self,
         engine: BaseSimulationEngine,
-        scenario: "Scenario",
+        scenario: "SAVScenario",
         data_plane_tracking: bool = True,
         control_plane_tracking: bool = False,
     ) -> None:

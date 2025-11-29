@@ -12,11 +12,11 @@ from bgpy.enums import ASGroups
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from sav_pkg.simulation_framework import (
+from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig, 
     SAVScenarioBAT,
-    SAVASGraphAnalyzer, 
 )
+from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.policies import (
     BAR_SAV,

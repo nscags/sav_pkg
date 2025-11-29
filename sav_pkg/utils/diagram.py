@@ -7,7 +7,7 @@ from bgpy.utils import Diagram
 from graphviz import Digraph
 
 from sav_pkg.enums import Outcomes
-from sav_pkg.simulation_framework import SAVScenario
+from sav_pkg.simulation_framework.scenarios import SAVScenario
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
@@ -268,7 +268,7 @@ class SAVDiagram(Diagram):
                 <TD BGCOLOR="#90ee90" WIDTH="30" HEIGHT="30" FIXEDSIZE="TRUE" ALIGN="CENTER" VALIGN="MIDDLE">{victim_str}</TD>
             </TR>
             <TR>
-                <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">BGP</TD>
+                <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{as_obj.policy.name}</TD>
             </TR>
             <TR>
                 <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE">{sav_policy_str}</TD>

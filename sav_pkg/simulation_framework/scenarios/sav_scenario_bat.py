@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from bgpy.enums import (
     SpecialPercentAdoptions,
 )
-from bgpy.simulation_engine import BaseSimulationEngine, Policy
 from bgpy.simulation_engine.policies import ASPAFull
 from bgpy.enums import ASGroups
 
@@ -14,6 +13,7 @@ from sav_pkg.policies import ASPAFullNoExport2Some, BGPFullNoExport2Some
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import BaseSimulationEngine
+    from bgpy.simulation_engine import Policy
 
 
 class SAVScenarioBAT(SAVScenario):
@@ -43,12 +43,12 @@ class SAVScenarioBAT(SAVScenario):
             # random sampling of ASPA adopters, separate from TE
             for asn in random.sample(possible_transit_adopters_tup, k2):
                 # check if AS is adopting BAR-SAV, if yes also adopt ASPA
-                if self.sav_policy_asn_dict.get(asn) == self.scenario_config.BasePolicyCls:
+                if self.sav_policy_asn_dict.get(asn) == self.scenario_config.BaseSAVPolicyCls:
                     asn_cls_dict[asn] = ASPAFullNoExport2Some # adopts BAR-SAV and performs TE, therefore adopts ASPA as well
                 else:
                     asn_cls_dict[asn] = BGPFullNoExport2Some # does not adopt BAR-SAV, performs TE
         except ValueError:
-            raise ValueError(f"{k} can't be sampled from {len(possible_transit_adopters)}")
+            raise ValueError(f"{k} can't be sampled from {len(possible_transit_adopters_tup)}")
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
