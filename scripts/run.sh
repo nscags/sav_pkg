@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH -J bat                                      # Name of program
-#SBATCH -o log_bat.out                              # Name of output file
-##SBATCH -p lo-core                                  # Partition (general, lo-core)
-##SBATCH --time=72:00:00                             # Timeout after 72 hours (lo-core), 12 hours (general)
+#SBATCH -J e2a                                      # Name of program
+#SBATCH -o log_e2a.out                              # Name of output file
+#SBATCH -p lo-core                                  # Partition (general, lo-core)
+#SBATCH --time=72:00:00                             # Timeout after 72 hours (lo-core), 12 hours (general)
 #SBATCH -n 40                                       # Asking for cores
 #SBATCH --mail-type=ALL                             # Event(s) that triggers email notification (BEGIN,END,FAIL,ALL)
 #SBATCH --mail-user=nicholas.scaglione@uconn.edu    # Destination email address
-#SBATCH --mem=80G                                   # Request RAM
+#SBATCH --mem=128G                                   # Request RAM
 # #SBATCH --mem-per-cpu=16G                         # Request RAM per cpu core, had OOM errors
 
 # Source Virtual Environment
@@ -18,4 +18,4 @@ export PYTHONHASHSEED=$JOB_COMPLETION_INDEX
 # PYTHONHASHSEED=$SLURM_TASK_ID
 
 # Run the simulation
-python3 ~/sav/sav_pkg/scripts/bat.py
+python3 ~/sav/sav_pkg/scripts/e2a.py

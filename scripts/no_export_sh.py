@@ -3,20 +3,18 @@ from time import time
 import random
 import os
 import sys
+from frozendict import frozendict
 
 from bgpy.simulation_framework import Simulation
-from bgpy.simulation_engine import BGPFull, BGP
+from bgpy.simulation_engine import BGP, BGPFull
 from bgpy.enums import ASGroups
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from sav_pkg.simulation_framework import (
-    SAVScenarioConfig, 
-    SAVScenario,
-    SAVASGraphAnalyzer, 
-)
+from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
+from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.policies import (
+from sav_pkg.policies.sav import (
     StrictuRPF,
     FeasiblePathuRPF,
     EFP_A,
@@ -24,11 +22,14 @@ from sav_pkg.policies import (
     EFP_B,
     BAR_SAV,
     BAR_SAV_wBSPI,
+)
+from sav_pkg.policies.bgp import (
     BGPExport2Some,
     BGPFullExport2Some,
-    ASPAFullExport2Some,
 )
+from sav_pkg.policies.aspa import ASPAFullExport2Some
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
+from sav_pkg.enums import Interfaces
 
 
 def main():
@@ -74,6 +75,36 @@ def main():
                 num_reflectors=5,
                 scenario_label="feasible",
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                attacker_broadcast=False,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_otc",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value,)
+                }),
+                attacker_broadcast=False,
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=FeasiblePathuRPF,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                attacker_subcategory_attr=ASGroups.MULTIHOMED.value, 
+                reflector_default_adopters=True,
+                num_reflectors=5,
+                scenario_label="feasible_all",
+                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                override_default_interface_dict=frozendict({
+                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value)
+                }),
                 attacker_broadcast=False,
             ),
             SAVScenarioConfig(
@@ -167,8 +198,8 @@ def main():
                 attacker_broadcast=False,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_ne_sh").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/5r_1000t_ne_sh").expanduser(),
+        num_trials=1000,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,

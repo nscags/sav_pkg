@@ -11,6 +11,8 @@ from .config_009 import config_009
 from .config_010 import config_010
 from .config_011 import config_011
 from .config_012 import config_012
+from .config_013 import config_013
+from .config_014 import config_014
 
 # from .config_e2s_000 import config_e2s_000
 # from .config_e2s_001 import config_e2s_001
@@ -49,22 +51,29 @@ engine_test_configs = [
     # config_007,
     # config_008,
     # config_009,
-    config_010,
+    # config_010,
     # config_011,
     # config_012,
+    # config_013,
+    config_014,
+
     # config_e2s_000,
     # config_e2s_001,
+
     # config_no_e2s_000,
     # config_no_e2s_001,
     # config_no_e2s_002,
+
     # config_dsr_000,
     # config_dsr_001,
     # config_dsr_002,
     # config_dsr_003,
     # config_dsr_004,
     # config_dsr_005,
+
     # efp_alg_a_000,
     # efp_alg_b_000,
+
     # bar_sav_pi_000,
     # bar_sav_pi_001,
     # bar_sav_pi_002,
