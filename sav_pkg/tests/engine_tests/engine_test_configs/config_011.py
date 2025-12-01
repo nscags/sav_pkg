@@ -10,24 +10,24 @@ from sav_pkg.policies.sav.bar_sav import BAR_SAV
 from sav_pkg.policies.aspa import ASPAFullNoExport2Some
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
-    SAVScenarioBAT,
+    SAVScenarioBATASPA,
 )
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
 
 
-desc = "SAVScenarioBAT test"
+desc = "SAVScenarioBATASPA test"
 
-config_009 = EngineTestConfig(
-    name="config_009",
+config_011 = EngineTestConfig(
+    name="config_011",
     desc=desc,
     scenario_config=SAVScenarioConfig(
-        ScenarioCls=SAVScenarioBAT,
+        ScenarioCls=SAVScenarioBATASPA,
         BasePolicyCls=BGPFull,
         BaseSAVPolicyCls=BAR_SAV,
         AdoptPolicyCls=ASPAFull,
-        ctrl_plane_percent_adoption=0.5,
+        ctrl_plane_percent_adoption=0.2,
         num_reflectors=5,
         reflector_default_adopters=True,
         victim_providers_ann=True,

@@ -10,7 +10,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenario,
 )
-from sav_pkg.simulation_framework import SAVASGraphAnalyzer
+from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
 from sav_pkg.enums import Interfaces

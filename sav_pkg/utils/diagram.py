@@ -289,13 +289,13 @@ class SAVDiagram(Diagram):
                         <TD COLSPAN="{colspan}" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
                       </TR>"""
 
-            victim_provider_asns = set()
-            for victim_asn in scenario.victim_asns:
-                victim_as_obj = engine.as_graph.as_dict[victim_asn]
-                victim_provider_asns.update(victim_as_obj.provider_asns)
+            # victim_provider_asns = set()
+            # for victim_asn in scenario.victim_asns:
+            #     victim_as_obj = engine.as_graph.as_dict[victim_asn]
+            #     victim_provider_asns.update(victim_as_obj.provider_asns)
 
             for ann in local_rib_anns:
-                if ann.origin in (scenario.victim_asns):
+                # if ann.origin in (scenario.victim_asns):
                     mask = "/" + ann.prefix.split("/")[-1]
                     path = ", ".join(str(x) for x in ann.as_path)
                     ann_help = ""
@@ -310,10 +310,11 @@ class SAVDiagram(Diagram):
                         ann_help = "&#128519;"
                     elif any(x == ann.origin for x in scenario.reflector_asns):
                         ann_help = "&#128526;"
-                    elif any(x == ann.origin for x in victim_provider_asns):
+                    # elif any(x == ann.origin for x in victim_provider_asns):
+                    else: 
                         ann_help = "&#128512;"
-                    else:
-                        raise Exception(f"Not valid ann for rib? {ann}")
+                    # else:
+                    #     raise Exception(f"Not valid ann for rib? {ann}")
 
                     html += f"""<TR>
                                 <TD>{mask}</TD>

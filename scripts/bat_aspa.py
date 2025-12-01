@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig, 
-    SAVScenarioBAT,
+    SAVScenarioBATASPA,
 )
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
@@ -42,7 +42,7 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioBAT,
+                ScenarioCls=SAVScenarioBATASPA,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
@@ -54,7 +54,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioBAT,
+                ScenarioCls=SAVScenarioBATASPA,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
                 ctrl_plane_percent_adoption=0.1,
@@ -67,7 +67,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioBAT,
+                ScenarioCls=SAVScenarioBATASPA,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
                 ctrl_plane_percent_adoption=0.2,
@@ -80,7 +80,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioBAT,
+                ScenarioCls=SAVScenarioBATASPA,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
                 ctrl_plane_percent_adoption=0.5,
@@ -93,7 +93,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioBAT,
+                ScenarioCls=SAVScenarioBATASPA,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
                 ctrl_plane_percent_adoption=0.8,
@@ -106,7 +106,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenarioBAT,
+                ScenarioCls=SAVScenarioBATASPA,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV,
                 ctrl_plane_percent_adoption=0.99,
@@ -119,7 +119,7 @@ def main():
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_bat").expanduser(),
+        output_dir=Path(f"~/sav/results/5r_100t_bat_aspa").expanduser(),
         num_trials=100,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
