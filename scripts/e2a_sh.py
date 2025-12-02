@@ -4,6 +4,7 @@ import random
 import os
 import sys
 from frozendict import frozendict
+from datetime import date
 
 from bgpy.simulation_framework import Simulation
 from bgpy.simulation_engine import BGP, BGPFull
@@ -171,6 +172,13 @@ def main():
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
+        as_graph_constructor_kwargs=frozendict(
+            {
+                "as_graph_collector_kwargs": frozendict({
+                        "dl_time": date(2025, 9, 1),
+                })
+            }
+        )
     )
     sim.run()
 
