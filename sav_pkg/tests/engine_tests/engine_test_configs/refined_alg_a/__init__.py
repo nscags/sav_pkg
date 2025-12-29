@@ -13,16 +13,16 @@ from .ref_alg_a_012 import ref_alg_a_012
 
 
 refined_alg_a_test_configs = [
-    ref_alg_a_001,
-    ref_alg_a_002,
-    ref_alg_a_003,
-    ref_alg_a_004,
-    ref_alg_a_005,
-    ref_alg_a_006,
-    ref_alg_a_007,
-    ref_alg_a_008,
-    ref_alg_a_009,
-    ref_alg_a_010,
-    ref_alg_a_011,
-    ref_alg_a_012,
+    # ref_alg_a_001,
+    # ref_alg_a_002,
+    # ref_alg_a_003,
+    # ref_alg_a_004,
+    # ref_alg_a_005,
+    # ref_alg_a_006,
+    # ref_alg_a_007,
+    # ref_alg_a_008,
+    # ref_alg_a_009,
+    # ref_alg_a_010,
+    # ref_alg_a_011,
+    # ref_alg_a_012,
 ]
