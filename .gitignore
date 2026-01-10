@@ -157,3 +157,6 @@ tags
 
 # PyCharm
 .idea/
+
+# vscode settings
+.vscode/

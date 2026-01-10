@@ -89,7 +89,8 @@ def main():
                 # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 override_default_interface_dict=frozendict({
                     "Feasible-Path uRPF": (Interfaces.CUSTOMER.value,)
-                })
+                }),
+                attacker_broadcast=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -103,7 +104,8 @@ def main():
                 # hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 override_default_interface_dict=frozendict({
                     "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.CUSTOMER.value)
-                })
+                }),
+                attacker_broadcast=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
