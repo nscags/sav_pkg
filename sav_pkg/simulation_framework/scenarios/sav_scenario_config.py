@@ -24,6 +24,8 @@ class SAVScenarioConfig(ScenarioConfig):
     victim_providers_ann: bool = False
     # toggle for attacker's strategy, either broadcasting or best path routing
     attacker_broadcast: bool = True
+    # ignore disconnected ASes
+    ignore_disconnections: bool = True
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
     reflector_default_adopters: bool | None = False
     victim_default_adopters: bool | None = False

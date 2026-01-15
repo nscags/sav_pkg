@@ -65,6 +65,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgp_e2s_asn_cls_dict,
                 scenario_label="strict",
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -77,6 +78,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="feasible",
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -92,6 +94,7 @@ def main():
                 override_default_interface_dict=frozendict({
                     "Feasible-Path uRPF": (Interfaces.CUSTOMER.value,)
                 }),
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -107,6 +110,7 @@ def main():
                 override_default_interface_dict=frozendict({
                     "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value)
                 }),
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -119,6 +123,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="efp_a",
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -131,6 +136,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="efp_a_w_peers",
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -143,6 +149,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="efp_b",
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -155,6 +162,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="bar_sav",
+                ignore_disconnections=False,
             ),            
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -168,6 +176,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="bar_sav_roa",
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -180,6 +189,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="bar_sav_full",
+                ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
@@ -193,6 +203,7 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="bar_sav_full_roa",
+                ignore_disconnections=False,
             ),
         ),
         output_dir=Path(f"~/sav/results/5r_1000t_dsr").expanduser(),

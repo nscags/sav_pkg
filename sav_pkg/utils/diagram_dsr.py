@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from bgpy.simulation_engine import BGP, BaseSimulationEngine, BGPFull
 
 from sav_pkg.enums import Outcomes
-from sav_pkg.simulation_framework import SAVScenarioDSR
+from sav_pkg.simulation_framework.scenarios import SAVScenarioDSR
 from .diagram import SAVDiagram
 
 if TYPE_CHECKING:

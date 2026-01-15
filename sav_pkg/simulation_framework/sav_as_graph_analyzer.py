@@ -214,7 +214,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             outcome = Outcomes.FORWARD.value
 
         # connectivity check
-        if outcome == Outcomes.FALSE_POSITIVE.value:
+        if outcome == Outcomes.FALSE_POSITIVE.value and self.scenario.scenario_config.ignore_disconnections:
             victim_anns = set()
             for _, ann in as_obj.policy._local_rib.data.items():
                 if ann.origin in self.scenario.victim_asns:

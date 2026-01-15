@@ -30,6 +30,7 @@ config_dsr_003 = EngineTestConfig(
         override_anycast_server_asns=frozenset({3}),
         override_sav_asns=frozenset({4}),
         BaseSAVPolicyCls=BAR_SAV,
+        ignore_disconnections=False,
     ),
     as_graph_info=as_graph_info_009,
     DiagramCls=SAVDiagramDSR,

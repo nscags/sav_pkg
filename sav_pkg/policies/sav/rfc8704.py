@@ -34,7 +34,7 @@ class RFC8704(BaseSAVPolicy):
         - The EFP-uRPF method with Algorithm B (see Section 3.4) SHOULD be applied on customer interfaces.
         - The loose uRPF method SHOULD be applied on lateral peer and transit provider interfaces."
         """
-        if prev_hop.asn in engine.as_graph.asn_groups[ASGroups.STUBS.value]:
+        if prev_hop.asn in engine.as_graph.asn_groups[ASGroups.STUBS.value] and prev_hop.asn in as_obj.customer_asns:
             return StrictuRPF._validate(
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
@@ -47,4 +47,4 @@ class RFC8704(BaseSAVPolicy):
                 as_obj, source_prefix, prev_hop, engine, scenario
             )
         else:
-            raise AssertionError("RFC8704: Should never reach this condtion.")
+            raise AssertionError("RFC8704: Previous Hop ASN not in Stub, customer, peer, or provider ASNs.")

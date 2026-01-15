@@ -21,12 +21,12 @@ from .config_014 import config_014
 # from .config_no_e2s_001 import config_no_e2s_001
 # from .config_no_e2s_002 import config_no_e2s_002
 
-# from .config_dsr_000 import config_dsr_000
-# from .config_dsr_001 import config_dsr_001
-# from .config_dsr_002 import config_dsr_002
-# from .config_dsr_003 import config_dsr_003
-# from .config_dsr_004 import config_dsr_004
-# from .config_dsr_005 import config_dsr_005
+from .config_dsr_000 import config_dsr_000
+from .config_dsr_001 import config_dsr_001
+from .config_dsr_002 import config_dsr_002
+from .config_dsr_003 import config_dsr_003
+from .config_dsr_004 import config_dsr_004
+from .config_dsr_005 import config_dsr_005
 
 # from .efp_alg_a_000 import efp_alg_a_000
 # from .efp_alg_b_000 import efp_alg_b_000
@@ -55,7 +55,7 @@ engine_test_configs = [
     # config_011,
     # config_012,
     # config_013,
-    config_014,
+    # config_014,
 
     # config_e2s_000,
     # config_e2s_001,
@@ -64,12 +64,12 @@ engine_test_configs = [
     # config_no_e2s_001,
     # config_no_e2s_002,
 
-    # config_dsr_000,
-    # config_dsr_001,
-    # config_dsr_002,
-    # config_dsr_003,
-    # config_dsr_004,
-    # config_dsr_005,
+    config_dsr_000,
+    config_dsr_001,
+    config_dsr_002,
+    config_dsr_003,
+    config_dsr_004,
+    config_dsr_005,
 
     # efp_alg_a_000,
     # efp_alg_b_000,

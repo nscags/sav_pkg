@@ -50,9 +50,9 @@ class BGPExport2Some(BGP):
                             and ann.prefix in [Prefixes.VICTIM.value, Prefixes.ANYCAST_SERVER.value, Prefixes.EDGE_SERVER.value]
                         ):
                             # avg = 3
-                            # as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
+                            as_path = (self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
                             # upper 99th percentile = 8
-                            as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
+                            # as_path = (self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn, self.as_.asn) + ann.as_path
                             ann2 = ann.copy({"as_path": as_path})
                         self._process_outgoing_ann(neighbor, ann2, propagate_to, send_rels)
                 # decide what to send to other nieghbors who did not receive the original announcement
