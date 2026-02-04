@@ -37,19 +37,19 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Analyzes as graph to perform data plane traceback
         """
-        print(f"Analysis: {self.scenario.percent_adoption*100}% for {self.scenario.scenario_config.scenario_label}", flush=True)
-        start = time.time()
+        # print(f"Analysis: {self.scenario.percent_adoption*100}% for {self.scenario.scenario_config.scenario_label}", flush=True)
+        # start = time.time()
         for victim_asn in self.scenario.victim_asns:
             victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
             self._get_victim_outcome_data_plane(victim_as_obj)
         for attacker_asn in self.scenario.attacker_asns:
             attacker_as_obj = self.engine.as_graph.as_dict[attacker_asn]
             self._get_attacker_outcome_data_plane(attacker_as_obj)
-        end = time.time()
+        # end = time.time()
         
         self._handle_disconnections()
 
-        print(f"{self.scenario.percent_adoption*100}% for {self.scenario.scenario_config.scenario_label}, time={end - start}", flush=True)
+        # print(f"{self.scenario.percent_adoption*100}% for {self.scenario.scenario_config.scenario_label}, time={end - start}", flush=True)
 
         return self.outcomes
 
