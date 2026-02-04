@@ -1,4 +1,0 @@
-scenario_cls,BaseSAVPolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
-SAVScenarioNoExport2Some,Loose uRPF,DATA,all_wout_ixps,FALSE_POSITIVE_RATE,0,0,0.0,0.0,,BGP No-E2S
-SAVScenarioNoExport2Some,Loose uRPF,DATA,all_wout_ixps,DETECTION_RATE,0,0,0.0,0.0,,BGP No-E2S
-SAVScenarioNoExport2Some,Loose uRPF,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,,BGP No-E2S

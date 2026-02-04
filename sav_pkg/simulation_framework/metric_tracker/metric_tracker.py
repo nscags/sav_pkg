@@ -51,8 +51,8 @@ class SAVMetricTracker(MetricTracker):
         This gets called when we need to merge all the MetricTrackers
         from the various processes that were spawned
         """
-        print("Adding metrics", flush=True)
-        start = time.time()
+        # print("Adding metrics", flush=True)
+        # start = time.time()
         if isinstance(other, MetricTracker):
             # Deepcopy is slow, but fine here since it's only called once after sims
             # For BGPy __main__ using 100 trials, 3 percent adoptions, 1 scenario
@@ -69,8 +69,8 @@ class SAVMetricTracker(MetricTracker):
                 for k, v in obj.data.items():
                     new_data[k].extend(v)
 
-            end = time.time()
-            print(f"Added metrics, time={end - start}", flush=True)
+            # end = time.time()
+            # print(f"Added metrics, time={end - start}", flush=True)
             return self.__class__(data=new_data)
         else:
             return NotImplemented
@@ -89,7 +89,7 @@ class SAVMetricTracker(MetricTracker):
     ) -> None:
         """Writes data to CSV and pickles it"""
 
-        print("Writing Metrics", flush=True)
+        # print("Writing Metrics", flush=True)
 
         with csv_path.open("w") as f:
             rows = self.get_csv_rows()
@@ -181,8 +181,8 @@ class SAVMetricTracker(MetricTracker):
         The reason we don't simply save the engine to track metrics later
         is because the engines are very large and this would take a lot longer
         """
-        print(f"Tracking metrics: {scenario.percent_adoption*100}%, trial {trial} for {scenario.scenario_config.scenario_label}", flush=True)
-        start = time.time()
+        # print(f"Tracking metrics: {scenario.percent_adoption*100}%, trial {trial} for {scenario.scenario_config.scenario_label}", flush=True)
+        # start = time.time()
         self._track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
@@ -191,8 +191,8 @@ class SAVMetricTracker(MetricTracker):
             propagation_round=propagation_round,
             outcomes=outcomes,
         )
-        end = time.time()
-        print(f"{scenario.percent_adoption*100}%, trial {trial} for {scenario.scenario_config.scenario_label}, time={end - start}\n", flush=True)
+        # end = time.time()
+        # print(f"{scenario.percent_adoption*100}%, trial {trial} for {scenario.scenario_config.scenario_label}, time={end - start}\n", flush=True)
 
 
     def _track_trial_metrics(
