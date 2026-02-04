@@ -39,6 +39,8 @@ from .config_dsr_005 import config_dsr_005
 # from .bar_sav_pi_005 import bar_sav_pi_005
 # from .bar_sav_pi_006 import bar_sav_pi_006
 
+from .bar_sav_000 import bar_sav_000
+
 
 engine_test_configs = [
     # config_000,
@@ -64,12 +66,12 @@ engine_test_configs = [
     # config_no_e2s_001,
     # config_no_e2s_002,
 
-    config_dsr_000,
-    config_dsr_001,
-    config_dsr_002,
-    config_dsr_003,
-    config_dsr_004,
-    config_dsr_005,
+    # config_dsr_000,
+    # config_dsr_001,
+    # config_dsr_002,
+    # config_dsr_003,
+    # config_dsr_004,
+    # config_dsr_005,
 
     # efp_alg_a_000,
     # efp_alg_b_000,
@@ -81,6 +83,8 @@ engine_test_configs = [
     # bar_sav_pi_004,
     # bar_sav_pi_005,
     # bar_sav_pi_006,
+
+    bar_sav_000,
 ]
 
 __all__ = ["engine_test_configs"]

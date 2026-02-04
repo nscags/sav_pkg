@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -J e2a                                      # Name of program
-#SBATCH -o log_e2a.out                              # Name of output file
+#SBATCH -J te_pp                                      # Name of program
+#SBATCH -o log_te_pp.out                              # Name of output file
 #SBATCH -p lo-core                                  # Partition (general, lo-core)
 #SBATCH --time=72:00:00                             # Timeout after 72 hours (lo-core), 12 hours (general)
 #SBATCH -n 40                                       # Asking for cores
@@ -18,4 +18,4 @@ export PYTHONHASHSEED=$JOB_COMPLETION_INDEX
 # PYTHONHASHSEED=$SLURM_TASK_ID
 
 # Run the simulation
-python3 ~/sav/sav_pkg/scripts/e2a.py
+python3 ~/sav/sav_pkg/scripts/traf_eng.py
