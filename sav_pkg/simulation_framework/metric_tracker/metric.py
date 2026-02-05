@@ -125,6 +125,8 @@ class Metric:
 
         # Only track metrics at reflectors
         if as_obj.asn in scenario.reflector_asns:
+            # TODO: fix for DSR, should still ignore disconnected ASes however is slightly different
+            #       since the legitimate origin does not announce the source prefix
             if scenario.scenario_config.ignore_disconnections:
                 # ignore disconnections except for disconnected metric
                 if self.metric_key.outcome != Outcomes.DISCONNECTED:

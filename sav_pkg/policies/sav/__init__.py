@@ -1,6 +1,8 @@
 from .loose_urpf import LooseuRPF
 from .strict_urpf import StrictuRPF
 from .fp_urpf import FeasiblePathuRPF
+from .fp_urpf_all import FeasiblePathuRPF_All
+from .fp_urpf_otc import FeasiblePathuRPF_OTC
 from .efp_a import EFP_A
 from .efp_a_w_peers import EFP_A_wPeers
 from .efp_b import EFP_B
@@ -15,6 +17,8 @@ __all__ = [
     "LooseuRPF",
     "StrictuRPF",
     "FeasiblePathuRPF",
+    "FeasiblePathuRPF_All",
+    "FeasiblePathuRPF_OTC",
     "EFP_A",
     "EFP_A_wPeers",
     "EFP_B",

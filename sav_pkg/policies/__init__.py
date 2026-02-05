@@ -1,6 +1,8 @@
 from .sav import LooseuRPF
 from .sav import StrictuRPF
 from .sav import FeasiblePathuRPF
+from .sav import FeasiblePathuRPF_All
+from .sav import FeasiblePathuRPF_OTC
 from .sav import EFP_A
 from .sav import EFP_A_wPeers
 from .sav import EFP_B
@@ -25,6 +27,8 @@ __all__ = [
     "LooseuRPF",
     "StrictuRPF",
     "FeasiblePathuRPF",
+    "FeasiblePathuRPF_All",
+    "FeasiblePathuRPF_OTC",
     "EFP_A",
     "EFP_A_wPeers",
     "EFP_B",
