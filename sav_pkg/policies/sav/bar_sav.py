@@ -15,6 +15,20 @@ class BAR_SAV(BaseSAVPolicy):
     name: str = "BAR-SAV"
 
     @staticmethod
+    def validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario,
+    ) -> bool:
+        # BAR-SAV is applied to only customer and bilateral peer interfaces
+        if prev_hop.asn not in (as_obj.customer_asns | as_obj.peer_asns):
+            return True
+        else:
+            return BAR_SAV._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+
+    @staticmethod
     def _get_as_prefix_set(
         as_obj: "AS",
         source_prefix: str,

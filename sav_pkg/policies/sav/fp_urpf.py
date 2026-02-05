@@ -14,6 +14,20 @@ class FeasiblePathuRPF(BaseSAVPolicy):
     name: str = "Feasible-Path uRPF"
 
     @staticmethod
+    def validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario,
+    ) -> bool:
+        # FP-uRPF is applied to only customer and bilateral peer interfaces
+        if prev_hop.asn not in (as_obj.customer_asns | as_obj.peer_asns):
+            return True 
+        else:
+            return FeasiblePathuRPF._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+
+    @staticmethod
     def _validate(
         as_obj: "AS",
         source_prefix: str,

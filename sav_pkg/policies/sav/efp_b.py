@@ -14,6 +14,20 @@ class EFP_B(BaseSAVPolicy):
     name: str = "EFP-B"
 
     @staticmethod
+    def validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario,
+    ) -> bool:
+        # EFP-B is applied only to customer interfaces
+        if prev_hop.asn not in as_obj.customer_asns:
+            return True
+        else:
+            return EFP_B._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+
+    @staticmethod
     def _validate(
         as_obj: "AS",
         source_prefix: str,

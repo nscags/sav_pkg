@@ -14,6 +14,17 @@ class LooseuRPF(BaseSAVPolicy):
     name: str = "Loose uRPF"
 
     @staticmethod
+    def validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario,
+    ) -> bool:
+        # Loose uRPF can be applied to any interface
+        return LooseuRPF._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+
+    @staticmethod
     def _validate(
         as_obj: "AS",
         source_prefix: str,

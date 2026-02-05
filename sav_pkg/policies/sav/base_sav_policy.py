@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from sav_pkg.utils.utils import get_applied_interfaces
-
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
     from bgpy.simulation_engine import SimulationEngine
@@ -12,6 +10,7 @@ class BaseSAVPolicy(ABC):
     name: str = "No SAV"
 
     @staticmethod
+    @abstractmethod
     def validate(
         as_obj: "AS",
         source_prefix: str,
@@ -22,19 +21,7 @@ class BaseSAVPolicy(ABC):
         """
         Applies SAV policy to specificed interfaces.
         """
-        sav_policy = scenario.sav_policy_asn_dict[as_obj.asn]
-        applied_interfaces = get_applied_interfaces(as_obj, scenario, sav_policy)
-
-        if any(prev_hop.asn in subset for subset in applied_interfaces):
-            return sav_policy._validate(
-                as_obj,
-                source_prefix,
-                prev_hop,
-                engine,
-                scenario,
-            )
-        else:
-            return True
+        pass
 
     @staticmethod
     @abstractmethod

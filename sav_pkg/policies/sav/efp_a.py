@@ -14,6 +14,20 @@ class EFP_A(BaseSAVPolicy):
     name: str = "EFP-A"
 
     @staticmethod
+    def validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario,
+    ) -> bool:
+        # EFP-A is applied only to customer interfaces
+        if prev_hop.asn not in as_obj.customer_asns:
+            return True
+        else:
+            return EFP_A._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+
+    @staticmethod
     def _validate(
         as_obj: "AS",
         source_prefix: str,
@@ -24,6 +38,7 @@ class EFP_A(BaseSAVPolicy):
         """
         Validates incoming packets based on Enhanced Feasible-Path uRPF Algorithm A.
         """
+
         # Create the set of unique origin ASes considering only the routes in the Adj-RIBs-In of customer interfaces.
         # Call it Set A = {AS1, AS2, ..., ASn}.
         A = set()

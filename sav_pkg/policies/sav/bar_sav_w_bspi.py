@@ -15,6 +15,18 @@ class BAR_SAV_wBSPI(BaseSAVPolicy):
     name: str = "BAR-SAV w/ BSPI"
 
     @staticmethod
+    def validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario,
+    ) -> bool:
+        # BAR-SAV w/BSPI defines BAR-SAV for customer and bilateral peer interfaces, 
+        # and BAR-SAV-PI for provider interfaces
+        return BAR_SAV_wBSPI._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+
+    @staticmethod
     def _validate( 
         as_obj: "AS",
         source_prefix: str,
