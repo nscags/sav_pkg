@@ -21,6 +21,8 @@ from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetric
 from sav_pkg.policies.sav import (
     StrictuRPF,
     FeasiblePathuRPF,
+    FeasiblePathuRPF_OTC,
+    FeasiblePathuRPF_All,
     EFP_A,
     EFP_A_wPeers,
     EFP_B,
@@ -83,7 +85,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=FeasiblePathuRPF,
+                BaseSAVPolicyCls=FeasiblePathuRPF_OTC,
                 num_attackers=0,
                 num_users=5,
                 source_prefix=Prefixes.ANYCAST_SERVER.value,
@@ -91,15 +93,12 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="feasible_otc",
-                override_default_interface_dict=frozendict({
-                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value,)
-                }),
                 ignore_disconnections=False,
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=FeasiblePathuRPF,
+                BaseSAVPolicyCls=FeasiblePathuRPF_All,
                 num_attackers=0,
                 num_users=5,
                 source_prefix=Prefixes.ANYCAST_SERVER.value,
@@ -107,9 +106,6 @@ def main():
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
                 scenario_label="feasible_all",
-                override_default_interface_dict=frozendict({
-                    "Feasible-Path uRPF": (Interfaces.CUSTOMER.value, Interfaces.PEER.value, Interfaces.PROVIDER.value)
-                }),
                 ignore_disconnections=False,
             ),
             SAVScenarioConfig(
