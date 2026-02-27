@@ -27,7 +27,9 @@ class SAVScenarioConfig(ScenarioConfig):
     # ignore disconnected ASes
     ignore_disconnections: bool = True
     BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
+    # reflectors adopt SAV policy by default
     reflector_default_adopters: bool | None = False
+    # victims adopt CRTL-PLANE policy by default (AdoptPolicyCls)
     victim_default_adopters: bool | None = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt
     override_sav_asns: frozenset[int] | None = None

@@ -359,7 +359,7 @@ class SAVScenario(Scenario):
                 k = math.ceil(len(possible_adopters) * self.percent_adoption)
 
             # https://stackoverflow.com/a/15837796/8903959
-            possible_adopters_tup = frozenset(possible_adopters)
+            possible_adopters_tup = tuple(possible_adopters)
             try:
                 for asn in random.sample(possible_adopters_tup, k):
                     asn_sav_cls_dict[asn] = self.scenario_config.BaseSAVPolicyCls
