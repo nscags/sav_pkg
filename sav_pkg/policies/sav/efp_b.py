@@ -68,9 +68,8 @@ class EFP_B(BaseSAVPolicy):
             ).items():
                 if as_obj.policy._valid_ann(
                     ann_info.unprocessed_ann, ann_info.recv_relationship
-                ):
-                    if ann_info.unprocessed_ann.origin in A:
-                        Q.add(prefix)
+                ) and ann_info.unprocessed_ann.origin in A:
+                    Q.add(prefix)
 
         # Then, Set Z = Union(P,Q) is the RPF list that is applied for every customer interface in Set I.
         Z = P.union(Q)

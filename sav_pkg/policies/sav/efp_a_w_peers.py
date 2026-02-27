@@ -21,7 +21,7 @@ class EFP_A_wPeers(BaseSAVPolicy):
         engine: "SimulationEngine",
         scenario,
     ) -> bool:
-        # BAR-SAV is applied to only customer and bilateral peer interfaces
+        # EFP-A w/ peers is applied to only customer and bilateral peer interfaces
         if prev_hop.asn not in (as_obj.customer_asns | as_obj.peer_asns):
             return True
         else:
@@ -43,10 +43,6 @@ class EFP_A_wPeers(BaseSAVPolicy):
         peer interfaces. This extension seems fairly straightforward, we simply will consider
         peers in the first step (creating set A), and apply rpf list to customer and peer interfaces
         """
-        # EFP-A w/ peers is applied to only customer and bilateral peer interfaces
-        if prev_hop.asn not in (as_obj.customer_asns | as_obj.peer_asns):
-            return True
-
         # Create the set of unique origin ASes considering only the routes in the Adj-RIBs-In of
         # customer and peer interfaces. Call it Set A = {AS1, AS2, ..., ASn}.
         A = set()

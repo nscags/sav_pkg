@@ -104,10 +104,8 @@ class BAR_SAV(BaseSAVPolicy):
             for ann_info in prefix_dict.values():
                 if as_obj.policy._valid_ann(
                     ann_info.unprocessed_ann, ann_info.recv_relationship
-                ):
-                    ann = ann_info.unprocessed_ann
-                    if ann.origin in d:
-                        q2.add(ann.prefix)
+                ) and ann_info.unprocessed_ann.origin in d:
+                    q2.add(ann_info.unprocessed_ann.prefix)
 
         # "Form the union of Pfx-set Q1, Pfx-set Q2, and any Prefix ACL configured for this interface.
         # Call the union set as Pfx-set Q. Apply Pfx-set Q as the list of permissible prefixes for SAV."
