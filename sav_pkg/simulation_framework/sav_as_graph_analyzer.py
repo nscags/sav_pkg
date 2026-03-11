@@ -37,19 +37,14 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         """
         Analyzes as graph to perform data plane traceback
         """
-        # print(f"Analysis: {self.scenario.percent_adoption*100}% for {self.scenario.scenario_config.scenario_label}", flush=True)
-        # start = time.time()
         for victim_asn in self.scenario.victim_asns:
             victim_as_obj = self.engine.as_graph.as_dict[victim_asn]
             self._get_victim_outcome_data_plane(victim_as_obj)
         for attacker_asn in self.scenario.attacker_asns:
             attacker_as_obj = self.engine.as_graph.as_dict[attacker_asn]
             self._get_attacker_outcome_data_plane(attacker_as_obj)
-        # end = time.time()
-        
-        self._handle_disconnections()
 
-        # print(f"{self.scenario.percent_adoption*100}% for {self.scenario.scenario_config.scenario_label}, time={end - start}", flush=True)
+        self._handle_disconnections()
 
         return self.outcomes
 
@@ -213,20 +208,21 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         else:
             outcome = Outcomes.FORWARD.value
 
-        # connectivity check
-        if outcome == Outcomes.FALSE_POSITIVE.value and self.scenario.scenario_config.ignore_disconnections:
+        # Check if the validator is connected to the legitimate origin
+        # Removes 'false positives' which are caused by the validator never receiving the source prefix
+        # (or never receives an announcement from the legitimate origin in the DSR scenario)
+        if outcome == Outcomes.FALSE_POSITIVE.value:
             victim_anns = set()
             for _, ann in as_obj.policy._local_rib.data.items():
                 if ann.origin in self.scenario.victim_asns:
                     victim_anns.add(ann)
-            if source_prefix not in {ann.prefix for ann in victim_anns}:
-                print(f"False Positive, disconnected.", flush=True)
+            # for normal spoofing host/AS attack scenarios, check whether the validating AS has recieved the source prefix
+            if self.scenario.scenario_config.ignore_disconnections and source_prefix not in {ann.prefix for ann in victim_anns}:
                 outcome = Outcomes.DISCONNECTED.value
-            elif source_prefix in {ann.prefix for ann in victim_anns}:
-                print(f"Validating AS: {as_obj.asn}", flush=True)
-                print(f"SAV Policy: {self.scenario.scenario_config.BaseSAVPolicyCls.name}", flush=True)
-                print(f"Prev_hop: {prev_hop.asn} from {'customer' if prev_hop.asn in as_obj.customer_asns else 'peer'}", flush=True)
-                print(f"Victim Anns: {victim_anns}", flush=True)
+            # For DSR, the legitimate origin does not announce the source prefix, therefore, all packets will be considered disconnected
+            # in this scenario, check whether the validating AS has an announcement from the origin
+            elif not self.scenario.scenario_config.ignore_disconnections and not victim_anns:
+                outcome = Outcomes.DISCONNECTED.value
 
         return outcome
 
@@ -256,6 +252,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         Handle disconnections
         """
         # Only assign reflectors the value of disconnected
+        # 
         for reflector_asn in self.scenario.reflector_asns:
             for attacker_asn in self.scenario.attacker_asns:
                 if not self._has_outcome(reflector_asn, attacker_asn):
