@@ -12,6 +12,7 @@ from sav_pkg.enums import Prefixes
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
+
 class SAVScenarioSuperprefix(SAVScenario):
 
     def _get_announcements(

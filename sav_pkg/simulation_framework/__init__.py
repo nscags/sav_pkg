@@ -12,4 +12,8 @@ __all__ = [
     "SAVScenarioConfig",
     "SAVScenarioDSR",
     "SAVScenarioBAT",
+    "SAVScenarioBATAnn",
+    "SAVScenarioBATASPA",
+    "SAVScenarioSuperprefix",
+    "SAVScenarioProviderCone",
 ]
