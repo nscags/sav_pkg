@@ -41,6 +41,9 @@ class SAVScenarioProviderCone(SAVScenario):
         self.scenario_config: SAVScenarioConfig = scenario_config
         self.percent_adoption: float | SpecialPercentAdoptions = percent_adoption
 
+        # Set attacker_asns to empty to avoid errors when getting reflector asns (see SAVScenario)
+        self.attacker_asns = frozenset()
+
         self.victim_asns: frozenset[int] = self._get_victim_asns(
             scenario_config.override_victim_asns, engine, prev_scenario
         )
@@ -49,6 +52,8 @@ class SAVScenarioProviderCone(SAVScenario):
             scenario_config.override_reflector_asns, engine, prev_scenario
         )
 
+        # since attackers must be in the provider cone of the validator, 
+        # we must get attacker ASNs after getting reflector ASNs 
         self.attacker_asns: frozenset[int] = self._get_attacker_asns(
             scenario_config.override_attacker_asns, engine, prev_scenario
         )
@@ -104,6 +109,8 @@ class SAVScenarioProviderCone(SAVScenario):
             provider_cone.update(visited)
 
         possible_asns = frozenset(provider_cone)
+        if not possible_asns:
+            possible_asns = super()._get_possible_attacker_asns(engine, percent_adoption, prev_scenario)
 
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
