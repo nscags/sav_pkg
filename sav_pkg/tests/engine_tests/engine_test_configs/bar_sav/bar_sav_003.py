@@ -3,11 +3,12 @@ from frozendict import frozendict
 
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 from bgpy.as_graphs import ASGraphInfo
 from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 
-from sav_pkg.policies.sav.bar_sav import BAR_SAV
-from sav_pkg.policies.aspa import ASPAFullNoExport2Some
+from sav_pkg.simulation_engine.policies.sav.bar_sav import BAR_SAV
+from sav_pkg.simulation_engine.policies.aspa import ASPAFullNoExport2Some
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenario,
@@ -38,6 +39,7 @@ as_graph_info_000 = ASGraphInfo(
 desc = "BAR-SAV false positive test"
 
 bar_sav_003 = EngineTestConfig(
+    SimulationEngineCls=SAVSimulationEngine,
     name="bar_sav_003",
     desc=desc,
     scenario_config=SAVScenarioConfig(

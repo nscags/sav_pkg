@@ -1,5 +1,6 @@
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
@@ -8,7 +9,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
 )
 from sav_pkg.utils.diagram_dsr import SAVDiagram
-from sav_pkg.policies.sav import StrictuRPF
+from sav_pkg.simulation_engine.policies.sav import StrictuRPF
 
 from sav_pkg.tests.engine_tests.engine_test_configs.as_graph_info import as_graph_info_000
 
@@ -17,6 +18,7 @@ desc = "Basic functionality test. Strict uRPF deployed on multiple reflectors, "
        "includes disconnected reflectors for both attacker and legitimate origin."
 
 strict_000 = EngineTestConfig(
+    SimulationEngineCls=SAVSimulationEngine,
     name="strict_000",
     desc=desc,
     scenario_config=SAVScenarioConfig(

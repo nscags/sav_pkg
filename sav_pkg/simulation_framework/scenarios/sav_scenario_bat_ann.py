@@ -7,8 +7,8 @@ from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.enums import Timestamps
 
 from sav_pkg.enums import Prefixes
-from sav_pkg.policies.bgp.bgpfull_noexport2some import BGPFullNoExport2Some
-from sav_pkg.policies.aspa.aspafull_no_e2s import ASPAFullNoExport2Some
+from sav_pkg.simulation_engine.policies.bgp.bgpfull_noexport2some import BGPFullNoExport2Some
+from sav_pkg.simulation_engine.policies.aspa.aspafull_no_e2s import ASPAFullNoExport2Some
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import BaseSimulationEngine

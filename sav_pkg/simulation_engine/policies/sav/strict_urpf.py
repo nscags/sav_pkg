@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class StrictuRPF(BaseSAVPolicy):
     name: str = "Strict uRPF"
 
-    @staticmethod
     def validate(
+        self,
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",

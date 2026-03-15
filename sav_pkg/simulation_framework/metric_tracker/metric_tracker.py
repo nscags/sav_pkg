@@ -116,7 +116,7 @@ class SAVMetricTracker(MetricTracker):
             for metric_key, trial_data in agg_percents.items():
                 row = {
                     "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
-                    "BaseSAVPolicyCls": data_key.scenario_config.BaseSAVPolicyCls.name,
+                    "BaseSAVPolicyCls": data_key.scenario_config.BaseSAVPolicyCls.name if data_key.scenario_config.BaseSAVPolicyCls is not None else "No SAV",
                     # "PolicyCls": metric_key.PolicyCls.__name__,
                     "outcome_type": metric_key.plane.name,
                     "as_group": metric_key.as_group.value,

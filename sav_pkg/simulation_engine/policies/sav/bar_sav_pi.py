@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 class BAR_SAV_PI(BaseSAVPolicy):
     name: str = "BAR-SAV-PI"
 
-    @staticmethod
     def validate(
+        self,
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",

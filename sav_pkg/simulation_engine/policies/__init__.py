@@ -1,3 +1,4 @@
+from .sav import BaseSAVPolicy
 from .sav import LooseuRPF
 from .sav import StrictuRPF
 from .sav import FeasiblePathuRPF
@@ -24,6 +25,7 @@ from .aspa import ASPAFullNoExport2Some
 
 
 __all__ = [
+    "BaseSAVPolicy",
     "LooseuRPF",
     "StrictuRPF",
     "FeasiblePathuRPF",

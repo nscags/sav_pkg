@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 class FeasiblePathuRPF_All(FeasiblePathuRPF):
 
-    @staticmethod
     def validate(
+        self,
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",

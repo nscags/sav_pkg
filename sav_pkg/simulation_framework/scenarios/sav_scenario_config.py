@@ -5,7 +5,7 @@ from bgpy.simulation_framework.scenarios import ScenarioConfig
 from frozendict import frozendict
 
 from sav_pkg.enums import Prefixes
-from sav_pkg.policies.sav.base_sav_policy import BaseSAVPolicy
+from sav_pkg.simulation_engine.policies.sav.base_sav_policy import BaseSAVPolicy
 
 
 @dataclass(frozen=True)
@@ -26,11 +26,11 @@ class SAVScenarioConfig(ScenarioConfig):
     attacker_broadcast: bool = True
     # ignore disconnected ASes
     ignore_disconnections: bool = True
-    BaseSAVPolicyCls: BaseSAVPolicy | None = BaseSAVPolicy
+    BaseSAVPolicyCls: type[BaseSAVPolicy] | None = None
     # reflectors adopt SAV policy by default
-    reflector_default_adopters: bool | None = False
+    reflector_default_adopters: bool = False
     # victims adopt CRTL-PLANE policy by default (AdoptPolicyCls)
-    victim_default_adopters: bool | None = False
+    victim_default_adopters: bool = False
     # set of asns adopting SAV, will adopt BaseSAVPolicyCls by defualt
     override_sav_asns: frozenset[int] | None = None
     # Optional hardcode asn with SAV in case of testing with multiple ASes running

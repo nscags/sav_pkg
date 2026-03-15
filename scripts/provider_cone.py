@@ -7,6 +7,7 @@ from frozendict import frozendict
 from datetime import date
 
 from bgpy.simulation_framework import Simulation
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 from bgpy.simulation_engine import BGP, BGPFull
 from bgpy.enums import ASGroups
 
@@ -15,7 +16,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenarioProviderCone
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.policies.sav import (
+from sav_pkg.simulation_engine.policies.sav import (
     StrictuRPF,
     FeasiblePathuRPF,
     FeasiblePathuRPF_All,
@@ -26,11 +27,11 @@ from sav_pkg.policies.sav import (
     BAR_SAV,
     BAR_SAV_wBSPI,
 )
-from sav_pkg.policies.bgp import (
+from sav_pkg.simulation_engine.policies.bgp import (
     BGPExport2Some,
     BGPFullExport2Some,
 )
-from sav_pkg.policies.aspa import ASPAFullExport2Some
+from sav_pkg.simulation_engine.policies.aspa import ASPAFullExport2Some
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
 
 
@@ -44,6 +45,7 @@ def main():
         export_policy=BGPFullExport2Some,
     )
     sim = Simulation(
+        SimulationEngineCls=SAVSimulationEngine,
         percent_adoptions = (
             0.0,
             0.1,

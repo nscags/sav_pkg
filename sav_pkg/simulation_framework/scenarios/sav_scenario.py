@@ -86,6 +86,21 @@ class SAVScenario(Scenario):
 
         self.policy_classes_used: frozenset[type[Policy]] = frozenset()
 
+    def setup_engine(
+        self, engine: BaseSimulationEngine, prev_scenario=None
+    ) -> None:
+        """Sets up engine and assigns SAV policies to ASes"""
+
+        self.policy_classes_used = engine.setup(
+            self.announcements,
+            self.scenario_config.BasePolicyCls,
+            self.non_default_asn_cls_dict,
+            prev_scenario,
+            self.attacker_asns,
+            self.scenario_config.AttackerBasePolicyCls,
+            self.sav_policy_asn_dict,
+        )
+
     ###############
     # Get Victims #
     ###############

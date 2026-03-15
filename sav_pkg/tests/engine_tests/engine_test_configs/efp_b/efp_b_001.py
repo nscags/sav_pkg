@@ -2,9 +2,10 @@ from frozendict import frozendict
 
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 
-from sav_pkg.policies.sav import EFP_B
-from sav_pkg.policies.bgp import BGPFullExport2Some
+from sav_pkg.simulation_engine.policies.sav import EFP_B
+from sav_pkg.simulation_engine.policies.bgp import BGPFullExport2Some
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import (
@@ -18,6 +19,7 @@ from sav_pkg.tests.engine_tests.engine_test_configs.as_graph_info import as_grap
 desc = "EFP uRPF Alg B"
 
 efp_b_001 = EngineTestConfig(
+    SimulationEngineCls=SAVSimulationEngine,
     name="efp_b_001",
     desc=desc,
     scenario_config=SAVScenarioConfig(

@@ -241,7 +241,7 @@ class SAVDiagram(Diagram):
             asn_str = "&#128526;" + asn_str + "&#128526;"
 
         # make the SAV policy bold (or at least stand out more)
-        if as_obj.asn in scenario.sav_policy_asn_dict:
+        if scenario.sav_policy_asn_dict.get(as_obj.asn) is not None:
             sav_policy_str = scenario.sav_policy_asn_dict.get(as_obj.asn).name
         else:
             sav_policy_str = "No SAV"

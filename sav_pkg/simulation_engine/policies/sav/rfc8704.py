@@ -16,15 +16,15 @@ if TYPE_CHECKING:
 class RFC8704(BaseSAVPolicy):
     name: str = "RFC8704"
 
-    @staticmethod
     def validate(
+        self,
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",
         engine: "SimulationEngine",
         scenario,
     ) -> bool:
-        # RFC8704 validates using different policies for each interface 
+        # RFC8704 validates using different policies for each interface
         return RFC8704._validate(as_obj, source_prefix, prev_hop, engine, scenario)
 
     @staticmethod

@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-import time
 
 from bgpy.enums import Plane, Relationships
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -193,17 +192,15 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         if filtered and not spoofed_packet:
             return Outcomes.V_FILTERED_ON_PATH.value
 
-        sav_policy = self.scenario.sav_policy_asn_dict.get(as_obj.asn)
-        if sav_policy:
+        sav_policy = as_obj.sav_policy
+        if sav_policy is not None:
             validated = sav_policy.validate(
                 as_obj, source_prefix, prev_hop, self.engine, self.scenario
             )
             if validated:
                 outcome = Outcomes.FALSE_NEGATIVE.value if spoofed_packet else Outcomes.TRUE_NEGATIVE.value
-            elif not validated:
-                outcome = Outcomes.TRUE_POSITIVE.value if spoofed_packet else Outcomes.FALSE_POSITIVE.value            
             else:
-                raise ValueError("Packet did not receive an outcome?")
+                outcome = Outcomes.TRUE_POSITIVE.value if spoofed_packet else Outcomes.FALSE_POSITIVE.value
         # Not adopting SAV, no validation, forward packet
         else:
             outcome = Outcomes.FORWARD.value

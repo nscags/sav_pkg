@@ -5,9 +5,10 @@ from frozendict import frozendict
 
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 
-from sav_pkg.policies.sav.bar_sav import BAR_SAV
-from sav_pkg.policies.aspa import ASPAFullNoExport2Some
+from sav_pkg.simulation_engine.policies.sav.bar_sav import BAR_SAV
+from sav_pkg.simulation_engine.policies.aspa import ASPAFullNoExport2Some
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioConfig,
     SAVScenario,
@@ -20,6 +21,7 @@ from sav_pkg.utils.diagram import SAVDiagram
 desc = "ASPAFullNoExport2Some test"
 
 aspa_000 = EngineTestConfig(
+    SimulationEngineCls=SAVSimulationEngine,
     name="aspa_000",
     desc=desc,
     scenario_config=SAVScenarioConfig(

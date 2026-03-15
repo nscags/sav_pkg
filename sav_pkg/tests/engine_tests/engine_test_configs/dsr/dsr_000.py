@@ -1,5 +1,6 @@
 from bgpy.simulation_engine.policies import BGPFull
 from bgpy.tests.engine_tests import EngineTestConfig
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
@@ -9,7 +10,7 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.utils.diagram_dsr import SAVDiagramDSR
 from sav_pkg.enums import Prefixes
-from sav_pkg.policies.sav import EFP_A
+from sav_pkg.simulation_engine.policies.sav import EFP_A
 
 from sav_pkg.tests.engine_tests.engine_test_configs.as_graph_info import as_graph_info_009
 
@@ -17,6 +18,7 @@ from sav_pkg.tests.engine_tests.engine_test_configs.as_graph_info import as_grap
 desc = "Basic DSR Scenario test, example from BAR-SAV I-D. Expected false positive with EFP-A."
 
 dsr_000 = EngineTestConfig(
+    SimulationEngineCls=SAVSimulationEngine,
     name="dsr_000",
     desc=desc,
     scenario_config=SAVScenarioConfig(

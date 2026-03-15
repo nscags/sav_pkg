@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class FeasiblePathuRPF(BaseSAVPolicy):
     name: str = "Feasible-Path uRPF"
 
-    @staticmethod
     def validate(
+        self,
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",
@@ -23,7 +23,7 @@ class FeasiblePathuRPF(BaseSAVPolicy):
     ) -> bool:
         # FP-uRPF is applied to only customer and bilateral peer interfaces
         if prev_hop.asn not in (as_obj.customer_asns | as_obj.peer_asns):
-            return True 
+            return True
         else:
             return FeasiblePathuRPF._validate(as_obj, source_prefix, prev_hop, engine, scenario)
 

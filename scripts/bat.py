@@ -7,6 +7,7 @@ from frozendict import frozendict
 from datetime import date
 
 from bgpy.simulation_framework import Simulation
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 from bgpy.simulation_engine import BGPFull
 from bgpy.enums import ASGroups
 
@@ -18,7 +19,7 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.policies import (
+from sav_pkg.simulation_engine.policies import (
     BAR_SAV,
     ASPAFullNoExport2Some,
 )
@@ -32,6 +33,7 @@ def main():
         export_policy=ASPAFullNoExport2Some,
     )
     sim = Simulation(
+        SimulationEngineCls=SAVSimulationEngine,
         percent_adoptions = (
             0.0,
             0.1,

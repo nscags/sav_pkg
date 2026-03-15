@@ -9,7 +9,7 @@ from bgpy.simulation_engine.policies import ASPAFull
 from bgpy.enums import ASGroups
 
 from .sav_scenario import SAVScenario
-from sav_pkg.policies import ASPAFullNoExport2Some, BGPFullNoExport2Some
+from sav_pkg.simulation_engine.policies import ASPAFullNoExport2Some, BGPFullNoExport2Some
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import BaseSimulationEngine

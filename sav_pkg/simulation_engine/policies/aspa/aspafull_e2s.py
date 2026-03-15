@@ -1,17 +1,17 @@
 from typing import TYPE_CHECKING
 from dataclasses import replace
 
-from bgpy.simulation_engine import ASPA
+from bgpy.simulation_engine import ASPAFull
 from bgpy.enums import Relationships
 
-from sav_pkg.policies.bgp import BGPExport2Some
+from ..bgp import BGPFullExport2Some
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
+    
 
-
-class ASPAExport2Some(ASPA, BGPExport2Some):
-    name: str = "ASPA E2S"
+class ASPAFullExport2Some(ASPAFull, BGPFullExport2Some):
+    name: str = "ASPAFull E2S"
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when aspa is set"""

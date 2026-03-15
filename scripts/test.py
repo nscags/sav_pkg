@@ -3,6 +3,7 @@ from time import time
 import random
 
 from bgpy.simulation_framework import Simulation
+from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 from bgpy.simulation_engine import BGPFull
 from bgpy.enums import ASGroups
 
@@ -14,11 +15,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.policies.sav import (
+from sav_pkg.simulation_engine.policies.sav import (
     FeasiblePathuRPF
     # BAR_SAV,
 )
-from sav_pkg.policies.bgp import (
+from sav_pkg.simulation_engine.policies.bgp import (
     BGPFullExport2Some,
 )
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
@@ -32,6 +33,7 @@ def main():
         traffic_engineering_subcategory="export-to-some"
     )
     sim = Simulation(
+        SimulationEngineCls=SAVSimulationEngine,
         percent_adoptions = (
             0.0,
             0.1,

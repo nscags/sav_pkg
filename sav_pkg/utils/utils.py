@@ -9,7 +9,6 @@ from bgpy.simulation_engine import ROVFull
 from frozendict import frozendict
 
 from sav_pkg.enums import Interfaces, Outcomes
-from sav_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
 
 # from rov_collector import rov_collector_classes
 
@@ -25,8 +24,9 @@ if TYPE_CHECKING:
 
 def get_metric_keys(
     planes: list[Plane] | None = None,
-    as_groups: list[ASGroups] | None = None
-) -> list['MetricKey']:
+    as_groups: list[ASGroups] | None = None,
+):
+    from sav_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
     planes = planes or [Plane.DATA]
     as_groups = as_groups or [ASGroups.ALL_WOUT_IXPS]
 

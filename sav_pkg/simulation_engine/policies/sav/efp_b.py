@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class EFP_B(BaseSAVPolicy):
     name: str = "EFP-B"
 
-    @staticmethod
     def validate(
+        self,
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",
