@@ -99,14 +99,14 @@ class BAR_SAV(BaseSAVPolicy):
             # to j=(i-1).  Call the resulting set Z(i)."
             c_i = a_i.union(b_i)
 
-            for j in range(i):
+            for j in range(i-1):
                 c_i -= z_i[j - 1]
 
             z_i.append(c_i)
 
             # "If AS-set Z(i) is null, then set i_max = i - 1 and go to Step 9.
             # Else, go to Step 4."
-            if not z_i[i - 1]:
+            if not c_i: # Z(i) = c_i
                 i_max = i - 1
                 break
 
