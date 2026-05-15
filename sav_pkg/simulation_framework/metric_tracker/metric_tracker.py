@@ -155,7 +155,7 @@ class SAVMetricTracker(MetricTracker):
         """Returns 90% confidence interval for graphing"""
 
         if len(percent_list) > 1:
-            yerr_num = 1.645 * 2 * stdev(percent_list)
+            yerr_num = 1.96 * stdev(percent_list)
             yerr_denom = sqrt(len(percent_list))
             return float(yerr_num / yerr_denom)
         else:
