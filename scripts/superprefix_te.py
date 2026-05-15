@@ -190,11 +190,11 @@ def main():
         MetricTrackerCls=SAVMetricTracker,
         metric_keys=get_metric_keys(),
         as_graph_constructor_kwargs=frozendict(
-            {
-                "as_graph_collector_kwargs": frozendict({
-                        "dl_time": date(2025, 9, 1),
-                })
-            }
+            # {
+            #     "as_graph_collector_kwargs": frozendict({
+            #             "dl_time": date(2025, 9, 1),
+            #     })
+            # }
         )
     )
     sim.run()

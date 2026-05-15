@@ -27,6 +27,32 @@ class BAR_SAV(BaseSAVPolicy):
             return True
         else:
             return BAR_SAV._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+        
+    @staticmethod
+    def _validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ):
+        """
+        Validates incoming packets based on Refined Alg A defined in BAR SAV draft.
+
+        Internet draft procedure description:
+        https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/
+        """
+
+        _, q = BAR_SAV._get_as_prefix_set(
+            as_obj=as_obj,
+            source_prefix=source_prefix,
+            prev_hop=prev_hop,
+            engine=engine,
+            scenario=scenario
+        )
+
+        src_prefix = ipaddress.ip_network(source_prefix)
+        return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in q)
 
     @staticmethod
     def _get_as_prefix_set(
@@ -113,28 +139,3 @@ class BAR_SAV(BaseSAVPolicy):
 
         return d, q
 
-    @staticmethod
-    def _validate(
-        as_obj: "AS",
-        source_prefix: str,
-        prev_hop: "AS",
-        engine: "SimulationEngine",
-        scenario: "SAVScenario",
-    ):
-        """
-        Validates incoming packets based on Refined Alg A defined in BAR SAV draft.
-
-        Internet draft procedure description:
-        https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/
-        """
-
-        _, q = BAR_SAV._get_as_prefix_set(
-            as_obj=as_obj,
-            source_prefix=source_prefix,
-            prev_hop=prev_hop,
-            engine=engine,
-            scenario=scenario
-        )
-
-        src_prefix = ipaddress.ip_network(source_prefix)
-        return any(src_prefix.subnet_of(ipaddress.ip_network(prefix)) for prefix in q)

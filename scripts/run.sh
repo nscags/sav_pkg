@@ -14,7 +14,7 @@ source ~/sav/venv/bin/activate
 
 # Set Job Completion Index
 export JOB_COMPLETION_INDEX=$SLURM_ARRAY_TASK_ID
-export PYTHONHASHSEED=$JOB_COMPLETION_INDEX
+export PYTHONHASHSEED=$SLURM_ARRAY_TASK_ID
 # PYTHONHASHSEED=$SLURM_TASK_ID
 
 # Run the simulation

@@ -157,9 +157,9 @@ class BGPExport2Some(BGP):
                         "7.7.0.0/16", # superprefixes
                         "2.1.0.0/16",
                         "2.2.0.0/16",
-                        "8.7.7.0/24", # separate prefixes                                                                                                            
-                        "3.1.0.0/24",
-                        "3.2.0.0/24",
+                        "7.8.0.0/24", # separate prefixes                                                                                                            
+                        "2.4.0.0/24",
+                        "2.5.0.0/24",
                     ]
                 ):
                     # avg = 3
@@ -171,7 +171,7 @@ class BGPExport2Some(BGP):
                 self._process_outgoing_ann(neighbor, other_ann2, propagate_to, send_rels)
 
     def _get_super_sep_prefix_ann(self, ann: Ann, weight):
-        # VICTIM: str = "7.7.7.0/24"
+        # VICTIM: str = "7.7.0.0/24"
         # ANYCAST_SERVER: str = "2.1.0.0/24"
         # EDGE_SERVER: str = "2.2.0.0/24"
         ip, mask = ann.prefix.split('/')
@@ -186,10 +186,12 @@ class BGPExport2Some(BGP):
             mask = '16'
         else:
             # Other prefix case: increment 1st octet by 1
-            # VICTIM: str = "8.7.7.0/24"
-            # ANYCAST_SERVER: str = "3.1.0.0/24"
-            # EDGE_SERVER: str = "3.2.0.0/24"
-            octets[0] = str(int(octets[0]) + 1)
+            # Change the mast to 23 for debugging purposes
+            # VICTIM: str = "7.8.0.0/23"
+            # ANYCAST_SERVER: str = "2.4.0.0/23"
+            # EDGE_SERVER: str = "2.5.0.0/23"
+            octets[0] = str(int(octets[1]) + 3)
+            mask = '23'
 
         new_prefix = '.'.join(octets) + '/' + mask
         return ann.copy({"prefix": new_prefix})

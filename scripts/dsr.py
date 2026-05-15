@@ -19,7 +19,7 @@ from sav_pkg.simulation_framework.scenarios import (
 )
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer  
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
-from sav_pkg.simulation_engine.policies.sav import (
+from sav_pkg.simulation_engine.policies import (
     StrictuRPF,
     FeasiblePathuRPF,
     FeasiblePathuRPF_OTC,
@@ -29,12 +29,11 @@ from sav_pkg.simulation_engine.policies.sav import (
     EFP_B,
     BAR_SAV,
     BAR_SAV_wBSPI,
-)
-from sav_pkg.simulation_engine.policies.bgp import (
     BGPExport2Some,
     BGPFullExport2Some,
+    ASPAFullExport2Some,
 )
-from sav_pkg.enums import Prefixes, Interfaces
+from sav_pkg.enums import Prefixes
 from sav_pkg.utils.utils import get_metric_keys, get_traffic_engineering_behavior_asn_cls_dict
 
 
@@ -46,6 +45,9 @@ def main():
     )
     bgpfull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
         export_policy=BGPFullExport2Some,
+    )
+    aspafull_e2s_asn_cls_dict = get_traffic_engineering_behavior_asn_cls_dict(
+        export_policy=ASPAFullExport2Some,
     )
     sim = Simulation(
         SimulationEngineCls=SAVSimulationEngine,
@@ -172,7 +174,7 @@ def main():
                 source_prefix_roa=True,
                 anycast_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                hardcoded_asn_cls_dict=aspafull_e2s_asn_cls_dict,
                 scenario_label="bar_sav_roa",
                 ignore_disconnections=False,
             ),
@@ -199,7 +201,7 @@ def main():
                 source_prefix_roa=True,
                 anycast_server_subcategory_attr=ASGroups.MULTIHOMED.value,
                 edge_server_subcategory_attr=ASGroups.MULTIHOMED.value,
-                hardcoded_asn_cls_dict=bgpfull_e2s_asn_cls_dict,
+                hardcoded_asn_cls_dict=aspafull_e2s_asn_cls_dict,
                 scenario_label="bar_sav_full_roa",
                 ignore_disconnections=False,
             ),

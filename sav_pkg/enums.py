@@ -22,8 +22,8 @@ class Outcomes(YamlAbleEnum):
 class Prefixes(YamlAbleEnum):
     """Default Prefixes"""
 
-    VICTIM: str = "7.7.7.0/24"
-    ATTACKER: str = "6.6.6.0/24"
+    VICTIM: str = "7.7.0.0/24"
+    ATTACKER: str = "6.6.0.0/24"
     REFLECTOR: str = "1.2.0.0/16"
 
     ANYCAST_SERVER: str = "2.1.0.0/24"
