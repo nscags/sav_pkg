@@ -4,7 +4,7 @@ import random
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from bgpy.enums import ASGroups, Plane
+from bgpy.shared.enums import ASGroups, Plane
 from bgpy.simulation_engine import ROVFull
 from frozendict import frozendict
 

@@ -2,12 +2,12 @@ import math
 import random
 from typing import TYPE_CHECKING
 
-from bgpy.enums import (
+from bgpy.shared.enums import (
     SpecialPercentAdoptions,
 )
 from bgpy.simulation_engine.policies import ASPAFull
 from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.enums import ASGroups
+from bgpy.shared.enums import ASGroups
 
 from .sav_scenario import SAVScenario
 from sav_pkg.simulation_engine.policies import ASPAFullNoExport2Some, BGPFullNoExport2Some
@@ -18,6 +18,26 @@ if TYPE_CHECKING:
 
 
 class SAVScenarioBATASPA(SAVScenario):
+
+    def __init__(self, *, scenario_config, percent_adoption=0, engine=None,
+                 attacker_asns=None, victim_asns=None, adopting_asns=None, reflector_asns=None):
+        super().__init__(
+            scenario_config=scenario_config,
+            percent_adoption=percent_adoption,
+            engine=engine,
+            attacker_asns=attacker_asns,
+            victim_asns=victim_asns,
+            adopting_asns=adopting_asns,
+            reflector_asns=reflector_asns,
+        )
+        self._bat_asn_cls_dict: dict = (
+            self._get_randomized_non_default_asn_cls_dict(engine) if engine is not None else {}
+        )
+
+    def get_policy_cls(self, as_obj) -> type["Policy"]:
+        if cls := self._bat_asn_cls_dict.get(as_obj.asn):
+            return cls
+        return super().get_policy_cls(as_obj)
 
     def _get_randomized_non_default_asn_cls_dict(
         self,

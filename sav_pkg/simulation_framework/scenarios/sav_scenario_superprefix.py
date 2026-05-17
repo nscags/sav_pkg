@@ -2,7 +2,7 @@ from .sav_scenario import SAVScenario
 
 from typing import TYPE_CHECKING, Optional
 
-from bgpy.enums import (
+from bgpy.shared.enums import (
     Timestamps,
 )
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -18,7 +18,6 @@ class SAVScenarioSuperprefix(SAVScenario):
     def _get_announcements(
         self,
         engine: Optional[BaseSimulationEngine] = None,
-        prev_scenario: Optional["SAVScenario"] = None,
     ) -> tuple["Ann", ...]:
         """
         All victims, attackers, and reflectors announce a unique prefix

@@ -1,3 +1,4 @@
+import random
 import subprocess
 import sys
 from pathlib import Path
@@ -45,6 +46,13 @@ def pytest_sessionfinish(session, exitstatus):
         # If there's a better workaround for this, I don't know it.
         except Exception as e:
             print(f"Diagram aggregator failed, typically caused by a test failure {e}")
+
+
+@pytest.fixture(autouse=True)
+def fixed_random_seed():
+    """Seed random before each test for reproducible stochastic policies (e.g. BGPExport2Some)."""
+    random.seed(0)
+    yield
 
 
 @pytest.fixture(scope="session")

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from dataclasses import replace
 
 from bgpy.simulation_engine import ASPA
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 from ..bgp import BGPExport2Some
 

@@ -29,7 +29,7 @@ efp_a_001 = EngineTestConfig(
         override_victim_asns=frozenset({100}),
         override_reflector_asns=frozenset({555}),
         override_sav_asns=frozenset({555}),
-        override_non_default_asn_cls_dict=frozendict(
+        hardcoded_asn_cls_dict=frozendict(
             {
                 100: BGPFullExport2Some,
             }
@@ -39,5 +39,5 @@ efp_a_001 = EngineTestConfig(
     as_graph_info=as_graph_info_003,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=SAVMetricTracker,
+    GraphDataAggregatorCls=SAVMetricTracker,
 )

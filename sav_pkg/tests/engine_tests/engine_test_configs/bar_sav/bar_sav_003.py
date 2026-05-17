@@ -14,7 +14,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
 
 
@@ -58,5 +58,5 @@ bar_sav_003 = EngineTestConfig(
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=MetricTracker,
+    GraphDataAggregatorCls=SAVMetricTracker,
 )

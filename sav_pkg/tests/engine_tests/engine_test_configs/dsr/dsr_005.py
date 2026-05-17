@@ -42,5 +42,5 @@ dsr_005 = EngineTestConfig(
     as_graph_info=as_graph_info_012,
     DiagramCls=SAVDiagramDSR,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=SAVMetricTracker,
+    GraphDataAggregatorCls=SAVMetricTracker,
 )

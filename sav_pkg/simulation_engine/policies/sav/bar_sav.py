@@ -118,9 +118,9 @@ class BAR_SAV(BaseSAVPolicy):
         # D. Form the union of the sets of prefixes listed in the
         # selected ROAs. Name this union set of prefixes as Pfx-set Q1."
         q1 = set()
-        for roa in scenario.roa_infos:
+        for roa in scenario.roas:
             if roa.origin in d:
-                q1.add(roa.prefix)
+                q1.add(str(roa.prefix))
 
         # Using the routes in Adj-RIBs-In of all interfaces, create a list
         # of all prefixes originated by any ASN in AS-set D. Name this

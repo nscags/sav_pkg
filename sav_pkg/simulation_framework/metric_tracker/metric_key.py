@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 # from typing import Optional
-from bgpy.enums import ASGroups, Plane
+from bgpy.shared.enums import ASGroups, Plane
 
 from sav_pkg.enums import Outcomes
 

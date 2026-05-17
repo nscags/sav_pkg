@@ -96,5 +96,5 @@ bgp_e2s_000 = EngineTestConfig(
     as_graph_info=as_graph_info,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=SAVMetricTracker,
+    GraphDataAggregatorCls=SAVMetricTracker,
 )

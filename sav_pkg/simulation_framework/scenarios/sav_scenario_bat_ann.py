@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_engine.announcement import Announcement as Ann
-from bgpy.enums import Timestamps
+from bgpy.shared.enums import Timestamps
 
 from sav_pkg.enums import Prefixes
 from sav_pkg.simulation_engine.policies.bgp.bgpfull_noexport2some import BGPFullNoExport2Some
@@ -19,7 +19,6 @@ class SAVScenarioBATAnn(SAVScenarioBAT):
     def _get_announcements(
         self,
         engine: Optional[BaseSimulationEngine] = None,
-        prev_scenario: Optional["SAVScenarioBATAnn"] = None,
     ) -> tuple["Ann", ...]:
         """
         All victims, attackers, and reflectors announce a unique prefix
@@ -45,7 +44,7 @@ class SAVScenarioBATAnn(SAVScenarioBAT):
             # get set of providers of no-e2s ASes
             no_e2s_providers = set()
             for asn, as_obj in engine.as_graph.as_dict.items():
-                if self.non_default_asn_cls_dict.get(asn) == ASPAFullNoExport2Some:
+                if self._bat_asn_cls_dict.get(asn) == ASPAFullNoExport2Some:
                     no_e2s_providers.update(as_obj.provider_asns)
 
             # each provider of a no-e2s AS announces their own prefix

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import ASGroups
+from bgpy.shared.enums import ASGroups
 
 from .base_sav_policy import BaseSAVPolicy
 from .efp_b import EFP_B

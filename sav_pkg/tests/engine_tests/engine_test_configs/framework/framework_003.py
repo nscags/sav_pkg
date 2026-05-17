@@ -33,5 +33,5 @@ framework_003 = EngineTestConfig(
     as_graph_info=as_graph_info_000,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=SAVMetricTracker,
+    GraphDataAggregatorCls=SAVMetricTracker,
 )

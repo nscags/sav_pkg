@@ -33,6 +33,7 @@ class SAVDiagram(Diagram):
         static_order: bool = False,
         path: Path | None = None,
         view: bool = False,
+        dpi: int = 300,
     ) -> None:
         self._add_legend(traceback, scenario)
         display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
@@ -123,12 +124,12 @@ class SAVDiagram(Diagram):
                 <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
               </TR>
               """
-        for roa_info in scenario.roa_infos:
+        for roa in scenario.roas:
             html += f"""
               <TR>
-                <TD>{roa_info.prefix}</TD>
-                <TD>{roa_info.origin}</TD>
-                <TD>{roa_info.max_length}</TD>
+                <TD>{roa.prefix}</TD>
+                <TD>{roa.origin}</TD>
+                <TD>{roa.max_length}</TD>
               </TR>"""
         html += """</TABLE>>"""
 

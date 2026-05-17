@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from bgpy.enums import ASGroups
+from bgpy.shared.enums import ASGroups
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 from frozendict import frozendict
 

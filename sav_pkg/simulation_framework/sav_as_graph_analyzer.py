@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Plane, Relationships
+from bgpy.shared.enums import Plane, Relationships
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import BaseASGraphAnalyzer
 

@@ -1,5 +1,5 @@
 from bgpy.simulation_engine.policies.bgp import BGP
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 
 class BGPNoExport2Some(BGP):

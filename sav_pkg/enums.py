@@ -1,4 +1,4 @@
-from bgpy.enums import YamlAbleEnum
+from bgpy.shared.enums import YamlAbleEnum
 
 
 class Outcomes(YamlAbleEnum):

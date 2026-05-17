@@ -9,7 +9,7 @@ from datetime import date
 from bgpy.simulation_framework import Simulation
 from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
 from bgpy.simulation_engine import BGP, BGPFull
-from bgpy.enums import ASGroups
+from bgpy.shared.enums import ASGroups
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -170,8 +170,7 @@ def main():
         num_trials=1000,
         parse_cpus=40,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-        MetricTrackerCls=SAVMetricTracker,
-        metric_keys=get_metric_keys(),
+        GraphDataAggregatorCls=SAVMetricTracker,
         as_graph_constructor_kwargs=frozendict(
             {
                 "as_graph_collector_kwargs": frozendict({

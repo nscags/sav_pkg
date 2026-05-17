@@ -101,9 +101,10 @@ class BAR_SAV_PI(BaseSAVPolicy):
 
         #   4.  Further modify Pfx-set Qu to keep only the prefixes that have all
         #       their allowed origin ASes (per ROAs) contained within AS-set Du.
-        for roa in scenario.roa_infos:
-            if roa.prefix in qu and roa.origin not in du:
-                qu.remove(roa.prefix)
+        for roa in scenario.roas:
+            roa_prefix_str = str(roa.prefix)
+            if roa_prefix_str in qu and roa.origin not in du:
+                qu.remove(roa_prefix_str)
 
         #   5.  Further modify Pfx-set Qu to keep only the prefixes with all
         #       feasible routes from their respective origin ASes to the local AS

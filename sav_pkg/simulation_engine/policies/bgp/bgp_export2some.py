@@ -1,6 +1,6 @@
 import random
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine.policies.bgp import BGP
 

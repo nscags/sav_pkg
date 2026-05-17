@@ -1,41 +1,38 @@
 import math
 import random
+from ipaddress import ip_network
 from typing import TYPE_CHECKING, Optional
-from frozendict import frozendict
 
-from bgpy.enums import (
+from frozendict import frozendict
+from roa_checker import ROA
+
+from bgpy.shared.enums import (
     SpecialPercentAdoptions,
     Timestamps,
 )
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 from bgpy.simulation_framework.scenarios import Scenario
-from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import noop
-from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
-from roa_checker import ROA
 
 from sav_pkg.enums import Prefixes
 from sav_pkg.simulation_framework.scenarios.sav_scenario_config import SAVScenarioConfig
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
-    
+
 
 class SAVScenario(Scenario):
-    
+
     def __init__(
         self,
         *,
         scenario_config: SAVScenarioConfig,
         percent_adoption: float | SpecialPercentAdoptions = 0,
         engine: BaseSimulationEngine | None = None,
-        prev_scenario: Optional["SAVScenario"] = None,
-        preprocess_anns_func=noop,
+        attacker_asns: frozenset[int] | None = None,
+        victim_asns: frozenset[int] | None = None,
+        adopting_asns: frozenset[int] | None = None,
+        reflector_asns: frozenset[int] | None = None,
     ):
-        """inits attrs
-
-        Any kwarg prefixed with default is only required for the test suite/YAML
-        """
-        # Config's ScenarioCls must be the same as instantiated Scenario
         assert scenario_config.ScenarioCls == self.__class__, (
             "The config's scenario class is "
             f"{scenario_config.ScenarioCls.__name__}, but the scenario used is "
@@ -46,60 +43,53 @@ class SAVScenario(Scenario):
         self.percent_adoption: float | SpecialPercentAdoptions = percent_adoption
 
         self.attacker_asns: frozenset[int] = self._get_attacker_asns(
-            scenario_config.override_attacker_asns, engine, prev_scenario
+            scenario_config.override_attacker_asns, attacker_asns, engine
         )
-
         self.victim_asns: frozenset[int] = self._get_victim_asns(
-            scenario_config.override_victim_asns, engine, prev_scenario
+            scenario_config.override_victim_asns, victim_asns, engine
         )
-
         self.reflector_asns: frozenset[int] = self._get_reflector_asns(
-            scenario_config.override_reflector_asns, engine, prev_scenario
+            scenario_config.override_reflector_asns, reflector_asns, engine
         )
 
-        self.sav_policy_asn_dict = self._get_sav_policies_asn_dict(engine)
-
-        self.non_default_asn_cls_dict: frozendict[
-            int, type[Policy]
-        ] = self._get_non_default_asn_cls_dict(
-            scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
+        # adopting_asns = SAV adopters (used by BGPy's reuse system across scenario configs)
+        self.adopting_asns: frozenset[int] = self._get_sav_adopting_asns(
+            adopting_asns, engine
         )
+        self.sav_policy_asn_dict = self._build_sav_policy_asn_dict()
 
-        if self.scenario_config.override_announcements:
-            self.announcements: tuple[
-                "Ann", ...
-            ] = self.scenario_config.override_announcements
-            self.roa_infos: tuple[ROA, ...] = self.scenario_config.override_roa_infos
+        # Control-plane adopters (e.g. ASPA) — separate from SAV adoption
+        self._ctrl_plane_adopters: frozenset[int] = self._get_ctrl_plane_adopters(engine)
+
+        if scenario_config.override_announcements is not None:
+            self.announcements: tuple["Ann", ...] = scenario_config.override_announcements
+            self.roas: tuple[ROA, ...] = scenario_config.override_roas or ()
         else:
-            anns = self._get_announcements(engine=engine, prev_scenario=prev_scenario)
-            self.roa_infos = self._get_roa_infos(
-                announcements=anns, engine=engine, prev_scenario=prev_scenario
-            )
-            anns = self._add_roa_info_to_anns(
-                announcements=anns, engine=engine, prev_scenario=prev_scenario
-            )
-            self.announcements = preprocess_anns_func(self, anns, engine, prev_scenario)
+            self.announcements = self._get_announcements(engine=engine)
+            self.roas = self._get_roas(announcements=self.announcements, engine=engine)
 
-        self.ordered_prefix_subprefix_dict: dict[
-            str, list[str]
-        ] = self._get_ordered_prefix_subprefix_dict()
+        self._reset_and_add_roas_to_roa_checker()
 
-        self.policy_classes_used: frozenset[type[Policy]] = frozenset()
-
-    def setup_engine(
-        self, engine: BaseSimulationEngine, prev_scenario=None
-    ) -> None:
-        """Sets up engine and assigns SAV policies to ASes"""
-
-        self.policy_classes_used = engine.setup(
-            self.announcements,
-            self.scenario_config.BasePolicyCls,
-            self.non_default_asn_cls_dict,
-            prev_scenario,
-            self.attacker_asns,
-            self.scenario_config.AttackerBasePolicyCls,
-            self.sav_policy_asn_dict,
+        self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (
+            self._get_ordered_prefix_subprefix_dict()
         )
+
+    #####################
+    # Policy assignment #
+    #####################
+
+    def get_policy_cls(self, as_obj) -> type[Policy]:
+        """Returns control-plane policy class for a given AS"""
+
+        asn = as_obj.asn
+        if self.scenario_config.AttackerBasePolicyCls and asn in self.attacker_asns:
+            return self.scenario_config.AttackerBasePolicyCls
+        elif Cls := self.scenario_config.hardcoded_asn_cls_dict.get(asn):
+            return Cls
+        elif asn in self._ctrl_plane_adopters or asn in self._default_adopters:
+            return self.scenario_config.AdoptPolicyCls
+        else:
+            return self.scenario_config.BasePolicyCls
 
     ###############
     # Get Victims #
@@ -109,14 +99,12 @@ class SAVScenario(Scenario):
         self,
         engine,
         percent_adoption,
-        prev_scenario
     ) -> frozenset[int]:
-        # victims are selected either from subcategory or from hardcoded_asns
         group_asns = engine.as_graph.asn_groups[self.scenario_config.victim_subcategory_attr]
         hardcoded_asns = self.scenario_config.hardcoded_asn_cls_dict.keys()
         possible_asns = frozenset(set(hardcoded_asns) & set(group_asns))
         if not possible_asns:
-            possible_asns = super()._get_possible_victim_asns(engine, percent_adoption, prev_scenario)
+            possible_asns = super()._get_possible_victim_asns(engine, percent_adoption)
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
@@ -129,55 +117,44 @@ class SAVScenario(Scenario):
     def _get_reflector_asns(
         self,
         override_reflector_asns: frozenset[int] | None,
+        reflector_asns: frozenset[int] | None,
         engine: BaseSimulationEngine | None,
-        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
-        """Returns reflector ASN at random"""
+        """Returns reflector ASNs"""
 
-        # This is coming from YAML, do not recalculate
         if override_reflector_asns is not None:
-            reflector_asns = override_reflector_asns
-        # Reuse the reflectors from the last scenario for comparability
-        elif prev_scenario:
-            reflector_asns = prev_scenario.reflector_asns
-        # This is being initialized for the first time
+            result = override_reflector_asns
+        elif (
+            reflector_asns is not None
+            and len(reflector_asns) == self.scenario_config.num_reflectors
+        ):
+            result = reflector_asns
         else:
             assert engine
-            possible_reflector_asns = self._get_possible_reflector_asns(
-                engine, self.percent_adoption, prev_scenario
-            )
-            # https://stackoverflow.com/a/15837796/8903959
-            reflector_asns = frozenset(
-                random.sample(
-                    tuple(possible_reflector_asns), self.scenario_config.num_reflectors
-                )
+            possible = self._get_possible_reflector_asns(engine, self.percent_adoption)
+            result = frozenset(
+                random.sample(tuple(possible), self.scenario_config.num_reflectors)
             )
 
         err = "Number of reflectors is different from reflectors length"
-        assert len(reflector_asns) == self.scenario_config.num_reflectors, err
-
-        return reflector_asns
+        assert len(result) == self.scenario_config.num_reflectors, err
+        return result
 
     def _get_possible_reflector_asns(
         self,
         engine: BaseSimulationEngine,
         percent_adoption: float | SpecialPercentAdoptions,
-        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
-        """Returns possible reflectors ASNs, defaulted from config"""
-
-        # NOTE: may change to combine stubs/mh, input_clique, etc AS groups
-        #       this filters IXPs, which seems to be done for adoption as well
+        """Returns possible reflector ASNs"""
 
         possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.reflector_subcategory_attr
         ]
+        possible_asns = possible_asns.difference(self.attacker_asns)
+        possible_asns = possible_asns.difference(self.victim_asns)
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, frozenset), err
-        # Remove attackers and victims from possible reflectors
-        possible_asns = possible_asns.difference(self.attacker_asns)
-        possible_asns = possible_asns.difference(self.victim_asns)
         return possible_asns
 
     #####################
@@ -187,16 +164,9 @@ class SAVScenario(Scenario):
     def _get_announcements(
         self,
         engine: Optional[BaseSimulationEngine] = None,
-        prev_scenario: Optional["SAVScenario"] = None,
     ) -> tuple["Ann", ...]:
-        """
-        All victims, attackers, and reflectors announce a unique prefix
-        """
+        """All victims, attackers, and reflectors announce a unique prefix"""
 
-        # NOTE: this logic doesn't allow for multiple victims/attackers since
-        #       all victim/attacker ASes will originate the same prefix
-        #       In our simulations we use 1 victim/attacker pair so this
-        #       functionality is unnecessary, may need to add in future
         anns = list()
         for victim_asn in self.victim_asns:
             anns.append(
@@ -207,13 +177,6 @@ class SAVScenario(Scenario):
                 )
             )
             if self.scenario_config.victim_providers_ann:
-                # Providers of the victim announce their own prefix. This is because 
-                # policies such as BAR-SAV use all announcement received to build 
-                # a customer cone. In the case of no-export to some, the providers of
-                # the victim announcing routes allows the verifier deploying BAR-SAV to
-                # reconstuct the customer cone up to the provider of the vicitm AS. This
-                # allow a victim AS to be included in the verifiers customer cone if they
-                # adopt ASPA. This better simulates the impact when only the origin adopting ASPA. 
                 victim_as_obj = engine.as_graph.as_dict[victim_asn]
                 for i, provider_asn in enumerate(victim_as_obj.provider_asns):
                     anns.append(
@@ -233,8 +196,6 @@ class SAVScenario(Scenario):
                 )
             )
 
-        # NOTE: with this logic, we are limited to 256 reflectors
-        #       For our simulations we typically run 5-10 reflectors for efficiency
         for i, reflector_asn in enumerate(self.reflector_asns):
             anns.append(
                 self.scenario_config.AnnCls(
@@ -245,146 +206,132 @@ class SAVScenario(Scenario):
             )
 
         return tuple(anns)
-    
-    #####################
-    # Get Adopting ASNs #
-    #####################
 
-    def _get_randomized_non_default_asn_cls_dict(
+    ################
+    # Get ROA Info #
+    ################
+
+    def _get_roas(
         self,
-        engine: "BaseSimulationEngine",
-    ) -> dict[int, type["Policy"]]:
-        """Get adopting ASNs and non default ASNs
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional[BaseSimulationEngine] = None,
+    ) -> tuple[ROA, ...]:
+        """Returns a tuple of ROAs"""
 
-        By default, to get even adoption, adopt in each of the three
-        subcategories
-        """
-
-        # Get the asn_cls_dict without randomized adoption
-        asn_cls_dict = dict(self.scenario_config.hardcoded_asn_cls_dict)
-        for asn in self._default_adopters:
-            asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
-
-        # Randomly adopt in all three subcategories
-        for subcategory in self.scenario_config.adoption_subcategory_attrs:
-            asns = engine.as_graph.asn_groups[subcategory]
-            
-            # Remove ASes that are already pre-set
-            # Ex: Attacker and victim
-            # Ex: ROV Nodes (in certain situations)
-            possible_adopters = asns.difference(self._preset_asns)
-
-            # adding this for now
-            # we do not use control plane policies at this moments
-            # can/will change later
-            # for asn in possible_adopters:
-            #     asn_cls_dict[asn] = self.scenario_config.BasePolicyCls
-
-            # Get how many ASes should be adopting
-
-            # Round for the start and end of the graph
-            # (if 0 ASes would be adopting, have 1 as adopt)
-            # (If all ASes would be adopting, have all -1 adopt)
-            # This was a feature request, but it's not supported
-            if self.scenario_config.ctrl_plane_percent_adoption == SpecialPercentAdoptions.ONLY_ONE:
-                k = 1
-            elif self.scenario_config.ctrl_plane_percent_adoption == SpecialPercentAdoptions.ALL_BUT_ONE:
-                k = len(possible_adopters) - 1
-            # Really used just for testing
-            elif self.scenario_config.ctrl_plane_percent_adoption == 0:
-                k = 0
-            else:
-                err = f"{self.scenario_config.ctrl_plane_percent_adoption}"
-                assert isinstance(self.scenario_config.ctrl_plane_percent_adoption, float), err
-                k = math.ceil(len(possible_adopters) * self.scenario_config.ctrl_plane_percent_adoption)
-
-            # https://stackoverflow.com/a/15837796/8903959
-            possible_adopters_tup = tuple(possible_adopters)
-            try:
-                for asn in random.sample(possible_adopters_tup, k):
-                    asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
-            except ValueError:
-                raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
-        return asn_cls_dict
-
-    #########################
-    # Get SAV Adopting ASNs #
-    #########################
-
-    def _get_sav_policies_asn_dict(self, engine):
-        sav_policy_asn_dict = dict()
-
-        # Override SAV asns
-        if self.scenario_config.override_sav_asns is not None:
-            for asn in self.scenario_config.override_sav_asns:
-                sav_policy_asn_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+        if self.scenario_config.source_prefix_roa:
+            err = "Fix the roa_origins of the announcements for multiple victims"
+            assert len(self.victim_asns) == 1, err
+            roa_origin: int = next(iter(self.victim_asns))
+            return (ROA(prefix=ip_network(self.scenario_config.source_prefix), origin=roa_origin),)
         else:
-            sav_policy_asn_dict = self._get_randomized_sav_asn_dict(engine)
+            return ()
 
-        return frozendict(sav_policy_asn_dict)
+    #####################
+    # Get SAV Adopting ASNs #
+    #####################
 
-    def _get_randomized_sav_asn_dict(
+    def _get_sav_adopting_asns(
+        self,
+        adopting_asns: frozenset[int] | None,
+        engine: BaseSimulationEngine | None,
+    ) -> frozenset[int]:
+        """Returns the set of randomly-sampled SAV adopters (excludes hardcoded/default)"""
+
+        if self.scenario_config.override_sav_asns is not None:
+            return frozenset(self.scenario_config.override_sav_asns)
+        elif adopting_asns is not None:
+            return adopting_asns
+        elif engine is None:
+            return frozenset()
+        else:
+            return self._get_randomized_sav_adopters(engine)
+
+    def _get_randomized_sav_adopters(
         self,
         engine: BaseSimulationEngine,
-    ):
-        """Get adopting ASNs and non default ASNs
+    ) -> frozenset[int]:
+        """Randomly samples SAV adopters across adoption subcategories"""
 
-        By default, to get even adoption, adopt in each of the three
-        subcategories
-        """
-
-        # Get the asn_cls_dict without randomized adoption
-        asn_sav_cls_dict = dict(self.scenario_config.hardcoded_asn_sav_dict)
-        for asn in self._default_sav_adopters:
-            asn_sav_cls_dict[asn] = self.scenario_config.BaseSAVPolicyCls
-
-        # Randomly adopt in all three subcategories
+        adopters: set[int] = set()
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
             asns = engine.as_graph.asn_groups[subcategory]
-            # Remove ASes that are already pre-set
-            # Ex: Attacker and victim
-            # Ex: ROV Nodes (in certain situations)
-            possible_adopters = asns.difference(self._preset_sav_asns)
+            possible = asns.difference(self._preset_sav_asns)
 
-            # SAV policies work best close to the edge
-            # Attacker can choose to be customer of non SAV-adopting AS
-            attacker_provider_asns = set()
             if self.scenario_config.attacker_providers_non_adopters:
+                attacker_provider_asns: set[int] = set()
                 for attacker_asn in self.attacker_asns:
                     attacker_as_obj = engine.as_graph.as_dict[attacker_asn]
                     attacker_provider_asns.update(attacker_as_obj.provider_asns)
-            possible_adopters = frozenset(possible_adopters - attacker_provider_asns)
+                possible = frozenset(possible - attacker_provider_asns)
 
-            # Get how many ASes should be adopting
-
-            # Round for the start and end of the graph
-            # (if 0 ASes would be adopting, have 1 as adopt)
-            # (If all ASes would be adopting, have all -1 adopt)
-            # This was a feature request, but it's not supported
             if self.percent_adoption == SpecialPercentAdoptions.ONLY_ONE:
                 k = 1
             elif self.percent_adoption == SpecialPercentAdoptions.ALL_BUT_ONE:
-                k = len(possible_adopters) - 1
-            # Really used just for testing
+                k = len(possible) - 1
             elif self.percent_adoption == 0:
                 k = 0
             else:
-                err = f"{self.percent_adoption}"
-                assert isinstance(self.percent_adoption, float), err
-                k = math.ceil(len(possible_adopters) * self.percent_adoption)
+                assert isinstance(self.percent_adoption, float), f"{self.percent_adoption}"
+                k = math.ceil(len(possible) * self.percent_adoption)
 
-            # https://stackoverflow.com/a/15837796/8903959
-            possible_adopters_tup = tuple(possible_adopters)
             try:
-                for asn in random.sample(possible_adopters_tup, k):
-                    asn_sav_cls_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+                adopters.update(random.sample(tuple(possible), k))
             except ValueError:
-                raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
-        return asn_sav_cls_dict
-    
+                raise ValueError(f"{k} can't be sampled from {len(possible)}")
+        return frozenset(adopters)
+
+    def _build_sav_policy_asn_dict(self) -> frozendict:
+        """Builds sav_policy_asn_dict from hardcoded, default, and randomized adopters"""
+
+        sav_dict: dict = dict(self.scenario_config.hardcoded_asn_sav_dict)
+        for asn in self._default_sav_adopters:
+            sav_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+        for asn in self.adopting_asns:
+            if asn not in sav_dict:
+                sav_dict[asn] = self.scenario_config.BaseSAVPolicyCls
+        return frozendict(sav_dict)
+
+    ###########################
+    # Get ctrl-plane adopters #
+    ###########################
+
+    def _get_ctrl_plane_adopters(
+        self,
+        engine: BaseSimulationEngine | None,
+    ) -> frozenset[int]:
+        """Randomly samples control-plane (e.g. ASPA) adopters"""
+
+        pa = self.scenario_config.ctrl_plane_percent_adoption
+        if engine is None or pa == 0:
+            return frozenset()
+
+        adopters: set[int] = set()
+        for subcategory in self.scenario_config.adoption_subcategory_attrs:
+            asns = engine.as_graph.asn_groups[subcategory]
+            possible = asns.difference(self._preset_asns)
+
+            if pa == SpecialPercentAdoptions.ONLY_ONE:
+                k = 1
+            elif pa == SpecialPercentAdoptions.ALL_BUT_ONE:
+                k = len(possible) - 1
+            else:
+                assert isinstance(pa, float), f"{pa}"
+                k = math.ceil(len(possible) * pa)
+
+            try:
+                adopters.update(random.sample(tuple(possible), k))
+            except ValueError:
+                raise ValueError(f"{k} can't be sampled from {len(possible)}")
+        return frozenset(adopters)
+
+    ####################
+    # Preset ASN props #
+    ####################
+
     @property
     def _default_adopters(self) -> frozenset[int]:
-        """Toggle if victims adopt by defualt"""
+        """Victims adopt control-plane policy by default if configured"""
 
         if self.scenario_config.victim_default_adopters:
             return self.victim_asns
@@ -392,8 +339,12 @@ class SAVScenario(Scenario):
             return frozenset()
 
     @property
+    def _default_non_adopters(self) -> frozenset[int]:
+        return self.attacker_asns
+
+    @property
     def _default_sav_adopters(self) -> frozenset[int]:
-        """Reflectors adopt by default if set in Scenario Config"""
+        """Reflectors adopt SAV policy by default if configured"""
 
         if self.scenario_config.reflector_default_adopters:
             return self.reflector_asns
@@ -401,37 +352,24 @@ class SAVScenario(Scenario):
             return frozenset()
 
     @property
-    def _preset_sav_asns(self) -> frozenset[int]:
-        """ASNs that have a preset adoption policy"""
+    def _preset_asns(self) -> frozenset[int]:
+        """ASNs excluded from randomized ctrl-plane adoption"""
 
-        # Returns the union of default adopters and non adopters
+        hardcoded_asns = set(self.scenario_config.hardcoded_asn_cls_dict)
+        return (
+            self._default_adopters
+            | self._default_non_adopters
+            | hardcoded_asns
+        )
+
+    @property
+    def _preset_sav_asns(self) -> frozenset[int]:
+        """ASNs excluded from randomized SAV adoption"""
+
         hardcoded_asns = set(self.scenario_config.hardcoded_asn_sav_dict)
-        # reflectors (if set in config), victims, attackers, AS w/ hardcoded policies
         return (
             self._default_sav_adopters
             | self._default_adopters
             | self._default_non_adopters
             | hardcoded_asns
         )
-
-    ################
-    # Get ROA Info #
-    ################
-
-    def _get_roa_infos(
-        self,
-        *,
-        announcements: tuple["Ann", ...] = (),
-        engine: Optional["BaseSimulationEngine"] = None,
-        prev_scenario: Optional["SAVScenario"] = None,
-    ) -> tuple[ROAInfo, ...]:
-        """Returns a tuple of ROAInfo's"""
-
-        if self.scenario_config.source_prefix_roa:
-            err: str = "Fix the roa_origins of the " "announcements for multiple victims"
-            assert len(self.victim_asns) == 1, err
-
-            roa_origin: int = next(iter(self.victim_asns))
-            return (ROAInfo(self.scenario_config.source_prefix, roa_origin),)
-        else:
-            return ()

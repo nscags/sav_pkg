@@ -14,7 +14,7 @@ from sav_pkg.simulation_framework.scenarios import (
     SAVScenario,
 )
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.utils.diagram import SAVDiagram
 
 
@@ -32,12 +32,12 @@ aspa_000 = EngineTestConfig(
         override_victim_asns=frozenset({4}),
         override_reflector_asns=frozenset({3}),
         override_sav_asns=frozenset({3}),
-        override_non_default_asn_cls_dict=frozendict({
+        hardcoded_asn_cls_dict=frozendict({
             4: ASPAFullNoExport2Some,
         }),
     ),
     as_graph_info=as_graph_info_001,
     DiagramCls=SAVDiagram,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
-    MetricTrackerCls=MetricTracker,
+    GraphDataAggregatorCls=SAVMetricTracker,
 )
