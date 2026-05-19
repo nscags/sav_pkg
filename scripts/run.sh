@@ -3,10 +3,10 @@
 #SBATCH -o log_superprefix.out                              # Name of output file
 #SBATCH -p lo-core                                  # Partition (general, lo-core)
 #SBATCH --time=72:00:00                             # Timeout after 72 hours (lo-core), 12 hours (general)
-#SBATCH -n 10                                       # Asking for cores
+#SBATCH -n 20                                       # Asking for cores
 #SBATCH --mail-type=ALL                             # Event(s) that triggers email notification (BEGIN,END,FAIL,ALL)
 #SBATCH --mail-user=nicholas.scaglione@uconn.edu    # Destination email address
-#SBATCH --mem=100G                                   # Request RAM
+#SBATCH --mem=128G                                   # Request RAM
 # #SBATCH --mem-per-cpu=16G                         # Request RAM per cpu core, had OOM errors
 
 # Source Virtual Environment

@@ -58,6 +58,12 @@ class SAVScenarioProviderCone(SAVScenario):
     ) -> frozenset[int]:
         """Returns attacker ASNs from the provider cone of each reflector"""
 
+        # reflector_asns is not set during the super().__init__() call that
+        # computes the placeholder attacker set; that result is discarded and
+        # overwritten after super() returns, so fall back safely here.
+        if not hasattr(self, "reflector_asns"):
+            return super()._get_possible_attacker_asns(engine, percent_adoption)
+
         provider_cone = set()
         for reflector_asn in self.reflector_asns:
             as_obj = engine.as_graph.as_dict[reflector_asn]

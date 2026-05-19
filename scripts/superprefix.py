@@ -185,7 +185,7 @@ def main():
         ),
         output_dir=Path(f"~/sav/results/5r_1000t_superprefix_e2a").expanduser(),
         num_trials=1000,
-        parse_cpus=40,
+        parse_cpus=int(os.environ.get("SLURM_NTASKS")),
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         GraphDataAggregatorCls=SAVMetricTracker,
         as_graph_constructor_kwargs=frozendict(
