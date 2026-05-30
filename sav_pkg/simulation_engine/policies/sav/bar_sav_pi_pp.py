@@ -1,0 +1,460 @@
+import ipaddress
+from collections import defaultdict, deque
+from typing import TYPE_CHECKING
+
+from bgpy.simulation_engine import ASPA, ASRA
+from bgpy.shared.enums import ASGroups
+from bgpy.simulation_engine.policies.policy import Policy
+
+if TYPE_CHECKING:
+    from bgpy.as_graphs.base import AS
+    from bgpy.simulation_engine import SimulationEngine
+    from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
+
+
+
+class BAR_SAV_PI_PP:
+    name: str = "BAR-SAV-PI++"
+
+    def validate(
+        self,
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ) -> bool:
+        """
+        """
+        # BAR-SAV-PI++ is only applied to provider interfaces
+        if prev_hop.asn not in as_obj.provider_asns:
+            return True
+        return BAR_SAV_PI_PP._validate(
+            as_obj, source_prefix, prev_hop, engine, scenario
+        )
+
+    @staticmethod
+    def _validate(
+        as_obj: "AS",
+        source_prefix: str,
+        prev_hop: "AS",
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ) -> bool:
+        """
+        """
+        # Get origin ASNs from announcements and ROAs
+        origin_asns = BAR_SAV_PI_PP._get_origin_asns(
+            as_obj, source_prefix, engine, scenario
+        )
+        if not origin_asns:
+            return False # did not receive any announcement for prefix + no ROA
+        print(f"Origin ASNs: {origin_asns}")
+
+        # Assume all ASes know the set of tier 1 ASes
+        tier1_asns = frozenset(engine.as_graph.asn_groups[ASGroups.INPUT_CLIQUE.value])
+        print(f"Tier-1 ASes: {tier1_asns}", flush=True)
+
+        # infer relationships from BGP announcements, ASPA, and ASRA
+        inferred_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
+            as_obj, engine, tier1_asns
+        )
+        print(f"Inferred Relationships: {inferred_relationships}", flush=True)
+
+        # Build D_f and P_f for F's provider cone                   
+        D_f, P_f = BAR_SAV_PI_PP._get_provider_cone(
+            as_obj, engine, tier1_asns, inferred_relationships
+        )
+        print(f"D_f: {D_f}", flush=True)
+        print(f"P_f: {P_f}", flush=True)
+
+        # For each origin compute P(O) and check prev_hop
+        for origin_asn in origin_asns:
+            p_of_o = BAR_SAV_PI_PP._compute_p_of_origin(
+                origin_asn, as_obj, engine, D_f, P_f, tier1_asns, inferred_relationships
+            )
+            if p_of_o is None:
+                return True
+            if prev_hop.asn in p_of_o:
+                return True
+
+        return False 
+
+    @staticmethod
+    def _get_origin_asns(
+        as_obj: "AS",
+        source_prefix: str,
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ) -> frozenset[int]:
+        """
+        Returns every ASN that could legitimately originate source_prefix. 
+        Combines ROAs and RIBs-In.
+        """
+        origin_asns: set[int] = set()
+
+        # TODO: Add Aggregator Origin Validation (AOV) here
+        # check and allow origins in which the validaing AS has 
+        # received an announcement for source prefix. 
+        # Add any ASes which have a ROA for the source prefix.
+        # If there exists an AOA for the source prefix: 
+        #   add any ASes which are authorized
+        #   remove ASes which have BGP announcement for source prefix, but not authorized with ROA or AOA
+
+        net = ipaddress.ip_network(source_prefix, strict=False)
+        for roa in Policy.roa_checker.get_relevant_roas(net):
+            origin_asns.add(roa.origin)
+
+        for ann_info in as_obj.policy.ribs_in.get_ann_infos(source_prefix):
+            origin_asns.add(ann_info.unprocessed_ann.origin)
+        
+        print(f"Origin ASNs: {origin_asns}")
+        return frozenset(origin_asns)
+
+    @staticmethod
+    def _get_provider_cone(
+        as_obj: "AS",
+        engine: "SimulationEngine",
+        tier1_asns: frozenset[int],
+        inferred_relationships: dict[int, frozenset[int]],
+    ) -> tuple[dict[int, int], dict[int, frozenset[int]]]:
+
+        as_dict = engine.as_graph.as_dict
+
+        D_f: dict[int, int] = {}
+        P_f: dict[int, set[int]] = {}
+
+        current_layer: set[int] = set(as_obj.provider_asns)
+        for p_asn in as_obj.provider_asns:
+            D_f[p_asn] = 1
+            P_f[p_asn] = {p_asn}
+
+        dist = 1
+
+        while current_layer:
+            next_layer: set[int] = set()
+
+            for provider_asn in current_layer:
+                provider_as = as_dict.get(provider_asn)
+                if provider_as is None:
+                    continue
+
+                candidate_providers: set[int] = set()
+
+                # provider has ASPA record
+                if isinstance(provider_as.policy, ASPA):
+                    candidate_providers.update(provider_as.provider_asns)
+
+                # provider's provider has an ASRA record
+                for grandparent_asn in provider_as.provider_asns:
+                    grandparent_as = as_dict.get(grandparent_asn)
+                    if (grandparent_as is not None and isinstance(grandparent_as.policy, ASRA)):
+                        candidate_providers.add(grandparent_asn)
+
+                # relationship was inferred from BGP announcements, ASPA, and ASRA 
+                candidate_providers.update(
+                    inferred_relationships.get(provider_asn, frozenset())
+                )
+
+                for grandparent_asn in candidate_providers:
+                    new_dist = dist + 1
+                    if grandparent_asn not in D_f:
+                        D_f[grandparent_asn] = new_dist
+                        P_f[grandparent_asn] = set(P_f[provider_asn])
+                        next_layer.add(grandparent_asn)
+                    elif D_f[grandparent_asn] == new_dist:
+                        P_f[grandparent_asn].update(P_f[provider_asn])
+
+            current_layer = next_layer
+            dist += 1
+
+        return D_f, {asn: frozenset(s) for asn, s in P_f.items()}
+
+    @staticmethod
+    def _infer_relationships_from_paths(
+        as_obj: "AS",
+        engine: "SimulationEngine",
+        tier1_asns: frozenset[int],
+    ) -> dict[int, frozenset[int]]:
+
+        as_dict = engine.as_graph.as_dict
+        inferred: dict[int, set[int]] = defaultdict(set)
+ 
+        as_paths: set[tuple[int, ...]] = set()
+        for provider_asn in as_obj.provider_asns:
+            provider_rib = as_obj.policy.ribs_in.data.get(provider_asn, {})
+            for ann_info in provider_rib.values():
+                if as_obj.policy._valid_ann(
+                    ann_info.unprocessed_ann, ann_info.recv_relationship
+                ):
+                    as_paths.add(ann_info.unprocessed_ann.as_path)
+ 
+        for as_path in as_paths: 
+            if len(as_path) < 2:
+                continue
+
+            # check if Tier-1 AS(es) exist in the AS path
+            tier1_indices = [
+                i for i, asn in enumerate(as_path) if asn in tier1_asns
+            ]
+ 
+            if tier1_indices:
+                peak_left = tier1_indices[0]
+                peak_right = tier1_indices[-1]
+ 
+                for i in range(peak_left):
+                    inferred[as_path[i]].add(as_path[i + 1])
+ 
+                for i in range(peak_right, len(as_path) - 1):
+                    inferred[as_path[i + 1]].add(as_path[i])
+ 
+                continue
+ 
+            # no Tier-1 in path: classify each consecutive link as UP, DOWN,
+            # PEER, or AMBIGUOUS using published records
+            directions: list[str] = []
+ 
+            for i in range(len(as_path) - 1):
+                left_asn = as_path[i]
+                right_asn = as_path[i + 1]
+                left_as = as_dict.get(left_asn)
+                right_as = as_dict.get(right_asn)
+ 
+                # UP: right is confirmed to be left's provider
+                is_up = (
+                    # ASPA on left says right is its provider
+                    (left_as is not None
+                     and isinstance(left_as.policy, ASPA)
+                     and right_asn in left_as.provider_asns)
+                    or
+                    # ASRA on right lists left as its customer 
+                    (right_as is not None
+                     and isinstance(right_as.policy, ASRA)
+                     and left_asn in right_as.customer_asns)
+                )
+ 
+                # DOWN: left is confirmed to be right's provider
+                is_down = (
+                    # ASPA on right says left is its provider
+                    (right_as is not None
+                     and isinstance(right_as.policy, ASPA)
+                     and left_asn in right_as.provider_asns)
+                    or
+                    # ASRA on left lists right as its customer 
+                    (left_as is not None
+                     and isinstance(left_as.policy, ASRA)
+                     and right_asn in left_as.customer_asns)
+                )
+ 
+                # PEER: if ASRA(left) lists right as peer, 
+                # or ASRA(right) lists left as peer
+                is_peer = (
+                    (left_as is not None
+                     and isinstance(left_as.policy, ASRA)
+                     and right_asn in left_as.peer_asns)
+                    or
+                    (right_as is not None
+                     and isinstance(right_as.policy, ASRA)
+                     and left_asn in right_as.peer_asns)
+                )
+ 
+                if is_peer:
+                    directions.append("peer")
+                elif is_up and not is_down:
+                    directions.append("up")
+                elif is_down and not is_up:
+                    directions.append("down")
+                else:
+                    directions.append("ambiguous")
+
+            for i, direction in enumerate(directions):
+                if direction == "peer":
+                    # confirmed exact peak — override ambiguous links on both sides
+                    for j in range(i):
+                        if directions[j] == "ambiguous":
+                            directions[j] = "up"
+                    for j in range(i + 1, len(directions)):
+                        if directions[j] == "ambiguous":
+                            directions[j] = "down"
+                    break
+ 
+            # check if ASPA confirms peak
+            confirmed_peak_idx: int | None = None
+ 
+            for i in range(len(as_path) - 2):
+                mid_asn = as_path[i + 1]
+                left_asn = as_path[i]
+                right_asn = as_path[i + 2]
+                left_as = as_dict.get(left_asn)
+                mid_as = as_dict.get(mid_asn)
+                right_as = as_dict.get(right_asn)
+ 
+                # confirm that mid is left's provider
+                left_up = (
+                    # ASPA on left says mid is its provider
+                    (left_as is not None
+                     and isinstance(left_as.policy, ASPA)
+                     and mid_asn in left_as.provider_asns)
+                    or
+                    # ASRA on mid lists left as customer
+                    (mid_as is not None
+                     and isinstance(mid_as.policy, ASRA)
+                     and left_asn in mid_as.customer_asns)
+                )
+ 
+                # confirm that mid is right's provider
+                right_up = (
+                    # ASPA on right says mid is its provider
+                    (right_as is not None
+                     and isinstance(right_as.policy, ASPA)
+                     and mid_asn in right_as.provider_asns)
+                    or
+                    # ASRA on mid lists right as customer
+                    (mid_as is not None
+                     and isinstance(mid_as.policy, ASRA)
+                     and right_asn in mid_as.customer_asns)
+                )
+ 
+                if left_up and right_up:
+                    confirmed_peak_idx = i + 1
+                    break
+ 
+            if confirmed_peak_idx is not None:
+                # everything left of the peak is UP
+                for i in range(confirmed_peak_idx):
+                    if directions[i] == "ambiguous":
+                        directions[i] = "up"
+                if confirmed_peak_idx < len(directions):
+                    if directions[confirmed_peak_idx] != "peer":
+                        directions[confirmed_peak_idx] = "down"
+                # everything right of the peak is also DOWN
+                for i in range(confirmed_peak_idx + 1, len(directions)):
+                    if directions[i] == "ambiguous":
+                        directions[i] = "down"
+ 
+            # walk from F's side, record confirmed UP relationships    
+            for i, direction in enumerate(directions):
+                if direction != "up":
+                    break
+                inferred[as_path[i]].add(as_path[i + 1])
+ 
+            # walk from origin's side, record confirmed DOWN relationships                                                     
+            for i in range(len(directions) - 1, -1, -1):
+                if directions[i] != "down":
+                    break
+                inferred[as_path[i + 1]].add(as_path[i])
+ 
+        return {asn: frozenset(providers) for asn, providers in inferred.items()}
+
+
+    @staticmethod
+    def _compute_p_of_origin(
+        origin_asn: int,
+        as_obj: "AS",
+        engine: "SimulationEngine",
+        D_f: dict[int, int],
+        P_f: dict[int, frozenset[int]],
+        tier1_asns: frozenset[int],
+        inferred_relationships: dict[int, frozenset[int]],
+    ) -> frozenset[int] | None:
+
+        as_dict = engine.as_graph.as_dict
+
+        # origin in filtering AS provider cone
+        if origin_asn in D_f:
+            return P_f[origin_asn]
+
+        # build O's provider cone (same logic as F's provider cone, starting from O)
+        o_dist: dict[int, int] = {}
+        o_dist[origin_asn] = 0
+        current_layer: set[int] = set()
+
+        origin_as = as_dict.get(origin_asn)
+        if origin_as is None:
+            return None
+
+        # get O's direct providers using ASPA, ASRA, and inferred relationships
+        direct_providers: set[int] = set()
+        if isinstance(origin_as.policy, ASPA):
+            direct_providers.update(origin_as.provider_asns)
+        for grandparent_asn in origin_as.provider_asns:
+            grandparent_as = as_dict.get(grandparent_asn)
+            if grandparent_as is not None and isinstance(grandparent_as.policy, ASRA):
+                direct_providers.add(grandparent_asn)
+        direct_providers.update(inferred_relationships.get(origin_asn, frozenset()))
+
+        for p_asn in direct_providers:
+            o_dist[p_asn] = 1
+            current_layer.add(p_asn)
+
+        dist = 1
+        while current_layer:
+            next_layer: set[int] = set()
+            for provider_asn in current_layer:
+                provider_as = as_dict.get(provider_asn)
+                if provider_as is None:
+                    continue
+
+                candidate_providers: set[int] = set()
+
+                if isinstance(provider_as.policy, ASPA):
+                    candidate_providers.update(provider_as.provider_asns)
+
+                for grandparent_asn in provider_as.provider_asns:
+                    grandparent_as = as_dict.get(grandparent_asn)
+                    if grandparent_as is not None and isinstance(grandparent_as.policy, ASRA):
+                        candidate_providers.add(grandparent_asn)
+
+                candidate_providers.update(inferred_relationships.get(provider_asn, frozenset()))
+
+                for p_asn in candidate_providers:
+                    if p_asn not in o_dist:
+                        o_dist[p_asn] = dist + 1
+                        next_layer.add(p_asn)
+
+            current_layer = next_layer
+            dist += 1
+
+        # process O's provider cone and determine P(O)
+        D_o: dict[int, int] = {}
+        P_o: dict[int, set[int]] = {}
+
+        for y_asn in sorted(o_dist, key=lambda x: o_dist[x], reverse=True):
+            y_as = as_dict.get(y_asn)
+            best_dist: int | None = None
+            best_providers: set[int] = set()
+
+            def update(candidate_dist: int, candidate_providers: set[int]) -> None:
+                nonlocal best_dist, best_providers
+                if best_dist is None or candidate_dist < best_dist:
+                    best_dist = candidate_dist
+                    best_providers = set(candidate_providers)
+                elif candidate_dist == best_dist:
+                    best_providers.update(candidate_providers)
+
+            # AS y is in the provider cone of both F and O
+            if y_asn in D_f:
+                update(D_f[y_asn], set(P_f[y_asn]))
+
+            # AS y is a bilateral peer of an AS in F's provider cone
+            if y_as is not None and isinstance(y_as.policy, ASRA):
+                for peer_asn in y_as.peer_asns:
+                    if peer_asn in D_f:
+                        update(D_f[peer_asn] + 1, set(P_f[peer_asn]))
+
+            # AS y does not connect to F's provider cone
+            for p_asn, p_dist in o_dist.items():
+                if p_dist == o_dist[y_asn] + 1 and p_asn in D_o:
+                    update(D_o[p_asn] + 1, P_o[p_asn])
+
+            if best_dist is not None:
+                D_o[y_asn] = best_dist
+                P_o[y_asn] = best_providers
+
+        print(f"P_o: {P_o}", flush=True)
+        print(f"origin_asn: {origin_asn}", flush=True)
+        print(f"origin_asn in P_o: {origin_asn in P_o}", flush=True)
+        if origin_asn in P_o:
+            return frozenset(P_o[origin_asn])
+
+        return None

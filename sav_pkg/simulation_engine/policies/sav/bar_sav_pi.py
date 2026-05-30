@@ -25,6 +25,8 @@ class BAR_SAV_PI(BaseSAVPolicy):
         engine: "SimulationEngine",
         scenario,
     ) -> bool:
+        """
+        """
         # BAR-SAV-PI is only applied to provider interfaces
         if prev_hop.asn not in as_obj.provider_asns:
             return True
@@ -39,6 +41,8 @@ class BAR_SAV_PI(BaseSAVPolicy):
         engine: "SimulationEngine",
         scenario: "SAVScenario",
     ):   
+        """
+        """
         #   1.  Per procedure in Section 4, compute AS-set D and Pfx-set Q for
         #       each customer interface of the AS in consideration.
         dq_set = []
@@ -66,7 +70,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
         for prefix in qu:
             anns = []
             for customer_asn in as_obj.customer_asns:
-                rib_in = as_obj.policy._ribs_in.data.get(customer_asn, {})
+                rib_in = as_obj.policy.ribs_in.data.get(customer_asn, {})
                 for ann_info in rib_in.values():
                     if as_obj.policy._valid_ann(
                         ann_info.unprocessed_ann, ann_info.recv_relationship
@@ -112,7 +116,7 @@ class BAR_SAV_PI(BaseSAVPolicy):
         #       route has all its Provider ASes (per ASPAs) contained within AS-
         #       set Du.  Call the resulting modified set as Pfx-set S.
         s = qu
-        for prefix_dict in as_obj.policy._ribs_in.data.values():
+        for prefix_dict in as_obj.policy.ribs_in.data.values():
             for ann_info in prefix_dict.values():
                 ann = ann_info.unprocessed_ann
                 prefix = ann.prefix
@@ -129,36 +133,11 @@ class BAR_SAV_PI(BaseSAVPolicy):
                             s.remove(prefix)
                             break
 
-        # for prefix in qu:
-        #     anns = []
-        #     valid = True
-        #     for prefix_dict in as_obj.policy._ribs_in.data.values():
-        #         for ann_info in prefix_dict.values():
-        #             ann = ann_info.unprocessed_ann
-        #             if ann.prefix == prefix and as_obj.policy._valid_ann(ann, ann_info.recv_relationship):
-        #                 anns.append(ann)
-
-        #     if anns:
-        #         for ann in anns:
-        #             for asn in ann.as_path:
-        #                 if asn not in du:
-        #                     valid = False
-        #                     break
-        #                 as_on_path_obj = engine.as_graph.as_dict.get(asn)
-        #                 if isinstance(as_on_path_obj.policy, ASPA):
-        #                     if any(provider not in du for provider in as_on_path_obj.provider_asns):
-        #                         valid = False
-        #                         break
-        #             if not valid:
-        #                 break
-        #         if valid:
-        #             s.add(prefix)
-
         #   6.  Subtract Pfx-set S from the set of allowed prefixes that pertain
         #       to loose uRPF for the Provider interfaces.  Call this reduced set
         #       as Pfx-set Ga.
         ga = set()
-        for prefix, _ in as_obj.policy._local_rib.data.items():
+        for prefix, _ in as_obj.policy.local_rib.data.items():
             if prefix not in s:
                 ga.add(prefix) 
 

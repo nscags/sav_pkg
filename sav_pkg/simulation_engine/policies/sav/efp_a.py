@@ -43,7 +43,7 @@ class EFP_A(BaseSAVPolicy):
         # Call it Set A = {AS1, AS2, ..., ASn}.
         A = set()
         for customer_asn in as_obj.customer_asns:
-            for prefix, ann_info in as_obj.policy._ribs_in.data.get(
+            for prefix, ann_info in as_obj.policy.ribs_in.data.get(
                 customer_asn, {}
             ).items():
                 if as_obj.policy._valid_ann(
@@ -58,7 +58,7 @@ class EFP_A(BaseSAVPolicy):
         X = dict()
         for origin_asn in A:
             X[origin_asn] = set()
-            for customer_asn, prefix_dict in as_obj.policy._ribs_in.data.items():
+            for customer_asn, prefix_dict in as_obj.policy.ribs_in.data.items():
                 for prefix, ann_info in prefix_dict.items():
                     if as_obj.policy._valid_ann(
                         ann_info.unprocessed_ann, ann_info.recv_relationship
@@ -69,7 +69,7 @@ class EFP_A(BaseSAVPolicy):
         # more of the prefixes in Set X1 were received.
 
         rpf_list = set()
-        for prefix, ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).items():
+        for prefix, ann_info in as_obj.policy.ribs_in.data.get(prev_hop.asn, {}).items():
             if as_obj.policy._valid_ann(
                 ann_info.unprocessed_ann, ann_info.recv_relationship
             ):

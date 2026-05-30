@@ -1,7 +1,7 @@
 import ipaddress
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_engine import ASPA
+from bgpy.simulation_engine import ASPA, ASRA
 
 from .base_sav_policy import BaseSAVPolicy
 
@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 
 
-class BAR_SAV(BaseSAVPolicy):
-    name: str = "BAR-SAV"
+class BAR_SAV_PP(BaseSAVPolicy):
+    name: str = "BAR-SAV++"
 
     def validate(
         self,
@@ -28,7 +28,7 @@ class BAR_SAV(BaseSAVPolicy):
         if prev_hop.asn not in (as_obj.customer_asns | as_obj.peer_asns):
             return True
         else:
-            return BAR_SAV._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+            return BAR_SAV_PP._validate(as_obj, source_prefix, prev_hop, engine, scenario)
         
     @staticmethod
     def _validate(
@@ -39,13 +39,13 @@ class BAR_SAV(BaseSAVPolicy):
         scenario: "SAVScenario",
     ):
         """
-        Validates incoming packets based on Refined Alg A defined in BAR-SAV draft.
+        Validates incoming packets based on BAR-SAV++, an improvement to BAR-SAV to include ASRA in addition to BGP announcements and ASPA.
 
         Internet draft procedure description:
         https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/
         """
 
-        _, q = BAR_SAV._get_as_prefix_set(
+        _, q = BAR_SAV_PP._get_as_prefix_set(
             as_obj=as_obj,
             source_prefix=source_prefix,
             prev_hop=prev_hop,
@@ -76,6 +76,9 @@ class BAR_SAV(BaseSAVPolicy):
             a_i = set()
             for asn in z_i[i - 1]:
                 tmp_as_obj = engine.as_graph.as_dict[asn]
+                if isinstance(tmp_as_obj.policy, ASRA):      # NOTE: this is the only difference between BAR-SAV and BAR-SAV++
+                    a_i.update(tmp_as_obj.customer_asns)
+                    continue
                 for customer_asn in tmp_as_obj.customer_asns:
                     if isinstance(engine.as_graph.as_dict[customer_asn].policy, ASPA):
                         a_i.add(customer_asn)
@@ -140,4 +143,3 @@ class BAR_SAV(BaseSAVPolicy):
         q = q1.union(q2)
 
         return d, q
-

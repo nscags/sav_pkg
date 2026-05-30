@@ -22,7 +22,7 @@ class BGPNoExport2Some(BGP):
             num = max(1, int(len(neighbors) - 1))
             some_neighbors = sorted(neighbors, key=lambda n: n.asn)[:num]
 
-            for _prefix, unprocessed_ann in self._local_rib.items():
+            for _prefix, unprocessed_ann in self.local_rib.items():
                 if neighbors and unprocessed_ann.recv_relationship in send_rels:
                     ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
                 else:

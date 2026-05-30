@@ -58,7 +58,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         origin = as_obj.asn
         prev_hop = None
 
-        for ann in as_obj.policy._local_rib.data.values():
+        for ann in as_obj.policy.local_rib.data.values():
             if ann.origin in self.scenario.reflector_asns:
                 dst = ann.prefix
                 self._propagate_packet(
@@ -84,7 +84,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         # Spoofing AS model is referred to as "broadasting strategy" in code due to legacy reasons
         if self.scenario.scenario_config.attacker_broadcast:
             # broadcasting strategy
-            for ann in as_obj.policy._local_rib.data.values():
+            for ann in as_obj.policy.local_rib.data.values():
                 if ann.origin in self.scenario.reflector_asns:
                     dst = ann.prefix
                     for neighbor_as_obj in as_obj.neighbors:
@@ -96,7 +96,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         else:
             # best path routing
             prev_hop = None
-            for ann in as_obj.policy._local_rib.data.values():
+            for ann in as_obj.policy.local_rib.data.values():
                 if ann.origin in self.scenario.reflector_asns:
                     dst = ann.prefix
                     self._propagate_packet(
@@ -154,7 +154,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
             filtered = True
         
         # route packet to dst
-        dst_ann = as_obj.policy._local_rib.get(dst)
+        dst_ann = as_obj.policy.local_rib.get(dst)
         if dst_ann and (dst_ann.recv_relationship.value != Relationships.ORIGIN.value):
             prev_hop = as_obj
             as_obj = self.engine.as_graph.as_dict[dst_ann.next_hop_asn]
@@ -210,7 +210,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         # (or never receives an announcement from the legitimate origin in the DSR scenario)
         if outcome == Outcomes.FALSE_POSITIVE.value:
             victim_anns = set()
-            for _, ann in as_obj.policy._local_rib.data.items():
+            for _, ann in as_obj.policy.local_rib.data.items():
                 if ann.origin in self.scenario.victim_asns:
                     victim_anns.add(ann)
             # for normal spoofing host/AS attack scenarios, check whether the validating AS has recieved the source prefix
@@ -239,7 +239,7 @@ class SAVASGraphAnalyzer(BaseASGraphAnalyzer):
         origin: int
     ) -> bool:
         as_obj = self.engine.as_graph.as_dict[asn]
-        for ann in as_obj.policy._local_rib.data.values():
+        for ann in as_obj.policy.local_rib.data.values():
             if ann.origin == origin:
                 return True
         return False

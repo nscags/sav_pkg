@@ -40,7 +40,7 @@ class FeasiblePathuRPF(BaseSAVPolicy):
         """
         src_prefix = ipaddress.ip_network(source_prefix)
 
-        for ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).values():
+        for ann_info in as_obj.policy.ribs_in.data.get(prev_hop.asn, {}).values():
             ann_prefix = ipaddress.ip_network(ann_info.unprocessed_ann.prefix)
             if src_prefix.subnet_of(ann_prefix) and as_obj.policy._valid_ann(
                 ann_info.unprocessed_ann, ann_info.recv_relationship

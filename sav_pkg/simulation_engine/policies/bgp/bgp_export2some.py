@@ -33,7 +33,7 @@ class BGPExport2Some(BGP):
             some_neighbors_asns = self._provider_export_control()
             some_neighbors = [neighbor for neighbor in neighbors if neighbor.asn in some_neighbors_asns]
 
-            for _prefix, unprocessed_ann in self._local_rib.items():
+            for _prefix, unprocessed_ann in self.local_rib.items():
                 if some_neighbors and unprocessed_ann.recv_relationship in send_rels:
                     ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
                 else:

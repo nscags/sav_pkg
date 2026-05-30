@@ -132,7 +132,7 @@ class SAVDiagramDSR(SAVDiagram):
                 <TD COLSPAN="{colspan}" BORDER="0" ALIGN="CENTER" VALIGN="MIDDLE"><b>{sav_policy_str}</b></TD>
             </TR>"""
 
-        local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
+        local_rib_anns = tuple(list(as_obj.policy.local_rib.values()))
         local_rib_anns = tuple(
             sorted(
                 local_rib_anns,

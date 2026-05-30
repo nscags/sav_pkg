@@ -47,7 +47,7 @@ class EFP_A_wPeers(BaseSAVPolicy):
         # customer and peer interfaces. Call it Set A = {AS1, AS2, ..., ASn}.
         A = set()
         for asn in (as_obj.customer_asns | as_obj.peer_asns):
-            for prefix, ann_info in as_obj.policy._ribs_in.data.get(
+            for prefix, ann_info in as_obj.policy.ribs_in.data.get(
                 asn, {}
             ).items():
                 if as_obj.policy._valid_ann(
@@ -65,7 +65,7 @@ class EFP_A_wPeers(BaseSAVPolicy):
         X = dict()
         for origin_asn in A:
             X[origin_asn] = set()
-            for _asn, prefix_dict in as_obj.policy._ribs_in.data.items():
+            for _asn, prefix_dict in as_obj.policy.ribs_in.data.items():
                 for prefix, ann_info in prefix_dict.items():
                     if as_obj.policy._valid_ann(
                         ann_info.unprocessed_ann, ann_info.recv_relationship
@@ -73,7 +73,7 @@ class EFP_A_wPeers(BaseSAVPolicy):
                         X[origin_asn].add(ann_info.unprocessed_ann.prefix)
 
         rpf_list = set()
-        for prefix, ann_info in as_obj.policy._ribs_in.data.get(prev_hop.asn, {}).items():
+        for prefix, ann_info in as_obj.policy.ribs_in.data.get(prev_hop.asn, {}).items():
             if as_obj.policy._valid_ann(
                 ann_info.unprocessed_ann, ann_info.recv_relationship
             ):

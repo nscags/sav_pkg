@@ -49,7 +49,7 @@ class EFP_B(BaseSAVPolicy):
         P = set()
         A = set()
         for customer_asn in I:
-            for prefix, ann_info in as_obj.policy._ribs_in.data.get(
+            for prefix, ann_info in as_obj.policy.ribs_in.data.get(
                 customer_asn, {}
             ).items():
                 if as_obj.policy._valid_ann(
@@ -63,7 +63,7 @@ class EFP_B(BaseSAVPolicy):
         # has its origin AS belonging in Set A. Call it Set Q = {Q1, Q2, ..., Qj}.
         Q = set()
         for asn in (as_obj.peer_asns | as_obj.provider_asns):
-            for prefix, ann_info in as_obj.policy._ribs_in.data.get(
+            for prefix, ann_info in as_obj.policy.ribs_in.data.get(
                 asn, {}
             ).items():
                 if as_obj.policy._valid_ann(

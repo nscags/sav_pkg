@@ -11,6 +11,7 @@ from .sav import RFC8704
 from .sav import BAR_SAV
 from .sav import BAR_SAV_PI
 from .sav import BAR_SAV_wBSPI
+from .sav import BAR_SAV_PI_PP
 from .sav import ProcedureX
 
 from .bgp import BGPExport2Some
@@ -37,6 +38,7 @@ __all__ = [
     "RFC8704",
     "BAR_SAV",
     "BAR_SAV_PI",
+    "BAR_SAV_PI_PP",
     "BAR_SAV_wBSPI",
     "ProcedureX",
     "BGPExport2Some",

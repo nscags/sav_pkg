@@ -36,7 +36,7 @@ class LooseuRPF(BaseSAVPolicy):
         Validates incoming packets based on Loose uRPF.
         """
         src_prefix = ipaddress.ip_network(source_prefix)
-        for ann in as_obj.policy._local_rib.data.values():
+        for ann in as_obj.policy.local_rib.data.values():
             ann_prefix = ipaddress.ip_network(ann.prefix)
             if src_prefix.subnet_of(ann_prefix):
                 return True

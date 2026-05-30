@@ -16,6 +16,10 @@ maintainers = [
 ]
 license = {file = "LICENSE.txt"}
 keywords = [
+    "sav_pkg",
+    "SAV",
+    "Source Address Validation",
+    "uRPF",
     "BGPy",
     "bgpy",
     "bgpy_pkg",
@@ -31,7 +35,7 @@ classifiers = [
     "Intended Audience :: Developers"
 ]
 dependencies = [
-    "bgpy_pkg==8.1.1",
+    "bgpy_pkg==13.0.10",
 ]
 
 [project.urls]
@@ -42,7 +46,7 @@ sav_pkg = "sav_pkg.__main__:main"
 
 [project.optional-dependencies]
 test = [
-    "bgpy_pkg[test]==8.1.1",
+    "bgpy_pkg[test]==13.0.10",
 ]
 
 [tool.setuptools]

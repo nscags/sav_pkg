@@ -277,7 +277,7 @@ class SAVDiagram(Diagram):
 
 
 
-        local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
+        local_rib_anns = tuple(list(as_obj.policy.local_rib.values()))
         local_rib_anns = tuple(
             sorted(
                 local_rib_anns,
