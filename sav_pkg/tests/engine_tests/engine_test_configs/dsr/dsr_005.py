@@ -8,7 +8,7 @@ from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetric
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import (
     SAVScenarioDSR,
-    SAVScenarioConfig,
+    SAVScenarioDSRConfig,
 )
 from sav_pkg.utils.diagram_dsr import SAVDiagramDSR
 from sav_pkg.enums import Prefixes
@@ -24,17 +24,14 @@ dsr_005 = EngineTestConfig(
     SimulationEngineCls=SAVSimulationEngine,
     name="dsr_005",
     desc=desc,
-    scenario_config=SAVScenarioConfig(
+    scenario_config=SAVScenarioDSRConfig(
         ScenarioCls=SAVScenarioDSR,
         BasePolicyCls=BGPFull,
-        num_attackers=0,
-        source_prefix=Prefixes.ANYCAST_SERVER.value,
         override_user_asns=frozenset({4}),
         override_edge_server_asns=frozenset({1}),
         override_anycast_server_asns=frozenset({5}),
         override_sav_asns=frozenset({4}),
         BaseSAVPolicyCls=BAR_SAV,
-        ignore_disconnections=False,
         hardcoded_asn_cls_dict=frozendict({
             1: BGPFullNoExport2Some,
         })

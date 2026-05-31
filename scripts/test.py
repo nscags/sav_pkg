@@ -56,7 +56,7 @@ def main():
             ),
         ),
         output_dir=Path(f"~/sav/results/test").expanduser(),
-        num_trials=1,
+        num_trials=10,
         parse_cpus=1,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         GraphDataAggregatorCls=SAVMetricTracker,

@@ -25,7 +25,7 @@ class SAVDiagramDSR(SAVDiagram):
                     and origin in scenario.attacker_asns
                 ):
                     attacker_str = "&#8869;"
-                elif (
+                if (
                     outcome == Outcomes.DISCONNECTED.value
                     and origin in scenario.victim_asns
                 ):

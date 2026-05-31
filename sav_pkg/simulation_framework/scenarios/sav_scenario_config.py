@@ -42,17 +42,3 @@ class SAVScenarioConfig(ScenarioConfig):
     # Special percent adoption for control plane policies
     # I hijacked the default percent_adopt for SAV policies
     ctrl_plane_percent_adoption: float = 0.0
-
-    # DSR configs 
-    # users 
-    num_users: int = 1
-    user_subcategory_attr: str | None = ASGroups.STUBS_OR_MH.value
-    override_user_asns: frozenset[int] | None = None
-    # anycast servers
-    num_anycast_servers: int = 1
-    anycast_server_subcategory_attr: str | None = ASGroups.STUBS_OR_MH.value
-    override_anycast_server_asns: frozenset[int] | None = None
-    # edge servers
-    num_edge_servers: int = 1
-    edge_server_subcategory_attr: str | None = ASGroups.STUBS_OR_MH.value
-    override_edge_server_asns: frozenset[int] | None = None

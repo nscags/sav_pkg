@@ -25,7 +25,7 @@ engine_test_configs = (
     # + bar_sav_test_configs 
     # + bspi_test_configs 
     bspi_pp_test_configs
-    # + dsr_test_configs
+    + dsr_test_configs
 )
 
 __all__ = ["engine_test_configs"]

@@ -49,24 +49,24 @@ class BAR_SAV_PI_PP:
         )
         if not origin_asns:
             return False # did not receive any announcement for prefix + no ROA
-        print(f"Origin ASNs: {origin_asns}")
+        # print(f"Origin ASNs: {origin_asns}")
 
         # Assume all ASes know the set of tier 1 ASes
         tier1_asns = frozenset(engine.as_graph.asn_groups[ASGroups.INPUT_CLIQUE.value])
-        print(f"Tier-1 ASes: {tier1_asns}", flush=True)
+        # print(f"Tier-1 ASes: {tier1_asns}", flush=True)
 
         # infer relationships from BGP announcements, ASPA, and ASRA
         inferred_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
             as_obj, engine, tier1_asns
         )
-        print(f"Inferred Relationships: {inferred_relationships}", flush=True)
+        # print(f"Inferred Relationships: {inferred_relationships}", flush=True)
 
         # Build D_f and P_f for F's provider cone                   
         D_f, P_f = BAR_SAV_PI_PP._get_provider_cone(
             as_obj, engine, tier1_asns, inferred_relationships
         )
-        print(f"D_f: {D_f}", flush=True)
-        print(f"P_f: {P_f}", flush=True)
+        # print(f"D_f: {D_f}", flush=True)
+        # print(f"P_f: {P_f}", flush=True)
 
         # For each origin compute P(O) and check prev_hop
         for origin_asn in origin_asns:
@@ -108,7 +108,7 @@ class BAR_SAV_PI_PP:
         for ann_info in as_obj.policy.ribs_in.get_ann_infos(source_prefix):
             origin_asns.add(ann_info.unprocessed_ann.origin)
         
-        print(f"Origin ASNs: {origin_asns}")
+        # print(f"Origin ASNs: {origin_asns}")
         return frozenset(origin_asns)
 
     @staticmethod
@@ -451,9 +451,9 @@ class BAR_SAV_PI_PP:
                 D_o[y_asn] = best_dist
                 P_o[y_asn] = best_providers
 
-        print(f"P_o: {P_o}", flush=True)
-        print(f"origin_asn: {origin_asn}", flush=True)
-        print(f"origin_asn in P_o: {origin_asn in P_o}", flush=True)
+        # print(f"P_o: {P_o}", flush=True)
+        # print(f"origin_asn: {origin_asn}", flush=True)
+        # print(f"origin_asn in P_o: {origin_asn in P_o}", flush=True)
         if origin_asn in P_o:
             return frozenset(P_o[origin_asn])
 

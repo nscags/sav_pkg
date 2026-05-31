@@ -2,6 +2,7 @@ from .sav_as_graph_analyzer import SAVASGraphAnalyzer
 from .scenarios import SAVScenario
 from .scenarios import SAVScenarioConfig
 from .scenarios import SAVScenarioDSR
+from .scenarios import SAVScenarioDSRConfig
 from .scenarios import SAVScenarioBAT
 from .scenarios import SAVScenarioBATAnn
 from .scenarios import SAVScenarioBATASPA
@@ -14,6 +15,7 @@ __all__ = [
     "SAVScenario",
     "SAVScenarioConfig",
     "SAVScenarioDSR",
+    "SAVScenarioDSRConfig",
     "SAVScenarioBAT",
     "SAVScenarioBATAnn",
     "SAVScenarioBATASPA",

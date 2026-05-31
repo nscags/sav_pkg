@@ -11,8 +11,10 @@ from .rfc8704 import RFC8704
 from .bar_sav import BAR_SAV
 from .bar_sav_pi import BAR_SAV_PI
 from .bar_sav_w_bspi import BAR_SAV_wBSPI
-from .bar_sav_pi_pp import BAR_SAV_PI_PP
 from .procedure_x import ProcedureX
+from .bar_sav_pp import BAR_SAV_PP
+from .bar_sav_pi_pp import BAR_SAV_PI_PP
+from .bar_sav_pp_w_bspi_pp import BAR_SAV_PP_wBSPI_PP
 
 
 __all__ = [
@@ -29,6 +31,8 @@ __all__ = [
     "BAR_SAV",
     "BAR_SAV_PI",
     "BAR_SAV_wBSPI",
-    "BAR_SAV_PI_PP",
     "ProcedureX",
+    "BAR_SAV_PP",
+    "BAR_SAV_PI_PP",
+    "BAR_SAV_PP_wBSPI_PP",
 ]
