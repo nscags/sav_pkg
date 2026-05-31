@@ -39,10 +39,12 @@ pip install bgpy_pkg
 | `EFP_B` | Enhanced Feasible-Path uRPF Algorithm B (EFP-B) |
 | `RFC8704` | RFC 8704 Security Recommendations |
 | `BAR_SAV` | BAR-SAV |
-| `BAR_SAV_PI` | BAR-SAV Provider Interfaces |
-| `BAR_SAV_wBSPI` | BAR-SAV with BAR-SAV-I |
-| `BAR_SAV_PI_PP` | BAR-SAV with PI and Path Prepending |
+| `BAR_SAV_PI` | BAR-SAV Provider Interfaces (BAR-SAV-PI) |
+| `BAR_SAV_wBSPI` | BAR-SAV with BAR-SAV-PI |
 | `ProcedureX` | Procedure X |
+<!-- | `BAR_SAV_PP` | BAR-SAV++ |
+| `BAR_SAV_PI_PP` | BAR-SAV-PI++ |
+| `BAR_SAV_PP_wBSPI_PP` | BAR-SAV++ w/BSPI++ | -->
 
 ---
 
