@@ -35,7 +35,7 @@ pip install bgpy_pkg
 | `FeasiblePathuRPF_All` | Feasible-path uRPF, applied to all interfaces |
 | `FeasiblePathuRPF_OTC` | Feasible-path uRPF, applied only to customers |
 | `EFP_A` | Enhanced Feasible-Path uRPF Algorithm A (EFP-A) |
-| `EFP_A_wPeers` | EFP-A with peer routes |
+| `EFP_A_wPeers` | EFP-A, applied to customers and bilateral peers |
 | `EFP_B` | Enhanced Feasible-Path uRPF Algorithm B (EFP-B) |
 | `RFC8704` | RFC 8704 Security Recommendations |
 | `BAR_SAV` | BAR-SAV |
