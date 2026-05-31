@@ -1,6 +1,6 @@
 # Source Address Validation Simulator (sav_pkg)
 
-An extension to the widely-used BGP security simulator [BGPy](https://github.com/jfuruness/bgpy_pkg) to evaluate Source Address Validation (SAV) policies. Built for the EZ-SAVE paper (NSDI '26), it supports simulation of IP spoofing attacks and measurement of SAV effectiveness across realistic internet topologies.
+An extension to the widely-used BGP security simulator [BGPy](https://github.com/jfuruness/bgpy_pkg) to evaluate Source Address Validation (SAV) policies. 
 
 ---
 
@@ -57,7 +57,7 @@ cd scripts
 JOB_COMPLETION_INDEX=0 python3 test.py
 ```
 
-Results are written to `~/sav/results/test/`. For the full set of configurations used in the paper, see the [scripts/](scripts/) folder — each script corresponds to a specific scenario or policy variant.
+Results are written to `~/sav/results/test/`. 
 
 ---
 
@@ -79,6 +79,8 @@ If you use this code in your research, please cite our paper:
   month     = may
 }
 ```
+
+For the full set of configurations used in the paper, see the [scripts/](scripts/) folder.
 
 ---
 
