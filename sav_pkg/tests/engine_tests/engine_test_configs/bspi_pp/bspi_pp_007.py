@@ -29,15 +29,16 @@ as_graph_info = ASGraphInfo(
         CPLink(provider_asn=12,  customer_asn=13),
         CPLink(provider_asn=13,  customer_asn=1),
         CPLink(provider_asn=11,  customer_asn=14),
+        CPLink(provider_asn=12,  customer_asn=7),
         CPLink(provider_asn=14,  customer_asn=3),
     ]),
 )
 
 desc = "Path inference: only AS11 (bilateral peer of AS12) adopts ASRA." 
 
-bspi_pp_005 = EngineTestConfig(
+bspi_pp_007 = EngineTestConfig(
     SimulationEngineCls=SAVSimulationEngine,
-    name="bspi_pp_005",
+    name="bspi_pp_007",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,

@@ -20,9 +20,7 @@ as_graph_info = ASGraphInfo(
         PeerLink(11, 12),
     }),
     customer_provider_links=frozenset([
-        CPLink(provider_asn=5,  customer_asn=2),
-        CPLink(provider_asn=7,  customer_asn=5),
-        CPLink(provider_asn=11, customer_asn=7),
+        CPLink(provider_asn=11, customer_asn=2),
         CPLink(provider_asn=12, customer_asn=8),
         CPLink(provider_asn=8,  customer_asn=6),
         CPLink(provider_asn=6,  customer_asn=2),
@@ -33,11 +31,11 @@ as_graph_info = ASGraphInfo(
     ]),
 )
 
-desc = "Path inference: only AS11 (bilateral peer of AS12) adopts ASRA." 
+desc = "False postiive test: Prefence of relationship first over shortest path" 
 
-bspi_pp_005 = EngineTestConfig(
+bspi_pp_008 = EngineTestConfig(
     SimulationEngineCls=SAVSimulationEngine,
-    name="bspi_pp_005",
+    name="bspi_pp_008",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,

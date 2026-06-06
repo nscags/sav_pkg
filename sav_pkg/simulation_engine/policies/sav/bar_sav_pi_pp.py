@@ -424,28 +424,35 @@ class BAR_SAV_PI_PP:
             best_dist: int | None = None
             best_providers: set[int] = set()
 
-            def update(candidate_dist: int, candidate_providers: set[int]) -> None:
-                nonlocal best_dist, best_providers
-                if best_dist is None or candidate_dist < best_dist:
-                    best_dist = candidate_dist
-                    best_providers = set(candidate_providers)
-                elif candidate_dist == best_dist:
-                    best_providers.update(candidate_providers)
-
-            # AS y is in the provider cone of both F and O
+            # Case A: shared provider — always preferred (customer route in BGP)
+            # Take this directly without comparing to Case B distance
             if y_asn in D_f:
-                update(D_f[y_asn], set(P_f[y_asn]))
+                best_dist = D_f[y_asn]
+                best_providers = set(P_f[y_asn])
 
-            # AS y is a bilateral peer of an AS in F's provider cone
-            if y_as is not None and isinstance(y_as.policy, ASRA):
-                for peer_asn in y_as.peer_asns:
-                    if peer_asn in D_f:
-                        update(D_f[peer_asn] + 1, set(P_f[peer_asn]))
+            # Case B: peer crossing — only if Case A found nothing
+            # BGP prefers customer routes over peer routes
+            if not best_providers:
+                if y_as is not None and isinstance(y_as.policy, ASRA):
+                    for peer_asn in y_as.peer_asns:
+                        if peer_asn in D_f:
+                            candidate_dist = D_f[peer_asn] + 1
+                            if best_dist is None or candidate_dist < best_dist:
+                                best_dist = candidate_dist
+                                best_providers = set(P_f[peer_asn])
+                            elif candidate_dist == best_dist:
+                                best_providers.update(P_f[peer_asn])
 
-            # AS y does not connect to F's provider cone
+            # Case C: propagation — distance comparison prevents longer paths
+            # from contaminating shorter ones
             for p_asn, p_dist in o_dist.items():
                 if p_dist == o_dist[y_asn] + 1 and p_asn in D_o:
-                    update(D_o[p_asn] + 1, P_o[p_asn])
+                    candidate_dist = D_o[p_asn] + 1
+                    if best_dist is None or candidate_dist < best_dist:
+                        best_dist = candidate_dist
+                        best_providers = set(P_o[p_asn])
+                    elif candidate_dist == best_dist:
+                        best_providers.update(P_o[p_asn])
 
             if best_dist is not None:
                 D_o[y_asn] = best_dist
@@ -456,5 +463,5 @@ class BAR_SAV_PI_PP:
         # print(f"origin_asn in P_o: {origin_asn in P_o}", flush=True)
         if origin_asn in P_o:
             return frozenset(P_o[origin_asn])
-
+        
         return None

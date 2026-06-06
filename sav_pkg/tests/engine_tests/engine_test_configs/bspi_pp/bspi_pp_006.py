@@ -16,7 +16,7 @@ from sav_pkg.enums import Prefixes
 
 
 
-as_graph_info_path_inference = ASGraphInfo(
+as_graph_info = ASGraphInfo(
     peer_links=frozenset({
         PeerLink(11, 12),
     }),
@@ -49,10 +49,10 @@ bspi_pp_006 = EngineTestConfig(
         override_anycast_server_asns=frozenset({1}),
         override_sav_asns=frozenset({2}),
         hardcoded_asn_cls_dict=frozendict({
-            11: ASRAFull,
+            12: ASRAFull,
         }),
     ),
-    as_graph_info=as_graph_info_path_inference,
+    as_graph_info=as_graph_info,
     DiagramCls=SAVDiagramDSR,
     ASGraphAnalyzerCls=SAVASGraphAnalyzer,
     GraphDataAggregatorCls=SAVMetricTracker,
