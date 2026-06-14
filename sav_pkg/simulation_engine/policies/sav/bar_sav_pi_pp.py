@@ -179,7 +179,7 @@ class BAR_SAV_PI_PP:
 
         as_dict = engine.as_graph.as_dict
         inferred: dict[int, set[int]] = defaultdict(set)
- 
+
         as_paths: set[tuple[int, ...]] = set()
         for provider_asn in as_obj.provider_asns:
             provider_rib = as_obj.policy.ribs_in.data.get(provider_asn, {})
@@ -188,76 +188,99 @@ class BAR_SAV_PI_PP:
                     ann_info.unprocessed_ann, ann_info.recv_relationship
                 ):
                     as_paths.add(ann_info.unprocessed_ann.as_path)
- 
-        for as_path in as_paths: 
+
+        for as_path in as_paths:
             if len(as_path) < 2:
                 continue
 
-            # check if Tier-1 AS(es) exist in the AS path
-            tier1_indices = [
-                i for i, asn in enumerate(as_path) if asn in tier1_asns
-            ]
- 
-            if tier1_indices:
-                peak_left = tier1_indices[0]
-                peak_right = tier1_indices[-1]
- 
+            path_asns = set(as_path)
+
+            # Find "top" ASes in the path: either Tier-1 ASes, or ASes with ASPA
+            # records listing none of their path neighbors as providers.
+            # These are the candidates for the peak.
+            top_indices = []
+            for i, asn in enumerate(as_path):
+                as_obj_i = as_dict.get(asn)
+                if asn in tier1_asns:
+                    top_indices.append(i)
+                elif (as_obj_i is not None
+                    and isinstance(as_obj_i.policy, ASPA)
+                    and len(as_obj_i.provider_asns & path_asns) == 0):
+                    # ASPA published but no path neighbors are providers
+                    top_indices.append(i)
+
+            if len(top_indices) >= 2:
+                # Bilateral peer (cases b/c): two top ASes connected by a peer link.
+                # All links to the left of the first top AS are UP.
+                # All links to the right of the last top AS are DOWN.
+                peak_left = top_indices[0]
+                peak_right = top_indices[-1]
+
                 for i in range(peak_left):
                     inferred[as_path[i]].add(as_path[i + 1])
- 
+
                 for i in range(peak_right, len(as_path) - 1):
                     inferred[as_path[i + 1]].add(as_path[i])
- 
+
                 continue
- 
-            # no Tier-1 in path: classify each consecutive link as UP, DOWN,
-            # PEER, or AMBIGUOUS using published records
+
+            elif len(top_indices) == 1:
+                # Partial peak (cases a/b): one top AS confirmed as part of peak.
+                # Immediate left and right neighbor links remain AMBIGUOUS.
+                # All links further left (beyond immediate left neighbor) are UP.
+                # All links further right (beyond immediate right neighbor) are DOWN.
+                peak_idx = top_indices[0]
+
+                for i in range(peak_idx - 1):
+                    inferred[as_path[i]].add(as_path[i + 1])
+
+                for i in range(peak_idx + 1, len(as_path) - 1):
+                    inferred[as_path[i + 1]].add(as_path[i])
+
+                continue
+
+            # No top ASes found: classify each link using ASPA and ASRA records
             directions: list[str] = []
- 
+
             for i in range(len(as_path) - 1):
                 left_asn = as_path[i]
                 right_asn = as_path[i + 1]
                 left_as = as_dict.get(left_asn)
                 right_as = as_dict.get(right_asn)
- 
+
                 # UP: right is confirmed to be left's provider
                 is_up = (
-                    # ASPA on left says right is its provider
                     (left_as is not None
-                     and isinstance(left_as.policy, ASPA)
-                     and right_asn in left_as.provider_asns)
+                    and isinstance(left_as.policy, ASPA)
+                    and right_asn in left_as.provider_asns)
                     or
-                    # ASRA on right lists left as its customer 
                     (right_as is not None
-                     and isinstance(right_as.policy, ASRA)
-                     and left_asn in right_as.customer_asns)
+                    and isinstance(right_as.policy, ASRA)
+                    and left_asn in right_as.customer_asns)
                 )
- 
+
                 # DOWN: left is confirmed to be right's provider
                 is_down = (
-                    # ASPA on right says left is its provider
                     (right_as is not None
-                     and isinstance(right_as.policy, ASPA)
-                     and left_asn in right_as.provider_asns)
+                    and isinstance(right_as.policy, ASPA)
+                    and left_asn in right_as.provider_asns)
                     or
-                    # ASRA on left lists right as its customer 
                     (left_as is not None
-                     and isinstance(left_as.policy, ASRA)
-                     and right_asn in left_as.customer_asns)
+                    and isinstance(left_as.policy, ASRA)
+                    and right_asn in left_as.customer_asns)
                 )
- 
-                # PEER: if ASRA(left) lists right as peer, 
-                # or ASRA(right) lists left as peer
+
+                # PEER: one side confirming is sufficient
                 is_peer = (
                     (left_as is not None
-                     and isinstance(left_as.policy, ASRA)
-                     and right_asn in left_as.peer_asns)
+                    and isinstance(left_as.policy, ASRA)
+                    and right_asn in left_as.peer_asns)
                     or
                     (right_as is not None
-                     and isinstance(right_as.policy, ASRA)
-                     and left_asn in right_as.peer_asns)
+                    and isinstance(right_as.policy, ASRA)
+                    and left_asn in right_as.peer_asns)
                 )
- 
+
                 if is_peer:
                     directions.append("peer")
                 elif is_up and not is_down:
@@ -267,9 +290,10 @@ class BAR_SAV_PI_PP:
                 else:
                     directions.append("ambiguous")
 
+            # Bilateral peer case (a): ASRA confirms peer link — exact peak known.
+            # Override ambiguous links on both sides.
             for i, direction in enumerate(directions):
                 if direction == "peer":
-                    # confirmed exact peak — override ambiguous links on both sides
                     for j in range(i):
                         if directions[j] == "ambiguous":
                             directions[j] = "up"
@@ -277,10 +301,11 @@ class BAR_SAV_PI_PP:
                         if directions[j] == "ambiguous":
                             directions[j] = "down"
                     break
- 
-            # check if ASPA confirms peak
+
+            # Shared provider peak: ASPA or ASRA confirms some AS m is provider
+            # of both its left and right path neighbors.
             confirmed_peak_idx: int | None = None
- 
+
             for i in range(len(as_path) - 2):
                 mid_asn = as_path[i + 1]
                 left_asn = as_path[i]
@@ -288,64 +313,55 @@ class BAR_SAV_PI_PP:
                 left_as = as_dict.get(left_asn)
                 mid_as = as_dict.get(mid_asn)
                 right_as = as_dict.get(right_asn)
- 
-                # confirm that mid is left's provider
+
                 left_up = (
-                    # ASPA on left says mid is its provider
                     (left_as is not None
-                     and isinstance(left_as.policy, ASPA)
-                     and mid_asn in left_as.provider_asns)
+                    and isinstance(left_as.policy, ASPA)
+                    and mid_asn in left_as.provider_asns)
                     or
-                    # ASRA on mid lists left as customer
                     (mid_as is not None
-                     and isinstance(mid_as.policy, ASRA)
-                     and left_asn in mid_as.customer_asns)
+                    and isinstance(mid_as.policy, ASRA)
+                    and left_asn in mid_as.customer_asns)
                 )
- 
-                # confirm that mid is right's provider
+
                 right_up = (
-                    # ASPA on right says mid is its provider
                     (right_as is not None
-                     and isinstance(right_as.policy, ASPA)
-                     and mid_asn in right_as.provider_asns)
+                    and isinstance(right_as.policy, ASPA)
+                    and mid_asn in right_as.provider_asns)
                     or
-                    # ASRA on mid lists right as customer
                     (mid_as is not None
-                     and isinstance(mid_as.policy, ASRA)
-                     and right_asn in mid_as.customer_asns)
+                    and isinstance(mid_as.policy, ASRA)
+                    and right_asn in mid_as.customer_asns)
                 )
- 
+
                 if left_up and right_up:
                     confirmed_peak_idx = i + 1
                     break
- 
+
             if confirmed_peak_idx is not None:
-                # everything left of the peak is UP
                 for i in range(confirmed_peak_idx):
                     if directions[i] == "ambiguous":
                         directions[i] = "up"
                 if confirmed_peak_idx < len(directions):
                     if directions[confirmed_peak_idx] != "peer":
                         directions[confirmed_peak_idx] = "down"
-                # everything right of the peak is also DOWN
                 for i in range(confirmed_peak_idx + 1, len(directions)):
                     if directions[i] == "ambiguous":
                         directions[i] = "down"
- 
-            # walk from F's side, record confirmed UP relationships    
+
+            # Walk from F's side, record confirmed UP relationships
             for i, direction in enumerate(directions):
                 if direction != "up":
                     break
                 inferred[as_path[i]].add(as_path[i + 1])
- 
-            # walk from origin's side, record confirmed DOWN relationships                                                     
+
+            # Walk from origin's side, record confirmed DOWN relationships
             for i in range(len(directions) - 1, -1, -1):
                 if directions[i] != "down":
                     break
                 inferred[as_path[i + 1]].add(as_path[i])
- 
-        return {asn: frozenset(providers) for asn, providers in inferred.items()}
 
+        return {asn: frozenset(providers) for asn, providers in inferred.items()}
 
     @staticmethod
     def _compute_p_of_origin(
@@ -360,11 +376,11 @@ class BAR_SAV_PI_PP:
 
         as_dict = engine.as_graph.as_dict
 
-        # origin in filtering AS provider cone
+        # Shortcut: origin is directly in F's provider cone
         if origin_asn in D_f:
             return P_f[origin_asn]
 
-        # build O's provider cone (same logic as F's provider cone, starting from O)
+        # Build O's provider cone
         o_dist: dict[int, int] = {}
         o_dist[origin_asn] = 0
         current_layer: set[int] = set()
@@ -373,7 +389,6 @@ class BAR_SAV_PI_PP:
         if origin_as is None:
             return None
 
-        # get O's direct providers using ASPA, ASRA, and inferred relationships
         direct_providers: set[int] = set()
         if isinstance(origin_as.policy, ASPA):
             direct_providers.update(origin_as.provider_asns)
@@ -415,7 +430,7 @@ class BAR_SAV_PI_PP:
             current_layer = next_layer
             dist += 1
 
-        # process O's provider cone and determine P(O)
+        # Process O's provider cone top-down (furthest from origin first)
         D_o: dict[int, int] = {}
         P_o: dict[int, set[int]] = {}
 
@@ -424,14 +439,14 @@ class BAR_SAV_PI_PP:
             best_dist: int | None = None
             best_providers: set[int] = set()
 
-            # Case A: shared provider — always preferred (customer route in BGP)
-            # Take this directly without comparing to Case B distance
+            # Case A: Shared provider (customer route) — always preferred.
+            # If y is in F's provider cone, F is reachable from y via a customer link.
             if y_asn in D_f:
                 best_dist = D_f[y_asn]
                 best_providers = set(P_f[y_asn])
 
-            # Case B: peer crossing — only if Case A found nothing
-            # BGP prefers customer routes over peer routes
+            # Case B: Bilateral peer — only if Case A did not apply.
+            # Peer routes are preferred over provider routes but not customer routes.
             if not best_providers:
                 if y_as is not None and isinstance(y_as.policy, ASRA):
                     for peer_asn in y_as.peer_asns:
@@ -443,25 +458,23 @@ class BAR_SAV_PI_PP:
                             elif candidate_dist == best_dist:
                                 best_providers.update(P_f[peer_asn])
 
-            # Case C: propagation — distance comparison prevents longer paths
-            # from contaminating shorter ones
-            for p_asn, p_dist in o_dist.items():
-                if p_dist == o_dist[y_asn] + 1 and p_asn in D_o:
-                    candidate_dist = D_o[p_asn] + 1
-                    if best_dist is None or candidate_dist < best_dist:
-                        best_dist = candidate_dist
-                        best_providers = set(P_o[p_asn])
-                    elif candidate_dist == best_dist:
-                        best_providers.update(P_o[p_asn])
+            # Case C: Propagation — only if neither Case A nor Case B applied.
+            # Inherit the best route from y's provider in O's cone already processed.
+            if not best_providers:
+                for p_asn, p_dist in o_dist.items():
+                    if p_dist == o_dist[y_asn] + 1 and p_asn in D_o:
+                        candidate_dist = D_o[p_asn] + 1
+                        if best_dist is None or candidate_dist < best_dist:
+                            best_dist = candidate_dist
+                            best_providers = set(P_o[p_asn])
+                        elif candidate_dist == best_dist:
+                            best_providers.update(P_o[p_asn])
 
             if best_dist is not None:
                 D_o[y_asn] = best_dist
                 P_o[y_asn] = best_providers
 
-        # print(f"P_o: {P_o}", flush=True)
-        # print(f"origin_asn: {origin_asn}", flush=True)
-        # print(f"origin_asn in P_o: {origin_asn in P_o}", flush=True)
         if origin_asn in P_o:
             return frozenset(P_o[origin_asn])
-        
+
         return None
