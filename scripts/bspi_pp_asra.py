@@ -46,7 +46,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
-                scenario_label="aspa_0",
+                scenario_label="asra_0",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -58,7 +58,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
-                scenario_label="aspa_10",
+                scenario_label="asra_10",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -70,7 +70,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
-                scenario_label="aspa_20",
+                scenario_label="asra_20",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -82,7 +82,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
-                scenario_label="aspa_50",
+                scenario_label="asra_50",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -94,7 +94,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
-                scenario_label="aspa_80",
+                scenario_label="asra_80",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -106,7 +106,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
-                scenario_label="aspa_99",
+                scenario_label="asra_99",
             ),
         ),
         output_dir=Path(f"~/sav/results/5r_200t_e2a_bspi_pp_asra").expanduser(),

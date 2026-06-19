@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -J bspi_pp_aspa                                      # Name of program
-#SBATCH -o log_bspi_pp_aspa.out                              # Name of output file
+#SBATCH -J bspi_pp_test                                      # Name of program
+#SBATCH -o log_bspi_pp_test.out                              # Name of output file
 #SBATCH -p lo-core                                  # Partition (general, lo-core)
 #SBATCH --time=72:00:00                             # Timeout after 72 hours (lo-core), 12 hours (general)
 #SBATCH -n 20                                       # Asking for cores
@@ -18,4 +18,4 @@ export PYTHONHASHSEED=$SLURM_ARRAY_TASK_ID
 # PYTHONHASHSEED=$SLURM_TASK_ID
 
 # Run the simulation
-python3 ~/sav/sav_pkg/scripts/bspi_pp_aspa.py
+python3 ~/sav/sav_pkg/scripts/bspi_pp_test.py
