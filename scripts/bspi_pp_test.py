@@ -38,6 +38,16 @@ def main():
         scenario_configs=(
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
+                BasePolicyCls=BGPFull,
+                BaseSAVPolicyCls=BAR_SAV_PI_PP,
+                victim_default_adopters=True,
+                victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                reflector_default_adopters=True,
+                num_reflectors=1,
+                scenario_label="bgp",
+            ),
+            SAVScenarioConfig(
+                ScenarioCls=SAVScenario,
                 BasePolicyCls=ASRAFull,
                 BaseSAVPolicyCls=BAR_SAV_PI_PP,
                 victim_default_adopters=True,
@@ -45,7 +55,7 @@ def main():
                 reflector_default_adopters=True,
                 reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
                 num_reflectors=1,
-                scenario_label="asra_99",
+                scenario_label="asra",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
@@ -56,10 +66,10 @@ def main():
                 reflector_default_adopters=True,
                 reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
                 num_reflectors=1,
-                scenario_label="aspa_99",
+                scenario_label="aspa",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_10t_e2a_bspi_pp_test").expanduser(),
+        output_dir=Path(f"~/sav/results/1r_10t_e2a_bspi_pp_test").expanduser(),
         num_trials=10,
         parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,

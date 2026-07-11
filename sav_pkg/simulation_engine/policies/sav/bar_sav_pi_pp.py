@@ -59,23 +59,24 @@ class BAR_SAV_PI_PP:
         # print(f"Tier-1 ASes: {tier1_asns}", flush=True)
 
         # infer relationships from BGP announcements, ASPA, and ASRA
-        inferred_relationships, ambiguous_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
+        inferred_provider_relationships, inferred_peer_relationships, ambiguous_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
             as_obj, engine, tier1_asns
         )
-        # print(f"Inferred Relationships: {inferred_relationships}", flush=True)
-        # print(f"Ambiguous Relationships: {ambiguous_relationships}", flush=True)
+        print(f"Inferred Provider Relationships: {inferred_provider_relationships}", flush=True)
+        print(f"Inferred Peer Relationships: {inferred_peer_relationships}", flush=True)
+        print(f"Ambiguous Relationships: {ambiguous_relationships}", flush=True)
 
         # Build D_f and P_f for F's provider cone                   
         D_f, P_f = BAR_SAV_PI_PP._get_provider_cone(
-            as_obj, engine, tier1_asns, inferred_relationships
+            as_obj, engine, inferred_provider_relationships
         )
-        # print(f"D_f: {D_f}", flush=True)
-        # print(f"P_f: {P_f}", flush=True)
+        print(f"D_f: {D_f}", flush=True)
+        print(f"P_f: {P_f}", flush=True)
 
         # For each origin compute P(O) and check prev_hop
         for origin_asn in origin_asns:
             p_of_o = BAR_SAV_PI_PP._compute_p_of_origin(
-                origin_asn, as_obj, engine, D_f, P_f, tier1_asns, inferred_relationships, ambiguous_relationships
+                origin_asn, as_obj, engine, D_f, P_f, inferred_provider_relationships, inferred_peer_relationships, ambiguous_relationships
             )
             if p_of_o is None:
                 return True
@@ -123,8 +124,18 @@ class BAR_SAV_PI_PP:
     ) -> dict[int, frozenset[int]]:
 
         as_dict = engine.as_graph.as_dict
-        inferred: dict[int, set[int]] = defaultdict(set)
+        inferred_providers: dict[int, set[int]] = defaultdict(set)
+        inferred_peers: dict[int, set[int]] = defaultdict(set)
         ambiguous: dict[int, set[int]] = defaultdict(set)
+
+        # AS know their neighbors
+        for provider_asn in as_obj.provider_asns:
+            inferred_providers[as_obj.asn].add(provider_asn)
+        for customer_asn in as_obj.customer_asns:
+            inferred_providers[customer_asn].add(as_obj.asn)
+        for peer_asn in as_obj.peer_asns:
+            inferred_peers[as_obj.asn].add(peer_asn)
+            inferred_peers[peer_asn].add(as_obj.asn)
 
         # get all AS paths from announcements received on a provider interface
         as_paths: set[tuple[int, ...]] = set()
@@ -176,10 +187,10 @@ class BAR_SAV_PI_PP:
                 if left_up and right_down:
                     confirmed_peak = True
                     for j in range(i + 1):
-                        inferred[as_path[j]].add(as_path[j + 1])
+                        inferred_providers[as_path[j]].add(as_path[j + 1])
                     for j in range(i + 1, len(as_path) - 1):
-                        inferred[as_path[j + 1]].add(as_path[j])
-                    # print(inferred, flush=True)
+                        inferred_providers[as_path[j + 1]].add(as_path[j])
+                    # print(inferred_providers, flush=True)
                     break
 
             # we have determined the peak in the path, we do not need to check the other potential peaks
@@ -206,9 +217,11 @@ class BAR_SAV_PI_PP:
                 if is_peer:
                     confirmed_peak = True
                     for j in range(i):
-                        inferred[as_path[j]].add(as_path[j + 1])
+                        inferred_providers[as_path[j]].add(as_path[j + 1])
                     for j in range(i + 1, len(as_path) - 1):
-                        inferred[as_path[j + 1]].add(as_path[j])
+                        inferred_providers[as_path[j + 1]].add(as_path[j])
+                    inferred_peers[as_path[i]].add(as_path[i + 1])
+                    inferred_peers[as_path[i + 1]].add(as_path[i])
                     break
 
             if confirmed_peak:
@@ -243,9 +256,11 @@ class BAR_SAV_PI_PP:
                     )
 
                 for i in range(peak_left):
-                    inferred[as_path[i]].add(as_path[i + 1])
+                    inferred_providers[as_path[i]].add(as_path[i + 1])
                 for i in range(peak_right, len(as_path) - 1):
-                    inferred[as_path[i + 1]].add(as_path[i])
+                    inferred_providers[as_path[i + 1]].add(as_path[i])
+                inferred_peers[as_path[peak_left]].add(as_path[peak_right])
+                inferred_peers[as_path[peak_right]].add(as_path[peak_left])
                 continue
             elif len(top_indices) > 2:
                 raise ValueError(f"More than 2 top ASes in the path? {top_indices}")
@@ -259,9 +274,9 @@ class BAR_SAV_PI_PP:
                 # All links further right (beyond immediate right neighbor) are DOWN
                 peak_idx = top_indices[0]
                 for i in range(peak_idx - 1):
-                    inferred[as_path[i]].add(as_path[i + 1])
+                    inferred_providers[as_path[i]].add(as_path[i + 1])
                 for i in range(peak_idx + 1, len(as_path) - 1):
-                    inferred[as_path[i + 1]].add(as_path[i])
+                    inferred_providers[as_path[i + 1]].add(as_path[i])
 
             # 5. Directional inference
             link_types: list[str] = []
@@ -297,8 +312,11 @@ class BAR_SAV_PI_PP:
                     link_types.append("down")
                 else:
                     link_types.append("ambiguous")
-                    if (as_path[i + 1] not in inferred.get(as_path[i], set())
-                        and as_path[i] not in inferred.get(as_path[i + 1], set())):
+                    if (as_path[i] != as_obj.asn
+                        and as_path[i + 1] != as_obj.asn
+                        and as_path[i + 1] not in inferred_providers.get(as_path[i], set())
+                        and as_path[i] not in inferred_providers.get(as_path[i + 1], set())
+                        and as_path[i + 1] not in inferred_peers.get(as_path[i], set())):
                         ambiguous[as_path[i]].add(as_path[i + 1])
                         ambiguous[as_path[i + 1]].add(as_path[i])
 
@@ -323,15 +341,16 @@ class BAR_SAV_PI_PP:
             # Record DOWN relationships from leftmost_down to end of path
             if leftmost_down is not None:
                 for i in range(leftmost_down, len(as_path) - 1):
-                    inferred[as_path[i + 1]].add(as_path[i])
+                    inferred_providers[as_path[i + 1]].add(as_path[i])
 
             # Record UP relationships from start of path to rightmost_up
             if rightmost_up is not None:
                 for i in range(rightmost_up + 1):
-                    inferred[as_path[i]].add(as_path[i + 1])
+                    inferred_providers[as_path[i]].add(as_path[i + 1])
 
         return (
-            {asn: frozenset(providers) for asn, providers in inferred.items()},
+            {asn: frozenset(providers) for asn, providers in inferred_providers.items()},
+            {asn: frozenset(peers) for asn, peers in inferred_peers.items()},
             {asn: frozenset(neighbors) for asn, neighbors in ambiguous.items()}
         )
 
@@ -339,8 +358,7 @@ class BAR_SAV_PI_PP:
     def _get_provider_cone(
         as_obj: "AS",
         engine: "SimulationEngine",
-        tier1_asns: frozenset[int],
-        inferred_relationships: dict[int, frozenset[int]],
+        inferred_provider_relationships: dict[int, frozenset[int]],
     ) -> tuple[dict[int, int], dict[int, frozenset[int]]]:
 
         as_dict = engine.as_graph.as_dict
@@ -377,7 +395,7 @@ class BAR_SAV_PI_PP:
 
                 # relationship was inferred from BGP announcements, ASPA, and ASRA 
                 candidate_providers.update(
-                    inferred_relationships.get(provider_asn, frozenset())
+                    inferred_provider_relationships.get(provider_asn, frozenset())
                 )
 
                 for grandparent_asn in candidate_providers:
@@ -401,8 +419,8 @@ class BAR_SAV_PI_PP:
         engine: "SimulationEngine",
         D_f: dict[int, int],
         P_f: dict[int, frozenset[int]],
-        tier1_asns: frozenset[int],
-        inferred_relationships: dict[int, frozenset[int]],
+        inferred_provider_relationships: dict[int, frozenset[int]],
+        inferred_peer_relationships: dict[int, frozenset[int]],
         ambiguous_relationships: dict[int, frozenset[int]],
     ) -> frozenset[int] | None:
 
@@ -428,7 +446,7 @@ class BAR_SAV_PI_PP:
             grandparent_as = as_dict.get(grandparent_asn)
             if grandparent_as is not None and isinstance(grandparent_as.policy, ASRA):
                 direct_providers.add(grandparent_asn)
-        direct_providers.update(inferred_relationships.get(origin_asn, frozenset()))
+        direct_providers.update(inferred_provider_relationships.get(origin_asn, frozenset()))
         # Ambiguous neighbors of origin are treated as potential providers
         direct_providers.update(ambiguous_relationships.get(origin_asn, frozenset()))
 
@@ -454,7 +472,7 @@ class BAR_SAV_PI_PP:
                     if grandparent_as is not None and isinstance(grandparent_as.policy, ASRA):
                         candidate_providers.add(grandparent_asn)
 
-                candidate_providers.update(inferred_relationships.get(provider_asn, frozenset()))
+                candidate_providers.update(inferred_provider_relationships.get(provider_asn, frozenset()))
                 # Ambiguous neighbors are treated as potential providers
                 candidate_providers.update(ambiguous_relationships.get(provider_asn, frozenset()))
 
@@ -486,6 +504,15 @@ class BAR_SAV_PI_PP:
             if not best_providers:
                 if y_as is not None and isinstance(y_as.policy, ASRA):
                     for peer_asn in y_as.peer_asns:
+                        if peer_asn in D_f:
+                            candidate_dist = D_f[peer_asn] + 1
+                            if best_dist is None or candidate_dist < best_dist:
+                                best_dist = candidate_dist
+                                best_providers = set(P_f[peer_asn])
+                            elif candidate_dist == best_dist:
+                                best_providers.update(P_f[peer_asn])
+                else:
+                    for peer_asn in inferred_peer_relationships.get(y_asn, frozenset()):
                         if peer_asn in D_f:
                             candidate_dist = D_f[peer_asn] + 1
                             if best_dist is None or candidate_dist < best_dist:

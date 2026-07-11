@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -J bspi_pp_test                                      # Name of program
 #SBATCH -o log_bspi_pp_test.out                              # Name of output file
-#SBATCH -p lo-core                                  # Partition (general, lo-core)
-#SBATCH --time=72:00:00                             # Timeout after 72 hours (lo-core), 12 hours (general)
+# #SBATCH -p lo-core                                  # Partition (general, lo-core)
+# #SBATCH --time=72:00:00                             # Timeout after 72 hours (lo-core), 12 hours (general)
 #SBATCH -n 20                                       # Asking for cores
 #SBATCH --mail-type=ALL                             # Event(s) that triggers email notification (BEGIN,END,FAIL,ALL)
 #SBATCH --mail-user=nicholas.scaglione@uconn.edu    # Destination email address
