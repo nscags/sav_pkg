@@ -62,16 +62,16 @@ class BAR_SAV_PI_PP:
         inferred_provider_relationships, inferred_peer_relationships, ambiguous_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
             as_obj, engine, tier1_asns
         )
-        print(f"Inferred Provider Relationships: {inferred_provider_relationships}", flush=True)
-        print(f"Inferred Peer Relationships: {inferred_peer_relationships}", flush=True)
-        print(f"Ambiguous Relationships: {ambiguous_relationships}", flush=True)
+        # print(f"Inferred Provider Relationships: {inferred_provider_relationships}", flush=True)
+        # print(f"Inferred Peer Relationships: {inferred_peer_relationships}", flush=True)
+        # print(f"Ambiguous Relationships: {ambiguous_relationships}", flush=True)
 
         # Build D_f and P_f for F's provider cone                   
         D_f, P_f = BAR_SAV_PI_PP._get_provider_cone(
             as_obj, engine, inferred_provider_relationships
         )
-        print(f"D_f: {D_f}", flush=True)
-        print(f"P_f: {P_f}", flush=True)
+        # print(f"D_f: {D_f}", flush=True)
+        # print(f"P_f: {P_f}", flush=True)
 
         # For each origin compute P(O) and check prev_hop
         for origin_asn in origin_asns:
@@ -113,7 +113,6 @@ class BAR_SAV_PI_PP:
         for ann_info in as_obj.policy.ribs_in.get_ann_infos(source_prefix):
             origin_asns.add(ann_info.unprocessed_ann.origin)
         
-        # print(f"Origin ASNs: {origin_asns}")
         return frozenset(origin_asns)
 
     @staticmethod
@@ -266,7 +265,6 @@ class BAR_SAV_PI_PP:
                 raise ValueError(f"More than 2 top ASes in the path? {top_indices}")
 
             # 4. Partial peak found via 1 Tier-1 or ASPA AS in path 
-
             elif len(top_indices) == 1:
                 # Partial peak: one top AS confirmed as part of peak
                 # Immediate left and right neighbor links remain AMBIGUOUS
@@ -312,6 +310,35 @@ class BAR_SAV_PI_PP:
                     link_types.append("down")
                 else:
                     link_types.append("ambiguous")
+
+            # Find leftmost DOWN and rightmost UP
+            leftmost_down: int | None = None
+            for i, lt in enumerate(link_types):
+                if lt == "down":
+                    leftmost_down = i
+                    break
+
+            rightmost_up: int | None = None
+            for i in range(len(link_types) - 1, -1, -1):
+                if link_types[i] == "up":
+                    rightmost_up = i
+                    break
+
+            if leftmost_down is not None:
+                for i in range(leftmost_down, len(link_types)):
+                    link_types[i] = "down"
+
+            if rightmost_up is not None:
+                for i in range(rightmost_up + 1):
+                    link_types[i] = "up"
+
+            for i, lt in enumerate(link_types):
+                if lt == "up":
+                    inferred_providers[as_path[i]].add(as_path[i + 1])
+                elif lt == "down":
+                    inferred_providers[as_path[i + 1]].add(as_path[i])
+                else:
+                    # Only add to ambiguous if not already confirmed via another path
                     if (as_path[i] != as_obj.asn
                         and as_path[i + 1] != as_obj.asn
                         and as_path[i + 1] not in inferred_providers.get(as_path[i], set())
@@ -319,34 +346,6 @@ class BAR_SAV_PI_PP:
                         and as_path[i + 1] not in inferred_peers.get(as_path[i], set())):
                         ambiguous[as_path[i]].add(as_path[i + 1])
                         ambiguous[as_path[i + 1]].add(as_path[i])
-
-            # Find the leftmost confirmed DOWN link
-            # Everything from here to the end of the path is DOWN since
-            # DOWN -> UP -> DOWN would be a valley
-            leftmost_down: int | None = None
-            for i, lt in enumerate(link_types):
-                if lt == "down":
-                    leftmost_down = i
-                    break
-
-            # Find the rightmost confirmed UP link
-            # Everything from the start to here is UP since
-            # UP -> DOWN -> UP would also be a valley
-            rightmost_up: int | None = None
-            for i in range(len(link_types) - 1, -1, -1):
-                if link_types[i] == "up":
-                    rightmost_up = i
-                    break
-
-            # Record DOWN relationships from leftmost_down to end of path
-            if leftmost_down is not None:
-                for i in range(leftmost_down, len(as_path) - 1):
-                    inferred_providers[as_path[i + 1]].add(as_path[i])
-
-            # Record UP relationships from start of path to rightmost_up
-            if rightmost_up is not None:
-                for i in range(rightmost_up + 1):
-                    inferred_providers[as_path[i]].add(as_path[i + 1])
 
         return (
             {asn: frozenset(providers) for asn, providers in inferred_providers.items()},
