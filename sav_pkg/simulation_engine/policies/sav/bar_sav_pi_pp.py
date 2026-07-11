@@ -510,15 +510,14 @@ class BAR_SAV_PI_PP:
                                 best_providers = set(P_f[peer_asn])
                             elif candidate_dist == best_dist:
                                 best_providers.update(P_f[peer_asn])
-                else:
-                    for peer_asn in inferred_peer_relationships.get(y_asn, frozenset()):
-                        if peer_asn in D_f:
-                            candidate_dist = D_f[peer_asn] + 1
-                            if best_dist is None or candidate_dist < best_dist:
-                                best_dist = candidate_dist
-                                best_providers = set(P_f[peer_asn])
-                            elif candidate_dist == best_dist:
-                                best_providers.update(P_f[peer_asn])
+                for peer_asn in inferred_peer_relationships.get(y_asn, frozenset()):
+                    if peer_asn in D_f:
+                        candidate_dist = D_f[peer_asn] + 1
+                        if best_dist is None or candidate_dist < best_dist:
+                            best_dist = candidate_dist
+                            best_providers = set(P_f[peer_asn])
+                        elif candidate_dist == best_dist:
+                            best_providers.update(P_f[peer_asn])
 
             # Case C: Propagation only if neither Case A nor Case B applied.
             # Inherit the best route from y's provider in O's cone already processed.
