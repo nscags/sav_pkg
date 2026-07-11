@@ -22,8 +22,10 @@ class BAR_SAV_PP_wBSPI_PP(BaseSAVPolicy):
         engine: "SimulationEngine",
         scenario,
     ) -> bool:
-        # BAR-SAV++ w/BSPI++ defines BAR-SAV++ for customer and bilateral peer interfaces,
-        # and BAR-SAV-PI++ for provider interfaces
+        """
+        BAR-SAV++ w/BSPI++ defines BAR-SAV++ for customer and bilateral peer interfaces 
+        and BAR-SAV-PI++ for provider interfaces
+        """
         return BAR_SAV_PP_wBSPI_PP._validate(as_obj, source_prefix, prev_hop, engine, scenario)
 
     @staticmethod

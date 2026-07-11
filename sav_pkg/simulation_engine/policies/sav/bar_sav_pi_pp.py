@@ -50,18 +50,20 @@ class BAR_SAV_PI_PP:
         if not origin_asns:
             # did not receive any announcement for prefix + no ROA
             # this is essentially Loose uRPF
+            print("No Origin ASes. Disconnected.", flush=True)
             return False 
-        # print(f"Origin ASNs: {origin_asns}")
+        # print(f"Origin ASNs: {origin_asns}", flush=True)
 
         # Assume all ASes know the set of tier 1 ASes
         tier1_asns = frozenset(engine.as_graph.asn_groups[ASGroups.INPUT_CLIQUE.value])
         # print(f"Tier-1 ASes: {tier1_asns}", flush=True)
 
         # infer relationships from BGP announcements, ASPA, and ASRA
-        inferred_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
+        inferred_relationships, ambiguous_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
             as_obj, engine, tier1_asns
         )
         # print(f"Inferred Relationships: {inferred_relationships}", flush=True)
+        # print(f"Ambiguous Relationships: {ambiguous_relationships}", flush=True)
 
         # Build D_f and P_f for F's provider cone                   
         D_f, P_f = BAR_SAV_PI_PP._get_provider_cone(
@@ -73,7 +75,7 @@ class BAR_SAV_PI_PP:
         # For each origin compute P(O) and check prev_hop
         for origin_asn in origin_asns:
             p_of_o = BAR_SAV_PI_PP._compute_p_of_origin(
-                origin_asn, as_obj, engine, D_f, P_f, tier1_asns, inferred_relationships
+                origin_asn, as_obj, engine, D_f, P_f, tier1_asns, inferred_relationships, ambiguous_relationships
             )
             if p_of_o is None:
                 return True
@@ -95,13 +97,13 @@ class BAR_SAV_PI_PP:
         """
         origin_asns: set[int] = set()
 
-        # TODO: Add Aggregator Origin Validation (AOV) here
+        # TODO: Add Aggregator Prefix Authorization (APA) here
         # check and allow origins in which the validaing AS has 
         # received an announcement for source prefix. 
         # Add any ASes which have a ROA for the source prefix.
-        # If there exists an AOA for the source prefix: 
+        # If there exists an APA for the source prefix: 
         #   add any ASes which are authorized
-        #   remove ASes which have BGP announcement for source prefix, but not authorized with ROA or AOA
+        #   remove ASes which have BGP announcement for source prefix, but not authorized with ROA or APA
 
         net = ipaddress.ip_network(source_prefix, strict=False)
         for roa in Policy.roa_checker.get_relevant_roas(net):
@@ -122,6 +124,7 @@ class BAR_SAV_PI_PP:
 
         as_dict = engine.as_graph.as_dict
         inferred: dict[int, set[int]] = defaultdict(set)
+        ambiguous: dict[int, set[int]] = defaultdict(set)
 
         # get all AS paths from announcements received on a provider interface
         as_paths: set[tuple[int, ...]] = set()
@@ -160,7 +163,7 @@ class BAR_SAV_PI_PP:
                     and left_asn in mid_as.customer_asns)
                 )
 
-                right_up = (
+                right_down = (
                     (right_as is not None
                     and isinstance(right_as.policy, ASPA)
                     and mid_asn in right_as.provider_asns)
@@ -170,12 +173,13 @@ class BAR_SAV_PI_PP:
                     and right_asn in mid_as.customer_asns)
                 )
 
-                if left_up and right_up:
+                if left_up and right_down:
                     confirmed_peak = True
                     for j in range(i + 1):
                         inferred[as_path[j]].add(as_path[j + 1])
                     for j in range(i + 1, len(as_path) - 1):
                         inferred[as_path[j + 1]].add(as_path[j])
+                    # print(inferred, flush=True)
                     break
 
             # we have determined the peak in the path, we do not need to check the other potential peaks
@@ -225,17 +229,26 @@ class BAR_SAV_PI_PP:
                     # ASPA published but no path neighbors are providers
                     top_indices.append(i)
 
-            if len(top_indices) >= 2:
+            if len(top_indices) == 2:
                 # Bilateral peer: two top ASes connected by a peer link
                 # All links to the left of the first top AS are UP
                 # All links to the right of the last top AS are DOWN
                 peak_left = top_indices[0]
                 peak_right = top_indices[-1]
+
+                # the two top ASes must be adjacent in the path
+                if peak_right - peak_left != 1:
+                    raise ValueError(
+                        f"Two top ASes found at indices {peak_left} and {peak_right} but they are not adjacent in the path: {as_path}"
+                    )
+
                 for i in range(peak_left):
                     inferred[as_path[i]].add(as_path[i + 1])
                 for i in range(peak_right, len(as_path) - 1):
                     inferred[as_path[i + 1]].add(as_path[i])
                 continue
+            elif len(top_indices) > 2:
+                raise ValueError(f"More than 2 top ASes in the path? {top_indices}")
 
             # 4. Partial peak found via 1 Tier-1 or ASPA AS in path 
 
@@ -249,7 +262,6 @@ class BAR_SAV_PI_PP:
                     inferred[as_path[i]].add(as_path[i + 1])
                 for i in range(peak_idx + 1, len(as_path) - 1):
                     inferred[as_path[i + 1]].add(as_path[i])
-                continue
 
             # 5. Directional inference
             link_types: list[str] = []
@@ -285,6 +297,10 @@ class BAR_SAV_PI_PP:
                     link_types.append("down")
                 else:
                     link_types.append("ambiguous")
+                    if (as_path[i + 1] not in inferred.get(as_path[i], set())
+                        and as_path[i] not in inferred.get(as_path[i + 1], set())):
+                        ambiguous[as_path[i]].add(as_path[i + 1])
+                        ambiguous[as_path[i + 1]].add(as_path[i])
 
             # Find the leftmost confirmed DOWN link
             # Everything from here to the end of the path is DOWN since
@@ -314,7 +330,10 @@ class BAR_SAV_PI_PP:
                 for i in range(rightmost_up + 1):
                     inferred[as_path[i]].add(as_path[i + 1])
 
-        return {asn: frozenset(providers) for asn, providers in inferred.items()}
+        return (
+            {asn: frozenset(providers) for asn, providers in inferred.items()},
+            {asn: frozenset(neighbors) for asn, neighbors in ambiguous.items()}
+        )
 
     @staticmethod
     def _get_provider_cone(
@@ -384,6 +403,7 @@ class BAR_SAV_PI_PP:
         P_f: dict[int, frozenset[int]],
         tier1_asns: frozenset[int],
         inferred_relationships: dict[int, frozenset[int]],
+        ambiguous_relationships: dict[int, frozenset[int]],
     ) -> frozenset[int] | None:
 
         as_dict = engine.as_graph.as_dict
@@ -409,6 +429,8 @@ class BAR_SAV_PI_PP:
             if grandparent_as is not None and isinstance(grandparent_as.policy, ASRA):
                 direct_providers.add(grandparent_asn)
         direct_providers.update(inferred_relationships.get(origin_asn, frozenset()))
+        # Ambiguous neighbors of origin are treated as potential providers
+        direct_providers.update(ambiguous_relationships.get(origin_asn, frozenset()))
 
         for p_asn in direct_providers:
             o_dist[p_asn] = 1
@@ -433,6 +455,8 @@ class BAR_SAV_PI_PP:
                         candidate_providers.add(grandparent_asn)
 
                 candidate_providers.update(inferred_relationships.get(provider_asn, frozenset()))
+                # Ambiguous neighbors are treated as potential providers
+                candidate_providers.update(ambiguous_relationships.get(provider_asn, frozenset()))
 
                 for p_asn in candidate_providers:
                     if p_asn not in o_dist:
@@ -481,6 +505,17 @@ class BAR_SAV_PI_PP:
                             best_providers = set(P_o[p_asn])
                         elif candidate_dist == best_dist:
                             best_providers.update(P_o[p_asn])
+
+            # Case D: handling ambiguous relationships
+            for amb_asn in ambiguous_relationships.get(y_asn, frozenset()):
+                if amb_asn in D_f:
+                    best_providers.update(P_f[amb_asn])
+                    if best_dist is None:
+                        best_dist = 0
+                elif amb_asn in P_o and P_o[amb_asn]:
+                    best_providers.update(P_o[amb_asn])
+                    if best_dist is None:
+                        best_dist = 0
 
             if best_dist is not None:
                 D_o[y_asn] = best_dist

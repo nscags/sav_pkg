@@ -15,7 +15,7 @@ from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyze
 from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_engine.policies.sav import (
-    BAR_SAV_PP_wBSPI_PP,
+    BAR_SAV_PI_PP,
 )
 
 
@@ -38,31 +38,29 @@ def main():
         scenario_configs=(
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
-                AdoptPolicyCls=ASRAFull,
-                ctrl_plane_percent_adoption=0.99,
+                BasePolicyCls=ASRAFull,
+                BaseSAVPolicyCls=BAR_SAV_PI_PP,
                 victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
                 num_reflectors=1,
                 scenario_label="asra_99",
             ),
             SAVScenarioConfig(
                 ScenarioCls=SAVScenario,
-                BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
-                AdoptPolicyCls=ASPAFull,
-                ctrl_plane_percent_adoption=0.99,
+                BasePolicyCls=ASPAFull,
+                BaseSAVPolicyCls=BAR_SAV_PI_PP,
                 victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
+                reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
                 num_reflectors=1,
                 scenario_label="aspa_99",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_e2a_bspi_pp_test").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/5r_10t_e2a_bspi_pp_test").expanduser(),
+        num_trials=10,
         parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         GraphDataAggregatorCls=SAVMetricTracker,
