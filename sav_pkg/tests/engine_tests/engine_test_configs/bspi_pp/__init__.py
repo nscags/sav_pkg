@@ -9,6 +9,7 @@ from .bspi_pp_007 import bspi_pp_007
 from .bspi_pp_008 import bspi_pp_008
 from .bspi_pp_009 import bspi_pp_009
 from .bspi_pp_010 import bspi_pp_010
+# from .bspi_pp_011 import bspi_pp_011
 
 bspi_pp_test_configs = [
     bspi_pp_000,
@@ -22,4 +23,5 @@ bspi_pp_test_configs = [
     bspi_pp_008,
     bspi_pp_009,
     bspi_pp_010,
+    # bspi_pp_011,
 ]

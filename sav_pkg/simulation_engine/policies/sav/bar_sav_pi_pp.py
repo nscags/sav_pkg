@@ -52,7 +52,6 @@ class BAR_SAV_PI_PP:
             # this is essentially Loose uRPF
             print("No Origin ASes. Disconnected.", flush=True)
             return False 
-        # print(f"Origin ASNs: {origin_asns}", flush=True)
 
         # Assume all ASes know the set of tier 1 ASes
         tier1_asns = frozenset(engine.as_graph.asn_groups[ASGroups.INPUT_CLIQUE.value])
@@ -82,6 +81,10 @@ class BAR_SAV_PI_PP:
                 return True
             if prev_hop.asn in p_of_o:
                 return True
+
+        # False positive
+        
+
 
         return False 
 
@@ -189,7 +192,6 @@ class BAR_SAV_PI_PP:
                         inferred_providers[as_path[j]].add(as_path[j + 1])
                     for j in range(i + 1, len(as_path) - 1):
                         inferred_providers[as_path[j + 1]].add(as_path[j])
-                    # print(inferred_providers, flush=True)
                     break
 
             # we have determined the peak in the path, we do not need to check the other potential peaks
@@ -235,18 +237,20 @@ class BAR_SAV_PI_PP:
                 as_obj_i = as_dict.get(asn)
                 if asn in tier1_asns:
                     top_indices.append(i)
-                elif (as_obj_i is not None
-                    and isinstance(as_obj_i.policy, ASPA)
-                    and len(as_obj_i.provider_asns & path_asns) == 0):
-                    # ASPA published but no path neighbors are providers
-                    top_indices.append(i)
+                elif (as_obj_i is not None and isinstance(as_obj_i.policy, ASPA)):
+                    left_neighbor = as_path[i - 1] if i > 0 else None
+                    right_neighbor = as_path[i + 1] if i < len(as_path) - 1 else None
+                    neighbors_in_path = {n for n in [left_neighbor, right_neighbor] if n is not None}
+                    if len(as_obj_i.provider_asns & neighbors_in_path) == 0:
+                        # ASPA does not list any neighboring AS on path as a provider = top AS
+                        top_indices.append(i)
 
             if len(top_indices) == 2:
                 # Bilateral peer: two top ASes connected by a peer link
                 # All links to the left of the first top AS are UP
                 # All links to the right of the last top AS are DOWN
                 peak_left = top_indices[0]
-                peak_right = top_indices[-1]
+                peak_right = top_indices[1]
 
                 # the two top ASes must be adjacent in the path
                 if peak_right - peak_left != 1:
@@ -275,6 +279,51 @@ class BAR_SAV_PI_PP:
                     inferred_providers[as_path[i]].add(as_path[i + 1])
                 for i in range(peak_idx + 1, len(as_path) - 1):
                     inferred_providers[as_path[i + 1]].add(as_path[i])
+
+                # Check immediate neighbors of top AS for ASPA adopters
+                # if both were ASPA adopters, then a previous condition would trigger
+                # (either shared provider or 2 top ASes depending on the topology)
+                # however, potentially one of the neighbors could be an ASPA adopter, 
+                # thus we can add a known relationship to the inferred set 
+                left_neighbor = as_path[peak_idx - 1] if peak_idx > 0 else None
+                left_as_obj = as_dict.get(left_neighbor)
+                right_neighbor = as_path[peak_idx + 1] if peak_idx < len(as_path) - 1 else None
+                right_as_obj = as_dict.get(right_neighbor)
+
+                if left_neighbor is not None:
+                    if as_path[peak_idx] in inferred_providers.get(left_neighbor, set()):
+                        pass  # already confirmed UP from another path
+                    elif left_neighbor in inferred_providers.get(as_path[peak_idx], set()):
+                        pass  # already confirmed DOWN from another path
+                    elif as_path[peak_idx] in inferred_peers.get(left_neighbor, set()):
+                        pass  # already confirmed peer from another path
+                    elif (left_as_obj is not None
+                        and isinstance(left_as_obj.policy, ASPA)
+                        and as_path[peak_idx] in left_as_obj.provider_asns):
+                        inferred_providers[left_neighbor].add(as_path[peak_idx])
+                    else:
+                        if left_neighbor != as_obj.asn and as_path[peak_idx] != as_obj.asn:
+                            ambiguous[left_neighbor].add(as_path[peak_idx])
+                            ambiguous[as_path[peak_idx]].add(left_neighbor)
+
+                if right_neighbor is not None:
+                    if as_path[peak_idx] in inferred_providers.get(right_neighbor, set()):
+                        pass  # already confirmed UP from another path
+                    elif right_neighbor in inferred_providers.get(as_path[peak_idx], set()):
+                        pass  # already confirmed DOWN from another path
+                    elif as_path[peak_idx] in inferred_peers.get(right_neighbor, set()):
+                        pass  # already confirmed peer from another path
+                    elif (right_as_obj is not None
+                        and isinstance(right_as_obj.policy, ASPA)
+                        and as_path[peak_idx] in right_as_obj.provider_asns):
+                        inferred_providers[right_neighbor].add(as_path[peak_idx])
+                    else:
+                        if right_neighbor != as_obj.asn and as_path[peak_idx] != as_obj.asn:
+                            ambiguous[right_neighbor].add(as_path[peak_idx])
+                            ambiguous[as_path[peak_idx]].add(right_neighbor)
+
+                # although not a confirmed peak, we do not need to do the directional inference if we have even a partial peak
+                continue
 
             # 5. Directional inference
             link_types: list[str] = []
