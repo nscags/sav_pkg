@@ -37,10 +37,10 @@ pip install bgpy_pkg
 | `EFP_A` | Enhanced Feasible-Path uRPF Algorithm A (EFP-A) | Customers |
 | `EFP_A_wPeers` | EFP-A, applied to customers and bilateral peers | Customers and Peers |
 | `EFP_B` | Enhanced Feasible-Path uRPF Algorithm B (EFP-B) | Customers |
-| `RFC8704` | RFC 8704 Security Recommendations | All
-| `BAR_SAV` | BAR-SAV | Customers and Peers
-| `BAR_SAV_PI` | BAR-SAV Provider Interfaces (BAR-SAV-PI) | Providers
-| `BAR_SAV_wBSPI` | BAR-SAV with BAR-SAV-PI | All
+| `RFC8704` | RFC 8704 Security Recommendations | All |
+| `BAR_SAV` | BAR-SAV | Customers and Peers |
+| `BAR_SAV_PI` | BAR-SAV Provider Interfaces (BAR-SAV-PI) | Providers |
+| `BAR_SAV_wBSPI` | BAR-SAV with BAR-SAV-PI | All |
 <!-- | `ProcedureX` | Procedure X | Customers and Peers -->
 <!-- | `BAR_SAV_PP` | BAR-SAV++ |
 | `BAR_SAV_PI_PP` | BAR-SAV-PI++ |
