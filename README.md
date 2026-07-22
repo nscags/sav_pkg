@@ -27,21 +27,21 @@ pip install bgpy_pkg
 
 ## Supported SAV Policies
 
-| Policy | Description |
-|--------|-------------|
-| `LooseuRPF` | Loose unicast Reverse Path Forwarding (uRPF) |
-| `StrictuRPF` | Strict uRPF |
-| `FeasiblePathuRPF` | Feasible-path uRPF |
-| `FeasiblePathuRPF_All` | Feasible-path uRPF, applied to all interfaces |
-| `FeasiblePathuRPF_OTC` | Feasible-path uRPF, applied only to customers |
-| `EFP_A` | Enhanced Feasible-Path uRPF Algorithm A (EFP-A) |
-| `EFP_A_wPeers` | EFP-A, applied to customers and bilateral peers |
-| `EFP_B` | Enhanced Feasible-Path uRPF Algorithm B (EFP-B) |
-| `RFC8704` | RFC 8704 Security Recommendations |
-| `BAR_SAV` | BAR-SAV |
-| `BAR_SAV_PI` | BAR-SAV Provider Interfaces (BAR-SAV-PI) |
-| `BAR_SAV_wBSPI` | BAR-SAV with BAR-SAV-PI |
-| `ProcedureX` | Procedure X |
+| Policy | Description | Applied Interface |
+|--------|-------------|-------------------|
+| `LooseuRPF` | Loose unicast Reverse Path Forwarding (uRPF) | All |
+| `StrictuRPF` | Strict uRPF | Customers and Peers |
+| `FeasiblePathuRPF` | Feasible-path uRPF | Customers and Peers |
+<!-- | `FeasiblePathuRPF_All` | Feasible-path uRPF, applied to all interfaces |
+| `FeasiblePathuRPF_OTC` | Feasible-path uRPF, applied only to customers | -->
+| `EFP_A` | Enhanced Feasible-Path uRPF Algorithm A (EFP-A) | Customers |
+| `EFP_A_wPeers` | EFP-A, applied to customers and bilateral peers | Customers and Peers |
+| `EFP_B` | Enhanced Feasible-Path uRPF Algorithm B (EFP-B) | Customers |
+| `RFC8704` | RFC 8704 Security Recommendations | All
+| `BAR_SAV` | BAR-SAV | Customers and Peers
+| `BAR_SAV_PI` | BAR-SAV Provider Interfaces (BAR-SAV-PI) | Providers
+| `BAR_SAV_wBSPI` | BAR-SAV with BAR-SAV-PI | All
+<!-- | `ProcedureX` | Procedure X | Customers and Peers -->
 <!-- | `BAR_SAV_PP` | BAR-SAV++ |
 | `BAR_SAV_PI_PP` | BAR-SAV-PI++ |
 | `BAR_SAV_PP_wBSPI_PP` | BAR-SAV++ w/BSPI++ | -->
