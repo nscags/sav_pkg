@@ -9,9 +9,9 @@ if TYPE_CHECKING:
 class BaseSAVPolicy(ABC):
     name: str = "No SAV"
 
+    @staticmethod
     @abstractmethod
     def validate(
-        self,
         as_obj: "AS",
         source_prefix: str,
         prev_hop: "AS",

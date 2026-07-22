@@ -17,8 +17,6 @@ from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetric
 from sav_pkg.simulation_engine.policies.sav import (
     BAR_SAV_PI_PP,
 )
-from sav_pkg.simulation_engine.policies.sav.fp_urpf_pi import FeasiblePathuRPF_PI
-
 
 def main():
     """
@@ -44,6 +42,7 @@ def main():
                 victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
+                num_attackers=0,
                 num_reflectors=1,
                 scenario_label="bgp",
             ),
@@ -55,6 +54,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_attackers=0,
                 num_reflectors=1,
                 scenario_label="asra",
             ),
@@ -66,13 +66,14 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_attackers=0,
                 num_reflectors=1,
                 scenario_label="aspa",
             ),
         ),
-        output_dir=Path(f"~/sav/results/1r_3t_e2a_bspi_pp_test_6").expanduser(),
-        num_trials=3,
-        parse_cpus=20,
+        output_dir=Path(f"~/sav/results/1r_5t_e2a_bspi_pp_test_7").expanduser(),
+        num_trials=5,
+        parse_cpus=10,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         GraphDataAggregatorCls=SAVMetricTracker,
     )

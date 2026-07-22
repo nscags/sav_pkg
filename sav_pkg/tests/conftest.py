@@ -18,7 +18,7 @@ def pytest_configure(config):
     # Prevent workers from running the same code
     if not hasattr(config, "workerinput"):
         # Caches CAIDA downloaded file only once before tests run
-        CAIDAASGraphCollector(dl_time=date(2025, 9, 1)).run()
+        CAIDAASGraphCollector().run()
 
 
 def pytest_sessionfinish(session, exitstatus):
