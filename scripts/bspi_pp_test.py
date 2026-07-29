@@ -71,9 +71,9 @@ def main():
                 scenario_label="aspa",
             ),
         ),
-        output_dir=Path(f"~/sav/results/1r_5t_e2a_bspi_pp_test_7").expanduser(),
+        output_dir=Path(f"~/sav/results/1r_5t_e2a_bspi_pp_test_8").expanduser(),
         num_trials=5,
-        parse_cpus=10,
+        parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         GraphDataAggregatorCls=SAVMetricTracker,
     )

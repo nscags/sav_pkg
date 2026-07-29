@@ -58,6 +58,9 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         inferred_provider_relationships, inferred_peer_relationships, ambiguous_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
             as_obj, engine, tier1_asns
         )
+        print(inferred_provider_relationships, flush=True)
+        print(inferred_peer_relationships, flush=True)
+        print(ambiguous_relationships, flush=True)
 
         # Build D_f and P_f for F's provider cone                   
         D_f, P_f = BAR_SAV_PI_PP._get_f_provider_cone(
@@ -78,7 +81,9 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
                 inferred_provider_relationships,
                 inferred_peer_relationships,
                 ambiguous_relationships,
+                scenario,
             )
+            print(p_of_s, flush=True)
             all_traces[source_asn] = trace
             if p_of_s is None:
                 return True
@@ -495,6 +500,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         inferred_provider_relationships: dict[int, frozenset[int]],
         inferred_peer_relationships: dict[int, frozenset[int]],
         ambiguous_relationships: dict[int, frozenset[int]],
+        scenario: "SAVScenario",
     ) -> tuple[frozenset[int] | None, list[str]]:
         """
         """
@@ -510,7 +516,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         if source_as is None:
             return None, trace
 
-        D_s: dict[int, int] = {source_asn: 0}
+        max_dist_from_s: dict[int, int] = {source_asn: 0} # just for processing order
         s_providers_of: dict[int, set[int]] = {}
         current_layer: set[int] = set()
 
@@ -526,7 +532,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
 
         s_providers_of[source_asn] = direct_providers
         for p_asn in direct_providers:
-            D_s[p_asn] = 1
+            max_dist_from_s[p_asn] = 1
             current_layer.add(p_asn)
 
         # construct the provider cone of the source
@@ -553,17 +559,15 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
                 s_providers_of[provider_asn] = candidate_providers
 
                 for p_asn in candidate_providers:
-                    if p_asn not in D_s:
-                        D_s[p_asn] = current_dist + 1
+                    if (p_asn not in max_dist_from_s) or (max_dist_from_s[p_asn] < current_dist + 1):
+                        max_dist_from_s[p_asn] = current_dist + 1
                         next_layer.add(p_asn)
-                    elif D_s[p_asn] > current_dist + 1:
-                        D_s[p_asn] = current_dist + 1
 
             current_layer = next_layer
             current_dist += 1
 
-        trace.append(f"[BSPI++ TRACE] source={source_asn} D_s={D_s}")
-        for asn in D_s:
+        trace.append(f"[BSPI++ TRACE] source={source_asn} max_dist_from_s={max_dist_from_s}")
+        for asn in max_dist_from_s:
             real_as = as_dict.get(asn)
             if real_as is None:
                 continue
@@ -578,34 +582,36 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
                 f"ambiguous={sorted(ambiguous_relationships.get(asn, frozenset()))}"
             )
 
-        P_s: dict[int, set[int]] = {}
+        P_s_confirmed: dict[int, set[int]] = {}
+        P_s_ambiguous: dict[int, set[int]] = {}
         D_s_f: dict[int, int] = {}
 
         # determine the best path from the source to F
-        for y_asn in sorted(D_s, key=lambda x: D_s[x], reverse=True):
+        for y_asn in sorted(max_dist_from_s, key=lambda x: max_dist_from_s[x], reverse=True):
             y_as = as_dict.get(y_asn)
             best_dist: int | None = None
-            best_f_providers: set[int] = set()
+            confirmed_p_f: set[int] = set()
+            ambiguous_p_f: set[int] = set()
             case_used: str = "NONE"
 
             # Case A: shared provider
             if y_asn in D_f:
                 best_dist = D_f[y_asn]
-                best_f_providers = set(P_f[y_asn])
+                confirmed_p_f = set(P_f[y_asn])
                 case_used = "A"
 
             # Case B: bilateral peer
-            if not best_f_providers:
+            if not confirmed_p_f:
                 if y_as is not None and isinstance(y_as.policy, ASRA):
                     for peer_asn in y_as.peer_asns:
                         if peer_asn in D_f:
                             candidate_dist = D_f[peer_asn] + 1
                             if best_dist is None or candidate_dist < best_dist:
                                 best_dist = candidate_dist
-                                best_f_providers = set(P_f[peer_asn])
+                                confirmed_p_f = set(P_f[peer_asn])
                                 case_used = f"B(ASRA,via={peer_asn})"
                             elif candidate_dist == best_dist:
-                                best_f_providers.update(P_f[peer_asn])
+                                confirmed_p_f.update(P_f[peer_asn])
                                 case_used = f"B(ASRA,merged,via={peer_asn})"
                 else:
                     for peer_asn in inferred_peer_relationships.get(y_asn, frozenset()):
@@ -613,61 +619,127 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
                             candidate_dist = D_f[peer_asn] + 1
                             if best_dist is None or candidate_dist < best_dist:
                                 best_dist = candidate_dist
-                                best_f_providers = set(P_f[peer_asn])
+                                confirmed_p_f = set(P_f[peer_asn])
                                 case_used = f"B(inferred,via={peer_asn})"
                             elif candidate_dist == best_dist:
-                                best_f_providers.update(P_f[peer_asn])
+                                confirmed_p_f.update(P_f[peer_asn])
                                 case_used = f"B(inferred,merged,via={peer_asn})"
 
             # Case C: propagation
-            if not best_f_providers:
+            if not confirmed_p_f:
                 for p_asn in s_providers_of.get(y_asn, set()):
-                    if p_asn in D_s_f:
-                        # algorithm A
-                        # candidate_dist = D_s_f[p_asn] + 1
-                        # if best_dist is None or candidate_dist < best_dist:
-                        #     best_dist = candidate_dist
-                        #     best_f_providers = set(P_s[p_asn])
-                        # elif candidate_dist == best_dist:
-                        #     best_f_providers.update(P_s[p_asn])
-                        
-                        # algorithm B
-                        p_dist = D_s_f[p_asn]
-                        if p_dist is not None:
-                            candidate_dist = p_dist + 1
-                            if best_dist is None or candidate_dist < best_dist:
-                                best_dist = candidate_dist
-                        best_f_providers.update(P_s[p_asn])
-                        case_used = f"C(via={p_asn})" if case_used == "NONE" else case_used + f"+C(via={p_asn})"
+                    # NOTE: this can be modified/optimized slightly
+                    ambiguous_p_f.update(P_s_ambiguous.get(p_asn, set()))
+                    p_dist = D_s_f.get(p_asn)
+                    if p_dist is None:
+                        continue
+                    candidate_dist = p_dist + 1
 
-            # add ambiguous connections
-            ambiguous_p_f = BAR_SAV_PI_PP._get_ambiguous_p_f(
+                    # algorithm a
+                    # if best_dist is None or candidate_dist < best_dist:
+                    #     best_dist = candidate_dist
+                    #     confirmed_p_f = set(P_s_confirmed[p_asn])
+                    # elif candidate_dist == best_dist:
+                    #     confirmed_p_f.update(P_s_confirmed[p_asn])
+
+                    # algorithm b
+                    if best_dist is None or candidate_dist < best_dist:
+                        best_dist = candidate_dist
+                    confirmed_p_f.update(P_s_confirmed[p_asn])
+
+            # y's own ambiguous connections
+            y_asn_ambiguous_p_f = BAR_SAV_PI_PP._get_ambiguous_p_f(
                 as_obj,
                 y_asn,
                 ambiguous_relationships,
             )
-            if ambiguous_p_f:
-                case_used += f"+ambiguous({sorted(ambiguous_p_f)})"
-            best_f_providers.update(ambiguous_p_f)
+            if y_asn_ambiguous_p_f:
+                ambiguous_p_f.update(y_asn_ambiguous_p_f)
+                case_used += f"+ambiguous({sorted(y_asn_ambiguous_p_f)})"
+
+            combined = confirmed_p_f | ambiguous_p_f
 
             trace.append(
-                f"[BSPI++ TRACE]   y={y_asn} dist={D_s[y_asn]} case={case_used} "
-                f"best_dist={best_dist} -> {sorted(best_f_providers) if best_f_providers else 'UNRESOLVED'}"
+                f"[BSPI++ TRACE]   y={y_asn} dist={max_dist_from_s[y_asn]} case={case_used} "
+                f"best_dist={best_dist} confirmed={sorted(confirmed_p_f)} "
+                f"ambiguous={sorted(ambiguous_p_f)} "
+                f"-> {sorted(combined) if combined else 'UNRESOLVED'}"
             )
 
-            if best_f_providers:
+            # GROUND TRUTH CHECK: y's REAL best route to F (straight from y's
+            # local RIB) tells us which of F's provider interfaces traffic from
+            # y actually enters F on. If we failed to compute that interface,
+            # that is exactly what produces a false positive.
+            gt = BAR_SAV_PI_PP._gt_ingress_at_f(as_obj, y_asn, engine, scenario)
+            if gt is not None:
+                real_path, f_provider = gt
+                if f_provider is not None and f_provider not in combined:
+                    msg = (
+                        f"[BSPI++ GT-MISMATCH] F={as_obj.asn} source={source_asn} "
+                        f"y={y_asn} case={case_used} "
+                        f"computed={sorted(combined) if combined else 'UNRESOLVED'} "
+                        f"but y's REAL best route to F enters on {f_provider} "
+                        f"(MISSING) real_path={real_path}"
+                    )
+                    trace.append("  " + msg)
+                    print(msg, flush=True)
+
+            if confirmed_p_f:
                 D_s_f[y_asn] = best_dist
-                P_s[y_asn] = best_f_providers
+                P_s_confirmed[y_asn] = confirmed_p_f
+            if ambiguous_p_f:
+                P_s_ambiguous[y_asn] = ambiguous_p_f
+
+        print(f"confirmed={P_s_confirmed}", flush=True)
+        print(f"ambiguous={P_s_ambiguous}", flush=True)
+
+        # P(S) = the source's confirmed interfaces plus every ambiguous
+        # interface accumulated anywhere along its provider cone
+        result = set(P_s_confirmed.get(source_asn, set()))
+        result |= set(P_s_ambiguous.get(source_asn, set()))
 
         trace.append(
             f"[BSPI++ TRACE] FINAL source={source_asn} "
-            f"-> {sorted(P_s[source_asn]) if source_asn in P_s else 'UNRESOLVED (None)'}"
+            f"confirmed={sorted(P_s_confirmed.get(source_asn, set()))} "
+            f"ambiguous={sorted(P_s_ambiguous.get(source_asn, set()))} "
+            f"-> {sorted(result) if result else 'UNRESOLVED (None)'}"
         )
 
-        if source_asn not in P_s:
+        if not result:
             return None, trace
-        return frozenset(P_s[source_asn]), trace
+        return frozenset(result), trace
     
+    @staticmethod
+    def _gt_ingress_at_f(
+        as_obj: "AS",
+        y_asn: int,
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ) -> "tuple[tuple[int, ...], int | None] | None":
+        """
+        """
+        as_dict = engine.as_graph.as_dict
+        f_asn = as_obj.asn
+        y_as = as_dict.get(y_asn)
+        if y_as is None or y_asn == f_asn:
+            return None
+
+        for _, ann in y_as.policy.local_rib.data.items():
+            if ann.origin not in scenario.reflector_asns:
+                continue
+
+            as_path = ann.as_path
+            if f_asn not in as_path:
+                continue
+
+            f_idx = as_path.index(f_asn)
+            entry_asn = as_path[f_idx - 1] if f_idx > 0 else y_asn
+            f_provider = entry_asn if entry_asn in as_obj.provider_asns else None
+
+            return as_path, f_provider
+
+        return None
+
     @staticmethod
     def _get_ambiguous_p_f(
         as_obj: "AS",
