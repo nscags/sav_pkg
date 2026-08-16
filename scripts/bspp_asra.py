@@ -12,7 +12,7 @@ from bgpy.shared.enums import ASGroups
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
+from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenarioKnownPeers
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_engine.policies.sav import (
     BAR_SAV_PP_wBSPI_PP,
@@ -37,7 +37,7 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
                 AdoptPolicyCls=ASRAFull,
@@ -49,7 +49,7 @@ def main():
                 scenario_label="asra_0",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
                 AdoptPolicyCls=ASRAFull,
@@ -61,7 +61,7 @@ def main():
                 scenario_label="asra_10",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
                 AdoptPolicyCls=ASRAFull,
@@ -73,7 +73,7 @@ def main():
                 scenario_label="asra_20",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
                 AdoptPolicyCls=ASRAFull,
@@ -85,7 +85,7 @@ def main():
                 scenario_label="asra_50",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
                 AdoptPolicyCls=ASRAFull,
@@ -97,7 +97,7 @@ def main():
                 scenario_label="asra_80",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP,
                 AdoptPolicyCls=ASRAFull,

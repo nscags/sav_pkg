@@ -52,13 +52,13 @@ class SAVScenario(Scenario):
             scenario_config.override_reflector_asns, reflector_asns, engine
         )
 
-        # adopting_asns = SAV adopters (used by BGPy's reuse system across scenario configs)
+        # adopting_asns = SAV adopters
         self.adopting_asns: frozenset[int] = self._get_sav_adopting_asns(
             adopting_asns, engine
         )
         self.sav_policy_asn_dict = self._build_sav_policy_asn_dict()
 
-        # Control-plane adopters (e.g. ASPA) — separate from SAV adoption
+        # Control-plane adopters (e.g. ASPA) - separate from SAV adoption
         self._ctrl_plane_adopters: frozenset[int] = self._get_ctrl_plane_adopters(engine)
 
         if scenario_config.override_announcements is not None:

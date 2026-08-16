@@ -12,7 +12,7 @@ from bgpy.shared.enums import ASGroups
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
+from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenarioKnownPeers
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_engine.policies.sav import (
     BAR_SAV_PI_PP,
@@ -36,42 +36,39 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=BGPFull,
                 BaseSAVPolicyCls=BAR_SAV_PI_PP,
                 victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
-                num_attackers=0,
                 num_reflectors=1,
                 scenario_label="bgp",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=ASRAFull,
                 BaseSAVPolicyCls=BAR_SAV_PI_PP,
                 victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
-                num_attackers=0,
                 num_reflectors=1,
                 scenario_label="asra",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioKnownPeers,
                 BasePolicyCls=ASPAFull,
                 BaseSAVPolicyCls=BAR_SAV_PI_PP,
                 victim_default_adopters=True,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 reflector_subcategory_attr=ASGroups.MULTIHOMED.value,
-                num_attackers=0,
                 num_reflectors=1,
                 scenario_label="aspa",
             ),
         ),
-        output_dir=Path(f"~/sav/results/1r_5t_e2a_bspi_pp_test_8").expanduser(),
+        output_dir=Path(f"~/sav/results/1r_5t_e2a_bspi_pp_test_9").expanduser(),
         num_trials=5,
         parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
