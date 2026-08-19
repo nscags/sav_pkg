@@ -13,7 +13,9 @@ class TestEngine:
     See README for in depth details
     """
 
-    @pytest.mark.parametrize("conf", engine_test_configs)
+    @pytest.mark.parametrize(
+        "conf", engine_test_configs, ids=[c.name for c in engine_test_configs]
+    )
     def test_engine(self, conf: EngineTestConfig, overwrite: bool):
         """Performs a system test on the engine
 

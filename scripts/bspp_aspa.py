@@ -46,6 +46,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
+                num_attackers=0,
                 scenario_label="aspa_0",
             ),
             SAVScenarioConfig(
@@ -58,6 +59,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
+                num_attackers=0,
                 scenario_label="aspa_10",
             ),
             SAVScenarioConfig(
@@ -70,6 +72,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
+                num_attackers=0,
                 scenario_label="aspa_20",
             ),
             SAVScenarioConfig(
@@ -82,6 +85,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
+                num_attackers=0,
                 scenario_label="aspa_50",
             ),
             SAVScenarioConfig(
@@ -94,6 +98,7 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
+                num_attackers=0,
                 scenario_label="aspa_80",
             ),
             SAVScenarioConfig(
@@ -106,11 +111,12 @@ def main():
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
+                num_attackers=0,
                 scenario_label="aspa_99",
             ),
         ),
-        output_dir=Path(f"~/sav/results/5r_100t_e2a_bspp_aspa").expanduser(),
-        num_trials=100,
+        output_dir=Path(f"~/sav/results/1r_5t_e2a_bspp_aspa").expanduser(),
+        num_trials=5,
         parse_cpus=20,
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         GraphDataAggregatorCls=SAVMetricTracker,

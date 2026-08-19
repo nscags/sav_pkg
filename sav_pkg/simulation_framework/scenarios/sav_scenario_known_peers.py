@@ -9,18 +9,12 @@ class SAVScenarioKnownPeers(SAVScenario):
     at least one adopts the ASRA.
     """
 
-    #####################
-    # Policy assignment #
-    #####################
+    _asra_asns: frozenset[int] = frozenset()
 
     def get_policy_cls(self, as_obj) -> type[Policy]:
         if as_obj.asn in self._asra_asns:
             return ASRAFull
         return super().get_policy_cls(as_obj)
-
-    ###########################
-    # Get ctrl-plane adopters #
-    ###########################
 
     def _get_ctrl_plane_adopters(
         self,
@@ -42,3 +36,7 @@ class SAVScenarioKnownPeers(SAVScenario):
         self._asra_asns = frozenset(asra_asns)
 
         return super()._get_ctrl_plane_adopters(engine)
+
+    @property
+    def _preset_asns(self) -> frozenset[int]:
+        return super()._preset_asns | self._asra_asns

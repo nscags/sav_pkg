@@ -4,6 +4,7 @@ from .framework_002 import framework_002
 from .framework_003 import framework_003
 from .framework_004 import framework_004
 from .framework_005 import framework_005
+from .framework_006 import framework_006
 
 
 framework_test_configs = [
@@ -13,4 +14,5 @@ framework_test_configs = [
     framework_003,
     framework_004,
     framework_005,
+    framework_006,
 ]
