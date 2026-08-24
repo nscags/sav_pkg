@@ -626,17 +626,17 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
                         continue
                     candidate_dist = p_dist + 1
 
-                    # algorithm a
-                    # if best_dist is None or candidate_dist < best_dist:
-                    #     best_dist = candidate_dist
-                    #     confirmed_p_f = set(P_s_confirmed[p_asn])
-                    # elif candidate_dist == best_dist:
-                    #     confirmed_p_f.update(P_s_confirmed[p_asn])
-
-                    # algorithm b
+                    # algorithm a - results in false positives (ex. engine_test_configs/bspi_pp/bspi_pp_015.py)
                     if best_dist is None or candidate_dist < best_dist:
                         best_dist = candidate_dist
-                    confirmed_p_f.update(P_s_confirmed[p_asn])
+                        confirmed_p_f = set(P_s_confirmed[p_asn])
+                    elif candidate_dist == best_dist:
+                        confirmed_p_f.update(P_s_confirmed[p_asn])
+
+                    # algorithm b
+                    # if best_dist is None or candidate_dist < best_dist:
+                    #     best_dist = candidate_dist
+                    # confirmed_p_f.update(P_s_confirmed[p_asn])
 
             # y's own ambiguous connections
             y_asn_ambiguous_p_f = BAR_SAV_PI_PP._get_ambiguous_p_f(
