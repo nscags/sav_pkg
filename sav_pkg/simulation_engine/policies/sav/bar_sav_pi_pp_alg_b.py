@@ -15,8 +15,8 @@ if TYPE_CHECKING:
 
 
 
-class BAR_SAV_PI_PP(BaseSAVPolicy):
-    name: str = "BAR-SAV-PI++"
+class BAR_SAV_PI_PP_Alg_B(BaseSAVPolicy):
+    name: str = "BAR-SAV-PI++ Algorithm B"
 
     @staticmethod
     def validate(
@@ -31,7 +31,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         # BAR-SAV-PI++ is only applied to provider interfaces
         if prev_hop.asn not in as_obj.provider_asns:
             return True
-        return BAR_SAV_PI_PP._validate(
+        return BAR_SAV_PI_PP_Alg_B._validate(
             as_obj, source_prefix, prev_hop, engine, scenario
         )
 
@@ -46,7 +46,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         """
         """
         # Get source ASNs from announcements and ROAs
-        source_asns = BAR_SAV_PI_PP._get_source_asns(as_obj, source_prefix)
+        source_asns = BAR_SAV_PI_PP_Alg_B._get_source_asns(as_obj, source_prefix)
         if not source_asns:
             # did not receive any announcement for prefix + no ROA, this is essentially Loose uRPF
             return False 
@@ -55,7 +55,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         tier1_asns = frozenset(engine.as_graph.asn_groups[ASGroups.INPUT_CLIQUE.value])
 
         # infer relationships from BGP announcements, ASPA, and ASRA
-        inferred_provider_relationships, inferred_peer_relationships, ambiguous_relationships = BAR_SAV_PI_PP._infer_relationships_from_paths(
+        inferred_provider_relationships, inferred_peer_relationships, ambiguous_relationships = BAR_SAV_PI_PP_Alg_B._infer_relationships_from_paths(
             as_obj, engine, tier1_asns
         )
         # print(inferred_provider_relationships, flush=True)
@@ -63,7 +63,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         # print(ambiguous_relationships, flush=True)
 
         # Build D_f and P_f for F's provider cone                   
-        D_f, P_f = BAR_SAV_PI_PP._get_f_provider_cone(
+        D_f, P_f = BAR_SAV_PI_PP_Alg_B._get_f_provider_cone(
             as_obj, engine, inferred_provider_relationships,
         )
 
@@ -72,7 +72,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
         # to be a real false positive (see bottom of function)
         all_traces: dict[int, list[str]] = {}
         for source_asn in source_asns:
-            p_of_s, trace = BAR_SAV_PI_PP._compute_p_of_source(
+            p_of_s, trace = BAR_SAV_PI_PP_Alg_B._compute_p_of_source(
                 as_obj,
                 source_asn,
                 engine,
@@ -92,17 +92,17 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
 
         # DEBUG: only fires for a real false positive (dropping a packet
         # that is genuinely from a victim, not an attacker)
-        victim_sources = source_asns & scenario.victim_asns
-        if victim_sources:
-            print(
-                f"[BSPI++ FP] F={as_obj.asn} prev_hop={prev_hop.asn} "
-                f"victim_sources={sorted(victim_sources)} "
-                f"all_source_asns={sorted(source_asns)} D_f={D_f} P_f={P_f}",
-                flush=True,
-            )
-            for source_asn in source_asns:
-                for line in all_traces.get(source_asn, []):
-                    print(line, flush=True)
+        # victim_sources = source_asns & scenario.victim_asns
+        # if victim_sources:
+        #     print(
+        #         f"[BSPI++ FP] F={as_obj.asn} prev_hop={prev_hop.asn} "
+        #         f"victim_sources={sorted(victim_sources)} "
+        #         f"all_source_asns={sorted(source_asns)} D_f={D_f} P_f={P_f}",
+        #         flush=True,
+        #     )
+        #     for source_asn in source_asns:
+        #         for line in all_traces.get(source_asn, []):
+        #             print(line, flush=True)
 
         return False
 
@@ -164,8 +164,8 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
                         continue
 
                     # determine peak & infer relationships
-                    peak_asns = BAR_SAV_PI_PP._determine_peak(as_obj, engine, tier1_asns, as_path)
-                    BAR_SAV_PI_PP._infer_relationships_from_peak(
+                    peak_asns = BAR_SAV_PI_PP_Alg_B._determine_peak(as_obj, engine, tier1_asns, as_path)
+                    BAR_SAV_PI_PP_Alg_B._infer_relationships_from_peak(
                         as_obj, 
                         as_dict, 
                         as_path, 
@@ -602,7 +602,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
 
             # Case B: bilateral peer
             if not confirmed_p_f:
-                known_peers, peer_src = BAR_SAV_PI_PP._get_known_peers(
+                known_peers, peer_src = BAR_SAV_PI_PP_Alg_B._get_known_peers(
                     y_asn, y_as, as_dict, inferred_peer_relationships
                 )
                 for peer_asn in sorted(known_peers):
@@ -627,19 +627,19 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
                     candidate_dist = p_dist + 1
 
                     # algorithm a - results in false positives (ex. engine_test_configs/bspi_pp/bspi_pp_015.py)
-                    if best_dist is None or candidate_dist < best_dist:
-                        best_dist = candidate_dist
-                        confirmed_p_f = set(P_s_confirmed[p_asn])
-                    elif candidate_dist == best_dist:
-                        confirmed_p_f.update(P_s_confirmed[p_asn])
-
-                    # algorithm b
                     # if best_dist is None or candidate_dist < best_dist:
                     #     best_dist = candidate_dist
-                    # confirmed_p_f.update(P_s_confirmed[p_asn])
+                    #     confirmed_p_f = set(P_s_confirmed[p_asn])
+                    # elif candidate_dist == best_dist:
+                    #     confirmed_p_f.update(P_s_confirmed[p_asn])
+
+                    # algorithm b
+                    if best_dist is None or candidate_dist < best_dist:
+                        best_dist = candidate_dist
+                    confirmed_p_f.update(P_s_confirmed[p_asn])
 
             # y's own ambiguous connections
-            y_asn_ambiguous_p_f = BAR_SAV_PI_PP._get_ambiguous_p_f(
+            y_asn_ambiguous_p_f = BAR_SAV_PI_PP_Alg_B._get_ambiguous_p_f(
                 as_obj,
                 y_asn,
                 ambiguous_relationships,
@@ -661,7 +661,7 @@ class BAR_SAV_PI_PP(BaseSAVPolicy):
             # local RIB) tells us which of F's provider interfaces traffic from
             # y actually enters F on. If we failed to compute that interface,
             # that is exactly what produces a false positive.
-            gt = BAR_SAV_PI_PP._gt_ingress_at_f(as_obj, y_asn, engine, scenario)
+            gt = BAR_SAV_PI_PP_Alg_B._gt_ingress_at_f(as_obj, y_asn, engine, scenario)
             if gt is not None:
                 real_path, f_provider = gt
                 if f_provider is not None and f_provider not in combined:

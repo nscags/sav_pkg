@@ -9,12 +9,14 @@ from .sav import EFP_A_wPeers
 from .sav import EFP_B
 from .sav import RFC8704
 from .sav import BAR_SAV
+from .sav import ProcedureX
 from .sav import BAR_SAV_PI
 from .sav import BAR_SAV_wBSPI
 from .sav import BAR_SAV_PP
-from .sav import BAR_SAV_PI_PP
-from .sav import BAR_SAV_PP_wBSPI_PP
-from .sav import ProcedureX
+from .sav import BAR_SAV_PI_PP_Alg_A
+from .sav import BAR_SAV_PI_PP_Alg_B
+from .sav import BAR_SAV_PP_wBSPI_PP_Alg_A
+from .sav import BAR_SAV_PP_wBSPI_PP_Alg_B
 
 from .bgp import BGPExport2Some
 from .bgp import BGPFullExport2Some
@@ -39,12 +41,14 @@ __all__ = [
     "EFP_B",
     "RFC8704",
     "BAR_SAV",
+    "ProcedureX",
     "BAR_SAV_PI",
     "BAR_SAV_wBSPI",
-    "ProcedureX",
     "BAR_SAV_PP",
-    "BAR_SAV_PI_PP",
-    "BAR_SAV_PP_wBSPI_PP",
+    "BAR_SAV_PI_PP_Alg_A",
+    "BAR_SAV_PI_PP_Alg_B",
+    "BAR_SAV_PP_wBSPI_PP_Alg_A",
+    "BAR_SAV_PP_wBSPI_PP_Alg_B",
     "BGPExport2Some",
     "BGPFullExport2Some",
     "BGPNoExport2Some",

@@ -6,7 +6,7 @@ from bgpy.as_graphs import ASGraphInfo
 from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 
 from sav_pkg.simulation_engine import SAVSimulationEngine
-from sav_pkg.simulation_engine.policies import BAR_SAV_PI_PP
+from sav_pkg.simulation_engine.policies import BAR_SAV_PI_PP_Alg_A
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
@@ -39,14 +39,14 @@ desc = "Same as config 18 but the source adopts ASRA. \
         This is not enough as the validator still does not see the connection from the \
         AS 5 to AS 3."
 
-bspi_pp_020 = EngineTestConfig(
+bspi_pp_021 = EngineTestConfig(
     SimulationEngineCls=SAVSimulationEngine,
-    name="bspi_pp_020",
+    name="bspi_pp_021",
     desc=desc,
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=BGPFull,
-        BaseSAVPolicyCls=BAR_SAV_PI_PP,
+        BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
         num_attackers=0,
         victim_providers_ann=True,
         override_reflector_asns=frozenset({1}),

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from .base_sav_policy import BaseSAVPolicy
 from .bar_sav_pp import BAR_SAV_PP
-from .bar_sav_pi_pp import BAR_SAV_PI_PP
+from .bar_sav_pi_pp_alg_a import BAR_SAV_PI_PP_Alg_A
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base import AS
@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from sav_pkg.simulation_framework.scenarios.sav_scenario import SAVScenario
 
 
-class BAR_SAV_PP_wBSPI_PP(BaseSAVPolicy):
-    name: str = "BAR-SAV++ w/ BSPI++"
+class BAR_SAV_PP_wBSPI_PP_Alg_A(BaseSAVPolicy):
+    name: str = "BAR-SAV++ w/ BSPI++ Algorithm A"
 
     def validate(
         self,
@@ -23,10 +23,10 @@ class BAR_SAV_PP_wBSPI_PP(BaseSAVPolicy):
         scenario,
     ) -> bool:
         """
-        BAR-SAV++ w/BSPI++ defines BAR-SAV++ for customer and bilateral peer interfaces 
-        and BAR-SAV-PI++ for provider interfaces
+        BAR-SAV++ w/BSPI++ Algorithm A defines BAR-SAV++ for customer and bilateral peer interfaces 
+        and BAR-SAV-PI++ Algorithm A for provider interfaces
         """
-        return BAR_SAV_PP_wBSPI_PP._validate(as_obj, source_prefix, prev_hop, engine, scenario)
+        return BAR_SAV_PP_wBSPI_PP_Alg_A._validate(as_obj, source_prefix, prev_hop, engine, scenario)
 
     @staticmethod
     def _validate( 
@@ -45,7 +45,7 @@ class BAR_SAV_PP_wBSPI_PP(BaseSAVPolicy):
                 scenario=scenario
             )
         elif prev_hop.asn in as_obj.provider_asns:
-            return BAR_SAV_PI_PP._validate(
+            return BAR_SAV_PI_PP_Alg_A._validate(
                 as_obj=as_obj,
                 source_prefix=source_prefix,
                 prev_hop=prev_hop,

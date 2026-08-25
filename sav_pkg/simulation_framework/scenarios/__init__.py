@@ -8,6 +8,7 @@ from .sav_scenario_bat_aspa import SAVScenarioBATASPA
 from .sav_scenario_superprefix import SAVScenarioSuperprefix
 from .sav_scenario_provider_cone import SAVScenarioProviderCone
 from .sav_scenario_known_peers import SAVScenarioKnownPeers
+from .sav_scenario_min_fp import SAVScenarioMinFP
 
 
 __all__ = [
@@ -21,4 +22,5 @@ __all__ = [
     "SAVScenarioSuperprefix",
     "SAVScenarioProviderCone",
     "SAVScenarioKnownPeers",
+    "SAVScenarioMinFP",
 ]

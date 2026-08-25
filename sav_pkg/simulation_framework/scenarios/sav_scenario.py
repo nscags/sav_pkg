@@ -1,3 +1,4 @@
+import hashlib
 import math
 import random
 from ipaddress import ip_network
@@ -133,7 +134,9 @@ class SAVScenario(Scenario):
             assert engine
             possible = self._get_possible_reflector_asns(engine, self.percent_adoption)
             result = frozenset(
-                random.sample(tuple(possible), self.scenario_config.num_reflectors)
+                self._sample_asns(
+                    possible, self.scenario_config.num_reflectors, "reflector"
+                )
             )
 
         err = "Number of reflectors is different from reflectors length"
@@ -276,7 +279,7 @@ class SAVScenario(Scenario):
                 k = math.ceil(len(possible) * self.percent_adoption)
 
             try:
-                adopters.update(random.sample(tuple(possible), k))
+                adopters.update(self._sample_asns(possible, k, "sav_adopters"))
             except ValueError:
                 raise ValueError(f"{k} can't be sampled from {len(possible)}")
         return frozenset(adopters)
@@ -320,10 +323,80 @@ class SAVScenario(Scenario):
                 k = math.ceil(len(possible) * pa)
 
             try:
-                adopters.update(random.sample(tuple(possible), k))
+                adopters.update(self._sample_asns(possible, k, "ctrl_plane"))
             except ValueError:
                 raise ValueError(f"{k} can't be sampled from {len(possible)}")
         return frozenset(adopters)
+
+    ############
+    # Sampling #
+    ############
+
+    def _sample_asns(
+        self,
+        possible: frozenset[int],
+        k: int,
+        salt: str,
+    ) -> list[int]:
+        """
+        Returns the first k ASNs of this trial's fixed ordering
+
+        Every random selection funnels through here, and every selection is a
+        prefix of one ordering that is shuffled once per trial. That makes the
+        selections incremental: the 20% set is a superset of the 10% set by
+        construction, and the reflectors come out identical in every scenario
+        of the trial.
+
+        Doing it this way rather than threading state through the simulation
+        loop is deliberate. Simulation._run_chunk resets adopting_asns at the
+        top of every percent adoption, never carries ctrl plane adopters or
+        reflectors at all, and splits trials across parse_cpus worker
+        processes, so carried state would not survive anyway.
+
+        salt names the selection ("reflector", "sav_adopters", "ctrl_plane")
+        so the three orderings are independent of each other.
+
+        NOTE: nesting holds as long as the candidate pool is the same in every
+        scenario of the trial. The pools are `subcategory - _preset_asns` and
+        `subcategory - _preset_sav_asns`, so scenario configs being compared
+        must agree on hardcoded_asn_cls_dict / hardcoded_asn_sav_dict,
+        victim_default_adopters and reflector_default_adopters. Varying only
+        ctrl_plane_percent_adoption / percent_adoption is fine.
+        """
+        if k <= 0:
+            return []
+        if k > len(possible):
+            # same failure the callers already expect from random.sample
+            raise ValueError(f"{k} can't be sampled from {len(possible)}")
+
+        # sorted() first so the ordering depends only on the seed, never on
+        # set iteration order
+        ordering = sorted(possible)
+        random.Random(self._sample_seed(salt)).shuffle(ordering)
+
+        return ordering[:k]
+
+    def _sample_seed(self, salt: str) -> int:
+        """
+        A seed fixed within a trial that differs between trials
+
+        bgpy holds attacker_asns and victim_asns constant across every percent
+        adoption and every scenario config of a trial, then redraws them for
+        the next trial (Simulation._run_chunk), so they are the one thing
+        already on hand that identifies "this trial". Both are set before any
+        of the three selections happen.
+
+        md5 rather than hash(): str hashing is salted per process, and trials
+        are split across parse_cpus worker processes.
+        """
+        key = "|".join(
+            (
+                salt,
+                ",".join(str(x) for x in sorted(self.victim_asns)),
+                ",".join(str(x) for x in sorted(self.attacker_asns)),
+            )
+        )
+        return int.from_bytes(hashlib.md5(key.encode()).digest()[:8], "big")
 
     ####################
     # Preset ASN props #

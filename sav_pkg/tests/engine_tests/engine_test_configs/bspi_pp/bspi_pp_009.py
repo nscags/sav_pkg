@@ -5,7 +5,7 @@ from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 from bgpy.as_graphs.base.links import PeerLink
 
 from sav_pkg.simulation_engine import SAVSimulationEngine
-from sav_pkg.simulation_engine.policies import BAR_SAV_PI_PP
+from sav_pkg.simulation_engine.policies import BAR_SAV_PI_PP_Alg_A
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
 from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
@@ -36,7 +36,7 @@ bspi_pp_009 = EngineTestConfig(
     scenario_config=SAVScenarioConfig(
         ScenarioCls=SAVScenario,
         BasePolicyCls=ASRAFull,
-        BaseSAVPolicyCls=BAR_SAV_PI_PP,
+        BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
         num_attackers=0,
         override_reflector_asns=frozenset({7}),
         override_victim_asns=frozenset({1}),

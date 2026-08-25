@@ -13,8 +13,10 @@ from .bar_sav_pi import BAR_SAV_PI
 from .bar_sav_w_bspi import BAR_SAV_wBSPI
 from .procedure_x import ProcedureX
 from .bar_sav_pp import BAR_SAV_PP
-from .bar_sav_pi_pp import BAR_SAV_PI_PP
-from .bar_sav_pp_w_bspi_pp import BAR_SAV_PP_wBSPI_PP
+from .bar_sav_pi_pp_alg_a import BAR_SAV_PI_PP_Alg_A
+from .bar_sav_pi_pp_alg_b import BAR_SAV_PI_PP_Alg_B
+from .bar_sav_pp_w_bspi_pp_alg_a import BAR_SAV_PP_wBSPI_PP_Alg_A
+from .bar_sav_pp_w_bspi_pp_alg_b import BAR_SAV_PP_wBSPI_PP_Alg_B
 
 
 __all__ = [
@@ -33,6 +35,8 @@ __all__ = [
     "BAR_SAV_wBSPI",
     "ProcedureX",
     "BAR_SAV_PP",
-    "BAR_SAV_PI_PP",
-    "BAR_SAV_PP_wBSPI_PP",
+    "BAR_SAV_PI_PP_Alg_A",
+    "BAR_SAV_PI_PP_Alg_B",
+    "BAR_SAV_PP_wBSPI_PP_Alg_A",
+    "BAR_SAV_PP_wBSPI_PP_Alg_B",
 ]
