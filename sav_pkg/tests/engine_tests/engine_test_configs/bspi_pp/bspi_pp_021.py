@@ -26,13 +26,6 @@ as_graph_info = ASGraphInfo(
         CPLink(provider_asn=4, customer_asn=7),
         CPLink(provider_asn=5, customer_asn=7),
     ]),
-    diagram_ranks=(
-        (3,),
-        (4, 5),
-        (6, 7),
-        (2,),
-        (1,),
-    ),
 )
 
 desc = "Same as config 18 but the source adopts ASRA. \

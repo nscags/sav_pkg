@@ -41,7 +41,8 @@ as_graph_info = ASGraphInfo(
     ),
 )
 
-desc = "False positive test: Case C keeps only the min-distance branch (no peer link at the source)"
+desc = "False positive example for Algorithm A under full adoption of ASRA \
+        Algorithm B does not have a false positive (see bspi_pp_015)"
 
 bspi_pp_017 = EngineTestConfig(
     SimulationEngineCls=SAVSimulationEngine,

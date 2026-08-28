@@ -28,6 +28,7 @@ class SAVScenarioConfig(ScenarioConfig):
     ignore_disconnections: bool = True
     BaseSAVPolicyCls: type[BaseSAVPolicy] | None = None
     # reflectors adopt SAV policy by default
+    # TODO: change to reflector_default_sav_adopters
     reflector_default_adopters: bool = False
     # victims adopt CRTL-PLANE policy by default (AdoptPolicyCls)
     victim_default_adopters: bool = False

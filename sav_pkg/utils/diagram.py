@@ -290,10 +290,10 @@ class SAVDiagram(Diagram):
                         <TD COLSPAN="{colspan}" ALIGN="CENTER" VALIGN="MIDDLE">Local RIB</TD>
                       </TR>"""
 
-            # victim_provider_asns = set()
-            # for victim_asn in scenario.victim_asns:
-            #     victim_as_obj = engine.as_graph.as_dict[victim_asn]
-            #     victim_provider_asns.update(victim_as_obj.provider_asns)
+            victim_provider_asns = set()
+            for victim_asn in scenario.victim_asns:
+                victim_as_obj = engine.as_graph.as_dict[victim_asn]
+                victim_provider_asns.update(victim_as_obj.provider_asns)
 
             for ann in local_rib_anns:
                 # if ann.origin in (scenario.victim_asns):
