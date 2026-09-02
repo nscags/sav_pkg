@@ -70,7 +70,7 @@ class BAR_SAV_PI_PP_Alg_A(BaseSAVPolicy):
         # determine P(S)
         # DEBUG: trace lines are only ever printed if this call turns out
         # to be a real false positive (see bottom of function)
-        all_traces: dict[int, list[str]] = {}
+        # all_traces: dict[int, list[str]] = {}
         for source_asn in source_asns:
             p_of_s, trace = BAR_SAV_PI_PP_Alg_A._compute_p_of_source(
                 as_obj,
@@ -84,7 +84,7 @@ class BAR_SAV_PI_PP_Alg_A(BaseSAVPolicy):
                 scenario,
             )
             # print(p_of_s, flush=True)
-            all_traces[source_asn] = trace
+            # all_traces[source_asn] = trace
             if p_of_s is None:
                 return True
             if prev_hop.asn in p_of_s:
@@ -92,17 +92,17 @@ class BAR_SAV_PI_PP_Alg_A(BaseSAVPolicy):
 
         # DEBUG: only fires for a real false positive (dropping a packet
         # that is genuinely from a victim, not an attacker)
-        victim_sources = source_asns & scenario.victim_asns
-        if victim_sources:
-            print(
-                f"[BSPI++ FP] F={as_obj.asn} prev_hop={prev_hop.asn} "
-                f"victim_sources={sorted(victim_sources)} "
-                f"all_source_asns={sorted(source_asns)} D_f={D_f} P_f={P_f}",
-                flush=True,
-            )
-            for source_asn in source_asns:
-                for line in all_traces.get(source_asn, []):
-                    print(line, flush=True)
+        # victim_sources = source_asns & scenario.victim_asns
+        # if victim_sources:
+        #     print(
+        #         f"[BSPI++ FP] F={as_obj.asn} prev_hop={prev_hop.asn} "
+        #         f"victim_sources={sorted(victim_sources)} "
+        #         f"all_source_asns={sorted(source_asns)} D_f={D_f} P_f={P_f}",
+        #         flush=True,
+        #     )
+        #     for source_asn in source_asns:
+        #         for line in all_traces.get(source_asn, []):
+        #             print(line, flush=True)
 
         return False
 

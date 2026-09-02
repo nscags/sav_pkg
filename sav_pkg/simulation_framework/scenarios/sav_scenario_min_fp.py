@@ -8,6 +8,7 @@ class SAVScenarioMinFP(SAVScenarioKnownPeers):
     Minimum assumptions/conditions needed for BSPI++ to have no false positives.
     Current assumptions: known peers (at least one ASRA adopting AS in each bilateral peer relationship)
                          provider cone of the source (victim) adopts ASPA (except for the already defined ASRA ASes)
+                         provider cone of the destination AS adopts ASPA
     """
 
     _aspa_asns: frozenset[int] = frozenset()
@@ -27,22 +28,22 @@ class SAVScenarioMinFP(SAVScenarioKnownPeers):
         """
         aspa_asns: set[int] = set()
         if engine is not None:
-            aspa_asns = self._get_victim_provider_cone(engine)
+            aspa_asns = self._get_provider_cone(engine, self.victim_asns)
+            aspa_asns |= self._get_provider_cone(engine, self.reflector_asns)
             aspa_asns -= self.attacker_asns
         self._aspa_asns = frozenset(aspa_asns)
 
         return super()._get_ctrl_plane_adopters(engine)
 
-    def _get_victim_provider_cone(
+    def _get_provider_cone(
         self,
         engine: BaseSimulationEngine,
+        asns: frozenset[int],
     ) -> set[int]:
-        """
-        """
         as_dict = engine.as_graph.as_dict
 
         cone: set[int] = set()
-        stack = [as_dict[asn] for asn in self.victim_asns]
+        stack = [as_dict[asn] for asn in asns]
         while stack:
             as_obj = stack.pop()
             if as_obj.asn in cone:

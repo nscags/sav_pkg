@@ -20,6 +20,8 @@ from .bspi_pp_018 import bspi_pp_018
 from .bspi_pp_019 import bspi_pp_019
 from .bspi_pp_020 import bspi_pp_020
 from .bspi_pp_021 import bspi_pp_021
+from .bspi_pp_022 import bspi_pp_022
+from .bspi_pp_023 import bspi_pp_023
 
 
 
@@ -38,12 +40,14 @@ bspi_pp_test_configs = [
     # bspi_pp_011,
     # bspi_pp_012,
     # bspi_pp_013,
-    bspi_pp_014,
-    bspi_pp_015,
-    bspi_pp_016,
-    bspi_pp_017,
-    bspi_pp_018,
-    bspi_pp_019,
-    bspi_pp_020,
-    bspi_pp_021,
+    # bspi_pp_014,
+    # bspi_pp_015,
+    # bspi_pp_016,
+    # bspi_pp_017,
+    # bspi_pp_018,
+    # bspi_pp_019,
+    # bspi_pp_020,
+    # bspi_pp_021,
+    bspi_pp_022,
+    bspi_pp_023,
 ]

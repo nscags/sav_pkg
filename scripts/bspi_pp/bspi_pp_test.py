@@ -20,10 +20,9 @@ from sav_pkg.simulation_engine.policies.sav import (
 
 def main():
     """
-
     """
     # Simulation for the paper
-    random.seed(os.environ['JOB_COMPLETION_INDEX'], 0)
+    random.seed(os.environ['JOB_COMPLETION_INDEX'])
     sim = Simulation(
         SimulationEngineCls=SAVSimulationEngine,
         percent_adoptions = (

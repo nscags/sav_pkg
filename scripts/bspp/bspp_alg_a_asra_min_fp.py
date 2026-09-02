@@ -6,16 +6,16 @@ import sys
 
 from bgpy.simulation_framework import Simulation
 from sav_pkg.simulation_engine.sav_simulation_engine import SAVSimulationEngine
-from bgpy.simulation_engine import BGPFull, ASPAFull
+from bgpy.simulation_engine import BGPFull, ASRAFull
 from bgpy.shared.enums import ASGroups
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sav_pkg.simulation_framework.sav_as_graph_analyzer import SAVASGraphAnalyzer
-from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenario
+from sav_pkg.simulation_framework.scenarios import SAVScenarioConfig, SAVScenarioMinFP
 from sav_pkg.simulation_framework.metric_tracker.metric_tracker import SAVMetricTracker
 from sav_pkg.simulation_engine.policies.sav import (
-    BAR_SAV_PI_PP_Alg_A,
+    BAR_SAV_PP_wBSPI_PP_Alg_A,
 )
 
 
@@ -37,66 +37,74 @@ def main():
         ),
         scenario_configs=(
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioMinFP,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
+                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP_Alg_A,
+                AdoptPolicyCls=ASRAFull,
+                ctrl_plane_percent_adoption=0,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_reflectors=5,
                 reflector_default_adopters=True,
-                scenario_label="aspa_0",
+                scenario_label="asra_0",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioMinFP,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
-                AdoptPolicyCls=ASPAFull,
+                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP_Alg_A,
+                AdoptPolicyCls=ASRAFull,
                 ctrl_plane_percent_adoption=0.1,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_reflectors=5,
                 reflector_default_adopters=True,
-                scenario_label="aspa_10",
+                scenario_label="asra_10",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioMinFP,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
-                AdoptPolicyCls=ASPAFull,
+                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP_Alg_A,
+                AdoptPolicyCls=ASRAFull,
                 ctrl_plane_percent_adoption=0.2,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_reflectors=5,
                 reflector_default_adopters=True,
-                scenario_label="aspa_20",
+                scenario_label="asra_20",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioMinFP,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
-                AdoptPolicyCls=ASPAFull,
+                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP_Alg_A,
+                AdoptPolicyCls=ASRAFull,
                 ctrl_plane_percent_adoption=0.5,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_reflectors=5,
                 reflector_default_adopters=True,
-                scenario_label="aspa_50",
+                scenario_label="asra_50",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioMinFP,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
-                AdoptPolicyCls=ASPAFull,
+                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP_Alg_A,
+                AdoptPolicyCls=ASRAFull,
                 ctrl_plane_percent_adoption=0.8,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_reflectors=5,
                 reflector_default_adopters=True,
-                scenario_label="aspa_80",
+                scenario_label="asra_80",
             ),
             SAVScenarioConfig(
-                ScenarioCls=SAVScenario,
+                ScenarioCls=SAVScenarioMinFP,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_PI_PP_Alg_A,
-                AdoptPolicyCls=ASPAFull,
+                BaseSAVPolicyCls=BAR_SAV_PP_wBSPI_PP_Alg_A,
+                AdoptPolicyCls=ASRAFull,
                 ctrl_plane_percent_adoption=0.99,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
+                num_reflectors=5,
                 reflector_default_adopters=True,
-                scenario_label="aspa_99",
+                scenario_label="asra_99",
             ),
         ),
-        output_dir=Path(f"~/sav/results/bspi_pp/500t_e2a_alg_a_aspa").expanduser(),
-        num_trials=500,
+        output_dir=Path(f"~/sav/results/bspp/min_fp/5r_100t_e2a_alg_a_asra").expanduser(),
+        num_trials=100,
         parse_cpus=int(os.environ.get("SLURM_NTASKS")),
         ASGraphAnalyzerCls=SAVASGraphAnalyzer,
         GraphDataAggregatorCls=SAVMetricTracker,
