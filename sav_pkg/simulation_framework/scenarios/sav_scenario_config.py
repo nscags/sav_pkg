@@ -4,7 +4,7 @@ from bgpy.shared.enums import ASGroups
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 from frozendict import frozendict
 
-from sav_pkg.enums import Prefixes
+from sav_pkg.enums import ASLLocations, Prefixes
 from sav_pkg.simulation_engine.policies.sav.base_sav_policy import BaseSAVPolicy
 
 
@@ -43,3 +43,6 @@ class SAVScenarioConfig(ScenarioConfig):
     # Special percent adoption for control plane policies
     # I hijacked the default percent_adopt for SAV policies
     ctrl_plane_percent_adoption: float = 0.0
+    # Attacker placements allowed in SAVScenarioASL; the attacker is drawn
+    # uniformly from every AS whose placement is in this set
+    asl_locations: frozenset[ASLLocations] = frozenset(ASLLocations)

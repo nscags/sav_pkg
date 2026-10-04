@@ -7,24 +7,17 @@ MATRIX without touching run_matrix.py or run_matrix.sh.
 import itertools
 from pathlib import Path
 
-from bgpy.simulation_engine import BGPFull, ASPAFull, ASRAFull
-from bgpy.shared.enums import ASGroups
-
-from sav_pkg.simulation_framework.scenarios import (
-    SAVScenarioConfig,
-    SAVScenario,
-    SAVScenarioMinFP,
-)
-from sav_pkg.simulation_engine.policies.sav import (
-    BAR_SAV_PI_PP_Alg_A,
-    BAR_SAV_PI_PP_Alg_B,
-    BAR_SAV_PP_wBSPI_PP_Alg_A,
-    BAR_SAV_PP_wBSPI_PP_Alg_B,
-)
-
+# NOTE: bgpy/sav_pkg are deliberately NOT imported at module scope.
+# Listing the matrix and printing an --array index string is pure metadata
+# and must keep working even when the simulation stack can't import (a
+# broken numpy on a login node, a half-built venv, etc). Otherwise
+#   sbatch --array=$(python3 matrix.py ... --array) run_matrix.sh
+# silently expands to `--array=` and submits the wrong thing.
+# The heavy imports live inside build_scenario_configs(), which only
+# run_matrix.py (on a compute node) ever calls.
 
 POLICY = ("bspi_pp", "bspp")
-SCENARIO = ("base", "min_fp")
+SCENARIO = ("base", "min_fp", "asl")
 ADOPTS = ("aspa", "asra")
 ALGS = ("a", "b")
 SPOOFING_AS = (True, False)
@@ -32,23 +25,6 @@ PERCENTS = (0.0, 0.1, 0.2, 0.5, 0.8, 0.99)
 
 NUM_REFLECTORS = 5
 NUM_TRIALS = 100
-
-_POLICY_CLS = {
-    ("bspi_pp", "a"): BAR_SAV_PI_PP_Alg_A,
-    ("bspi_pp", "b"): BAR_SAV_PI_PP_Alg_B,
-    ("bspp", "a"): BAR_SAV_PP_wBSPI_PP_Alg_A,
-    ("bspp", "b"): BAR_SAV_PP_wBSPI_PP_Alg_B,
-}
-
-_ADOPT_CLS = {
-    "aspa": ASPAFull,
-    "asra": ASRAFull,
-}
-
-_SCENARIO_CLS = {
-    "base": SAVScenario,
-    "min_fp": SAVScenarioMinFP,
-}
 
 EXPORT_POLICY = "e2a"
 
@@ -59,10 +35,43 @@ def build_scenario_configs(
     adopt: str,
     alg: str,
     attacker_broadcast: bool,
-) -> tuple[SAVScenarioConfig, ...]:
+) -> tuple:
+    # Imported here, not at module scope, so that listing the matrix never
+    # depends on the simulation stack being importable (see note at top).
+    from bgpy.simulation_engine import BGPFull, ASPAFull, ASRAFull
+    from bgpy.shared.enums import ASGroups
+
+    from sav_pkg.simulation_framework.scenarios import (
+        SAVScenarioConfig,
+        SAVScenario,
+        SAVScenarioMinFP,
+        SAVScenarioASL,
+    )
+    from sav_pkg.simulation_engine.policies.sav import (
+        BAR_SAV_PI_PP_Alg_A,
+        BAR_SAV_PI_PP_Alg_B,
+        BAR_SAV_PP_wBSPI_PP_Alg_A,
+        BAR_SAV_PP_wBSPI_PP_Alg_B,
+    )
+
+    _POLICY_CLS = {
+        ("bspi_pp", "a"): BAR_SAV_PI_PP_Alg_A,
+        ("bspi_pp", "b"): BAR_SAV_PI_PP_Alg_B,
+        ("bspp", "a"): BAR_SAV_PP_wBSPI_PP_Alg_A,
+        ("bspp", "b"): BAR_SAV_PP_wBSPI_PP_Alg_B,
+    }
+    _ADOPT_CLS = {"aspa": ASPAFull, "asra": ASRAFull}
+    _SCENARIO_CLS = {
+        "base": SAVScenario,
+        "min_fp": SAVScenarioMinFP,
+        "asl": SAVScenarioASL,
+    }
+
     ScenarioCls = _SCENARIO_CLS[scenario]
     BaseSAVPolicyCls = _POLICY_CLS[(policy, alg)]
     AdoptPolicyCls = _ADOPT_CLS[adopt]
+    # ASL places the attacker relative to a single validating AS
+    num_reflectors = 1 if scenario == "asl" else NUM_REFLECTORS
 
     configs = []
     for percent in PERCENTS:
@@ -74,7 +83,7 @@ def build_scenario_configs(
                 AdoptPolicyCls=AdoptPolicyCls,
                 ctrl_plane_percent_adoption=percent,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                num_reflectors=NUM_REFLECTORS,
+                num_reflectors=num_reflectors,
                 reflector_default_adopters=True,
                 attacker_broadcast=attacker_broadcast,
                 scenario_label=f"{adopt}_{round(percent * 100)}",

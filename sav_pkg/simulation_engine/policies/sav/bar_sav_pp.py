@@ -39,7 +39,8 @@ class BAR_SAV_PP(BaseSAVPolicy):
         scenario: "SAVScenario",
     ):
         """
-        Validates incoming packets based on BAR-SAV++, an improvement to BAR-SAV to include ASRA in addition to BGP announcements and ASPA.
+        Validates incoming packets based on BAR-SAV++, an extension to 
+        BAR-SAV to use ASRA records when constructing the customer cone.
 
         Internet draft procedure description:
         https://datatracker.ietf.org/doc/draft-ietf-sidrops-bar-sav/06/

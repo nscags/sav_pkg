@@ -39,7 +39,7 @@ bspi_pp_test_configs = [
     # bspi_pp_010,
     # bspi_pp_011,
     # bspi_pp_012,
-    # bspi_pp_013,
+    bspi_pp_013,
     # bspi_pp_014,
     # bspi_pp_015,
     # bspi_pp_016,
@@ -48,6 +48,6 @@ bspi_pp_test_configs = [
     # bspi_pp_019,
     # bspi_pp_020,
     # bspi_pp_021,
-    bspi_pp_022,
-    bspi_pp_023,
+    # bspi_pp_022,
+    # bspi_pp_023,
 ]

@@ -7,7 +7,7 @@ from .scenarios import SAVScenarioBAT
 from .scenarios import SAVScenarioBATAnn
 from .scenarios import SAVScenarioBATASPA
 from .scenarios import SAVScenarioSuperprefix
-from .scenarios import SAVScenarioProviderCone
+from .scenarios import SAVScenarioASL
 from .scenarios import SAVScenarioKnownPeers
 from .scenarios import SAVScenarioMinFP
 
@@ -22,7 +22,7 @@ __all__ = [
     "SAVScenarioBATAnn",
     "SAVScenarioBATASPA",
     "SAVScenarioSuperprefix",
-    "SAVScenarioProviderCone",
+    "SAVScenarioASL",
     "SAVScenarioKnownPeers",
     "SAVScenarioMinFP",
 ]
