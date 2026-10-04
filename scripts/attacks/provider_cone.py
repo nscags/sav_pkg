@@ -25,7 +25,7 @@ from sav_pkg.simulation_engine.policies.sav import (
     EFP_A_wPeers,
     EFP_B,
     BAR_SAV,
-    BAR_SAV_wBSPI,
+    BAR_SAV_Full,
 )
 from sav_pkg.simulation_engine.policies.bgp import (
     BGPExport2Some,
@@ -151,7 +151,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioProviderCone,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_wBSPI,
+                BaseSAVPolicyCls=BAR_SAV_Full,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
                 reflector_default_adopters=True,
                 num_reflectors=1,
@@ -161,7 +161,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioProviderCone,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_wBSPI,
+                BaseSAVPolicyCls=BAR_SAV_Full,
                 AdoptPolicyCls=ASPAFullExport2Some,
                 victim_default_adopters=True,
                 victim_providers_ann=True,

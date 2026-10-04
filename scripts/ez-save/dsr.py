@@ -28,7 +28,7 @@ from sav_pkg.simulation_engine.policies import (
     EFP_A_wPeers,
     EFP_B,
     BAR_SAV,
-    BAR_SAV_wBSPI,
+    BAR_SAV_Full,
     BGPExport2Some,
     BGPFullExport2Some,
     ASPAFullExport2Some,
@@ -181,7 +181,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_wBSPI,
+                BaseSAVPolicyCls=BAR_SAV_Full,
                 num_attackers=0,
                 num_users=5,
                 source_prefix=Prefixes.ANYCAST_SERVER.value,
@@ -194,7 +194,7 @@ def main():
             SAVScenarioConfig(
                 ScenarioCls=SAVScenarioDSR,
                 BasePolicyCls=BGPFull,
-                BaseSAVPolicyCls=BAR_SAV_wBSPI,
+                BaseSAVPolicyCls=BAR_SAV_Full,
                 num_attackers=0,
                 num_users=5,
                 source_prefix=Prefixes.ANYCAST_SERVER.value,

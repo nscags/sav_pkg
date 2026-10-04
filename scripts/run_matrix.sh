@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J bspi_pp_matrix                           # Name of program
+#SBATCH -J bear_sav_matrix                               # Name of program
 #SBATCH -o matrix_%a.out                            # Name of output file (%a = array task id)
 #SBATCH --array=0-31                                # One task per matrix.MATRIX entry
 # #SBATCH -p lo-core                                # Partition (general, lo-core)

@@ -38,13 +38,13 @@ pip install bgpy_pkg
 | `RFC8704` | RFC 8704 Security Recommendations | All |
 | `BAR_SAV` | BAR-SAV | Customers and Peers |
 | `BAR_SAV_PI` | BAR-SAV Provider Interfaces (BAR-SAV-PI) | Providers |
-| `BAR_SAV_wBSPI` | BAR-SAV with BAR-SAV-PI | All |
+| `BAR_SAV_Full` | BAR-SAV-Full (BAR-SAV with BAR-SAV-PI) | All |
 <!-- | `FeasiblePathuRPF_All` | Feasible-path uRPF, applied to all interfaces |
 | `FeasiblePathuRPF_OTC` | Feasible-path uRPF, applied only to customers | -->
 <!-- | `ProcedureX` | Procedure X | Customers and Peers -->
-<!-- | `BAR_SAV_PP` | BAR-SAV++ |
-| `BAR_SAV_PI_PP` | BAR-SAV-PI++ |
-| `BAR_SAV_PP_wBSPI_PP` | BAR-SAV++ w/BSPI++ | -->
+<!-- | `BeAR_SAV_CB` | BeAR-SAV-CB |
+| `BeAR_SAV_PI_A` / `BeAR_SAV_PI_B` | BeAR-SAV-PI (Algorithm A / B) |
+| `BeAR_SAV_A` / `BeAR_SAV_B` | BeAR-SAV (Algorithm A / B) | -->
 
 ---
 

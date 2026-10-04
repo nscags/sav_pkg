@@ -1,4 +1,4 @@
-"""Single source of truth for the bspi_pp/bspp simulation sweep.
+"""Single source of truth for the bear_sav_pi/bear_sav simulation sweep.
 
 Each axis below is a dimension of the experiment matrix. Adding a new value
 to an axis (e.g. a new export-behavior variant) automatically doubles/extends
@@ -16,7 +16,7 @@ from pathlib import Path
 # The heavy imports live inside build_scenario_configs(), which only
 # run_matrix.py (on a compute node) ever calls.
 
-POLICY = ("bspi_pp", "bspp")
+POLICY = ("bear_sav_pi", "bear_sav")
 SCENARIO = ("base", "min_fp", "asl")
 ADOPTS = ("aspa", "asra")
 ALGS = ("a", "b")
@@ -48,17 +48,17 @@ def build_scenario_configs(
         SAVScenarioASL,
     )
     from sav_pkg.simulation_engine.policies.sav import (
-        BAR_SAV_PI_PP_Alg_A,
-        BAR_SAV_PI_PP_Alg_B,
-        BAR_SAV_PP_wBSPI_PP_Alg_A,
-        BAR_SAV_PP_wBSPI_PP_Alg_B,
+        BeAR_SAV_PI_A,
+        BeAR_SAV_PI_B,
+        BeAR_SAV_A,
+        BeAR_SAV_B,
     )
 
     _POLICY_CLS = {
-        ("bspi_pp", "a"): BAR_SAV_PI_PP_Alg_A,
-        ("bspi_pp", "b"): BAR_SAV_PI_PP_Alg_B,
-        ("bspp", "a"): BAR_SAV_PP_wBSPI_PP_Alg_A,
-        ("bspp", "b"): BAR_SAV_PP_wBSPI_PP_Alg_B,
+        ("bear_sav_pi", "a"): BeAR_SAV_PI_A,
+        ("bear_sav_pi", "b"): BeAR_SAV_PI_B,
+        ("bear_sav", "a"): BeAR_SAV_A,
+        ("bear_sav", "b"): BeAR_SAV_B,
     }
     _ADOPT_CLS = {"aspa": ASPAFull, "asra": ASRAFull}
     _SCENARIO_CLS = {

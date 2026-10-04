@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -J bsvsbspp                     # Name of program
-#SBATCH -o log_bsvsbspp.out             # Name of output file
+#SBATCH -J bs_vs_bear_sav_cb                     # Name of program
+#SBATCH -o log_bs_vs_bear_sav_cb.out             # Name of output file
 # #SBATCH -p lo-core                                # Partition (general, lo-core)
 # #SBATCH --time=72:00:00                           # Timeout after 72 hours (lo-core), 12 hours (general)
 #SBATCH -n 40                                       # Asking for cores
@@ -17,4 +17,4 @@ export JOB_COMPLETION_INDEX=0
 export PYTHONHASHSEED=0
 
 # Run the simulation
-python3 ~/sav/sav_pkg/scripts/bspp/bspp_bs.py
+python3 ~/sav/sav_pkg/scripts/bear_sav/bear_sav_bs.py

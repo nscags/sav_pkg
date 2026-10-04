@@ -8,7 +8,7 @@ at a time, and saved to PNG instead of plt.show().
 
 Usage:
     python3 make_graphs.py                       # ~/sav/results -> ~/sav/results/graphs
-    python3 make_graphs.py --root ~/sav/results/bspi_pp --out ~/sav/graphs_bspi_pp
+    python3 make_graphs.py --root ~/sav/results/bear_sav_pi --out ~/sav/graphs_bear_sav_pi
 
 Each data.csv at <root>/.../some/combo/data.csv produces two files at
 <out>/.../some/combo/detection_rate.png and .../false_positive_rate.png,
@@ -89,32 +89,32 @@ policy_config = {
     # "bar_sav_full_aspa_te": {"label": "BAR-SAV w/ Loose (origin w/ ASPA)", "color": "darkred", "linestyle": "-", "marker": "s"},
 
 
-    # BAR-SAV w/PI Variants
-    "bar_sav_full": {"label": "BAR-SAV w/ BSPI", "color": "goldenrod", "linestyle": "-", "marker": "o"},
-    # "bar_sav_full": {"label": "BAR-SAV w/ BSPI \n(w/o ROA for edge server)", "color": "goldenrod", "linestyle": "-", "marker": "o"},
-    # "bar_sav_full": {"label": "BAR-SAV w/ BSPI \n(origin w/o ASPA)", "color": "goldenrod", "linestyle": "-", "marker": "o"},
-    # "bar_sav_full_roa": {"label": "BAR-SAV w/ BSPI \n(w/ ROA for edge server)", "color": "tab:cyan", "linestyle": ":", "marker": "d"},
-    # "bar_sav_full_aspa": {"label": "BAR-SAV w/ BSPI \n(origin w/ ASPA)", "color": "tab:pink", "linestyle": ":", "marker": "p"},
-    # "bar_sav_full_aspa_te": {"label": "BAR-SAV w/ BSPI (origin w/ ASPA)", "color": "tab:pink", "linestyle": ":", "marker": "p"},
-    # "bar_sav_full_aspa_e2s": {"label": "BAR-SAV w/ BSPI (origin w/ ASPA)", "color": "tab:pink", "linestyle": ":", "marker": "p"},
+    # BAR-SAV-Full Variants
+    "bar_sav_full": {"label": "BAR-SAV-Full", "color": "goldenrod", "linestyle": "-", "marker": "o"},
+    # "bar_sav_full": {"label": "BAR-SAV-Full \n(w/o ROA for edge server)", "color": "goldenrod", "linestyle": "-", "marker": "o"},
+    # "bar_sav_full": {"label": "BAR-SAV-Full \n(origin w/o ASPA)", "color": "goldenrod", "linestyle": "-", "marker": "o"},
+    # "bar_sav_full_roa": {"label": "BAR-SAV-Full \n(w/ ROA for edge server)", "color": "tab:cyan", "linestyle": ":", "marker": "d"},
+    # "bar_sav_full_aspa": {"label": "BAR-SAV-Full \n(origin w/ ASPA)", "color": "tab:pink", "linestyle": ":", "marker": "p"},
+    # "bar_sav_full_aspa_te": {"label": "BAR-SAV-Full (origin w/ ASPA)", "color": "tab:pink", "linestyle": ":", "marker": "p"},
+    # "bar_sav_full_aspa_e2s": {"label": "BAR-SAV-Full (origin w/ ASPA)", "color": "tab:pink", "linestyle": ":", "marker": "p"},
 
-    "asra_0": {"label": "BAR-SAV++ (0% ASRA)", "color": "tab:red", "linestyle": "-", "marker": "D"},
-    "asra_10": {"label": "BAR-SAV++ (10% ASRA)", "color": "tab:blue", "linestyle": "--", "marker": "o"},
-    "asra_20": {"label": "BAR-SAV++ (20% ASRA)", "color": "tab:green", "linestyle": "-.", "marker": "p"},
-    "asra_50": {"label": "BAR-SAV++ (50% ASRA)", "color": "tab:pink", "linestyle": ":", "marker": "s"},
-    "asra_80": {"label": "BAR-SAV++ (80% ASRA)", "color": "tab:purple", "linestyle": "-.", "marker": "*"},
-    "asra_99": {"label": "BAR-SAV++ (99% ASRA)", "color": "tab:orange", "linestyle": "--", "marker": "d"},
+    "asra_0": {"label": "0% ASRA adoption", "color": "tab:red", "linestyle": "-", "marker": "D"},
+    "asra_10": {"label": "10% ASRA adoption", "color": "tab:blue", "linestyle": "--", "marker": "o"},
+    "asra_20": {"label": "20% ASRA adoption", "color": "tab:green", "linestyle": "-.", "marker": "p"},
+    "asra_50": {"label": "50% ASRA adoption", "color": "tab:pink", "linestyle": ":", "marker": "s"},
+    "asra_80": {"label": "80% ASRA adoption", "color": "tab:purple", "linestyle": "-.", "marker": "*"},
+    "asra_99": {"label": "99% ASRA adoption", "color": "tab:orange", "linestyle": "--", "marker": "d"},
 
-    "aspa_0": {"label": "BAR-SAV++ (0% ASPA)", "color": "tab:red", "linestyle": "-", "marker": "D"},
-    "aspa_10": {"label": "BAR-SAV++ (10% ASPA)", "color": "tab:blue", "linestyle": "--", "marker": "o"},
-    "aspa_20": {"label": "BAR-SAV++ (20% ASPA)", "color": "tab:green", "linestyle": "-.", "marker": "p"},
-    "aspa_50": {"label": "BAR-SAV++ (50% ASPA)", "color": "tab:pink", "linestyle": ":", "marker": "s"},
-    "aspa_80": {"label": "BAR-SAV++ (80% ASPA)", "color": "tab:purple", "linestyle": "-.", "marker": "*"},
-    "aspa_99": {"label": "BAR-SAV++ (99% ASPA)", "color": "tab:orange", "linestyle": "--", "marker": "d"},
+    "aspa_0": {"label": "0% ASPA adoption", "color": "tab:red", "linestyle": "-", "marker": "D"},
+    "aspa_10": {"label": "10% ASPA adoption", "color": "tab:blue", "linestyle": "--", "marker": "o"},
+    "aspa_20": {"label": "20% ASPA adoption", "color": "tab:green", "linestyle": "-.", "marker": "p"},
+    "aspa_50": {"label": "50% ASPA adoption", "color": "tab:pink", "linestyle": ":", "marker": "s"},
+    "aspa_80": {"label": "80% ASPA adoption", "color": "tab:purple", "linestyle": "-.", "marker": "*"},
+    "aspa_99": {"label": "99% ASPA adoption", "color": "tab:orange", "linestyle": "--", "marker": "d"},
 
-    # "asra": {"label": "BAR-SAV-PI++ ASRA", "color": "tab:red", "linestyle": "-", "marker": "D"},
-    # "aspa": {"label": "BAR-SAV-PI++ ASPA", "color": "tab:blue", "linestyle": "-", "marker": "o"},
-    # "bgp": {"label": "BAR-SAV-PI++ BGP", "color": "tab:green", "linestyle": "-", "marker": "p"},
+    # "asra": {"label": "BeAR-SAV-PI ASRA", "color": "tab:red", "linestyle": "-", "marker": "D"},
+    # "aspa": {"label": "BeAR-SAV-PI ASPA", "color": "tab:blue", "linestyle": "-", "marker": "o"},
+    # "bgp": {"label": "BeAR-SAV-PI BGP", "color": "tab:green", "linestyle": "-", "marker": "p"},
 
     "other": {"label": "Other Policies", "color": "black", "linestyle": "-", "marker": "x"},
 }
@@ -141,16 +141,16 @@ legend_order = [
     "EFP-B",
 
     "BAR-SAV w/ Loose",
-    "BAR-SAV w/ BSPI",
+    "BAR-SAV-Full",
 
-    "BAR-SAV w/ BSPI (origin w/o ASPA)",
+    "BAR-SAV-Full (origin w/o ASPA)",
     "BAR-SAV w/ Loose (origin w/o ASPA)",
-    "BAR-SAV w/ BSPI (origin w/ ASPA)",
+    "BAR-SAV-Full (origin w/ ASPA)",
     "BAR-SAV w/ Loose (origin w/ ASPA)",
 
-    "BAR-SAV w/ BSPI (w/o ROA for edge server)",
+    "BAR-SAV-Full (w/o ROA for edge server)",
     "BAR-SAV w/ Loose (w/o ROA for edge server)",
-    "BAR-SAV w/ BSPI (w/ ROA for edge server)",
+    "BAR-SAV-Full (w/ ROA for edge server)",
     "BAR-SAV w/ Loose (w/ ROA for edge server)",
 
     "Loose",
@@ -288,10 +288,10 @@ def make_graphs_for_csv(csv_path: Path, graphs_root: Path, results_root: Path) -
 
 # Subdirectories of --root that are searched for data.csv
 SEARCH_DIRS = (
-    "bspi_pp/alg_a",
-    "bspi_pp/alg_b",
-    "bspp/alg_a",
-    "bspp/alg_b",
+    "bear_sav_pi/alg_a",
+    "bear_sav_pi/alg_b",
+    "bear_sav/alg_a",
+    "bear_sav/alg_b",
 )
 
 
@@ -316,8 +316,8 @@ def main():
     root = args.root.expanduser().resolve()
     graphs_root = (args.out.expanduser() if args.out else root.parent / "graphs").resolve()
 
-    # Only the current matrix results; everything else under bspp/ and
-    # bspi_pp/ is legacy
+    # Only the current matrix results; everything else under bear_sav/ and
+    # bear_sav_pi/ is legacy
     csv_files = sorted(
         p
         for search_dir in SEARCH_DIRS

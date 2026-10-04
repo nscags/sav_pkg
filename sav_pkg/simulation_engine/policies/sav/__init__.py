@@ -10,13 +10,13 @@ from .efp_b import EFP_B
 from .rfc8704 import RFC8704
 from .bar_sav import BAR_SAV
 from .bar_sav_pi import BAR_SAV_PI
-from .bar_sav_w_bspi import BAR_SAV_wBSPI
+from .bar_sav_full import BAR_SAV_Full
 from .procedure_x import ProcedureX
-from .bar_sav_pp import BAR_SAV_PP
-from .bar_sav_pi_pp_alg_a import BAR_SAV_PI_PP_Alg_A
-from .bar_sav_pi_pp_alg_b import BAR_SAV_PI_PP_Alg_B
-from .bar_sav_pp_w_bspi_pp_alg_a import BAR_SAV_PP_wBSPI_PP_Alg_A
-from .bar_sav_pp_w_bspi_pp_alg_b import BAR_SAV_PP_wBSPI_PP_Alg_B
+from .bear_sav_cb import BeAR_SAV_CB
+from .bear_sav_pi_a import BeAR_SAV_PI_A
+from .bear_sav_pi_b import BeAR_SAV_PI_B
+from .bear_sav_a import BeAR_SAV_A
+from .bear_sav_b import BeAR_SAV_B
 
 
 __all__ = [
@@ -32,11 +32,11 @@ __all__ = [
     "RFC8704",
     "BAR_SAV",
     "BAR_SAV_PI",
-    "BAR_SAV_wBSPI",
+    "BAR_SAV_Full",
     "ProcedureX",
-    "BAR_SAV_PP",
-    "BAR_SAV_PI_PP_Alg_A",
-    "BAR_SAV_PI_PP_Alg_B",
-    "BAR_SAV_PP_wBSPI_PP_Alg_A",
-    "BAR_SAV_PP_wBSPI_PP_Alg_B",
+    "BeAR_SAV_CB",
+    "BeAR_SAV_PI_A",
+    "BeAR_SAV_PI_B",
+    "BeAR_SAV_A",
+    "BeAR_SAV_B",
 ]

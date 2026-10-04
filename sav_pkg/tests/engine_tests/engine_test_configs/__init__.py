@@ -9,8 +9,8 @@ from .efp_a_w_peers import efp_a_w_peers_test_configs
 from .efp_b import efp_b_test_configs
 from .bar_sav import bar_sav_test_configs
 from .bspi import bspi_test_configs
-from .bar_sav_pp import bar_sav_pp_test_configs
-from .bspi_pp import bspi_pp_test_configs
+from .bear_sav_cb import bear_sav_cb_test_configs
+from .bear_sav_pi import bear_sav_pi_test_configs
 
 from .dsr import dsr_test_configs
 
@@ -25,8 +25,8 @@ engine_test_configs = (
     # + efp_b_test_configs 
     # + bar_sav_test_configs 
     # + bspi_test_configs
-    # + bar_sav_pp_test_configs 
-    bspi_pp_test_configs
+    # + bear_sav_cb_test_configs 
+    bear_sav_pi_test_configs
     # + dsr_test_configs
 )
 

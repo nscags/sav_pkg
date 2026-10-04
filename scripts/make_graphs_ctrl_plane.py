@@ -140,10 +140,10 @@ def make_graph_for_csv(csv_path: Path, graphs_root: Path, results_root: Path) ->
 
 # Subdirectories of --root that are searched for data.csv
 SEARCH_DIRS = (
-    "bspi_pp/alg_a",
-    "bspi_pp/alg_b",
-    "bspp/alg_a",
-    "bspp/alg_b",
+    "bear_sav_pi/alg_a",
+    "bear_sav_pi/alg_b",
+    "bear_sav/alg_a",
+    "bear_sav/alg_b",
 )
 
 
@@ -168,8 +168,8 @@ def main():
     root = args.root.expanduser().resolve()
     graphs_root = (args.out.expanduser() if args.out else root.parent / "graphs").resolve()
 
-    # Only the current matrix results; everything else under bspp/ and
-    # bspi_pp/ is legacy
+    # Only the current matrix results; everything else under bear_sav/ and
+    # bear_sav_pi/ is legacy
     csv_files = sorted(
         p
         for search_dir in SEARCH_DIRS
