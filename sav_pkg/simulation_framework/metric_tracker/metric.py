@@ -101,9 +101,19 @@ class Metric:
                     outcome_by_origin[origin] = outcome
 
         if self.metric_key.outcome == Outcomes.DETECTION_RATE:
-            for outcome in outcome_by_origin.values():
-                if outcome in [Outcomes.TRUE_POSITIVE.value, Outcomes.A_FILTERED_ON_PATH.value]:
-                    self._numerator += 1
+            # The attack is detected at this reflector only if every attacker
+            # that reaches it is detected (SAVScenarioASL has one attacker per
+            # attempted location; other scenarios have one attacker)
+            connected = [
+                outcome for origin, outcome in outcome_by_origin.items()
+                if origin in scenario.attacker_asns
+                and outcome != Outcomes.DISCONNECTED.value
+            ]
+            if connected and all(
+                outcome in [Outcomes.TRUE_POSITIVE.value, Outcomes.A_FILTERED_ON_PATH.value]
+                for outcome in connected
+            ):
+                self._numerator += 1
         elif self.metric_key.outcome == Outcomes.FALSE_POSITIVE_RATE:
             for outcome in outcome_by_origin.values():
                 if outcome in [Outcomes.FALSE_POSITIVE.value, Outcomes.V_FILTERED_ON_PATH.value]:
@@ -135,7 +145,8 @@ class Metric:
                 # For Attacker and Victim success we ignore disconnected reflectors
                 attacker_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.attacker_asns]
                 if self.metric_key.outcome == Outcomes.DETECTION_RATE:
-                    if any(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
+                    # skip the reflector only if no attacker reaches it
+                    if all(outcome == Outcomes.DISCONNECTED.value for outcome in attacker_outcomes):
                         return False
                 victim_outcomes = [outcome for origin, outcome in relevant_entries if origin in scenario.victim_asns]
                 if self.metric_key.outcome == Outcomes.FALSE_POSITIVE_RATE:

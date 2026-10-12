@@ -38,16 +38,6 @@ class ASNs(YamlAbleEnum):
     VICTIM: int = 777
     REFLECTOR: int = 555
 
-class ASLLocations(YamlAbleEnum):
-    """Attacker Selected Location placements, relative to the validating AS v"""
-
-    # (1) attacker is in v's provider cone, its path to v is all downhill
-    PROVIDER_CONE: str = "provider_cone"
-    # (2a) attacker is a direct customer of t, t is in v's provider cone
-    CUSTOMER_OF_PROVIDER_CONE: str = "customer_of_provider_cone"
-    # (2b) attacker is a direct customer of t, t peers with w in v's provider cone
-    CUSTOMER_OF_PEER: str = "customer_of_peer"
-
 
 class Interfaces(YamlAbleEnum):
     """Interfaces to apply SAV policy"""

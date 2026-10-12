@@ -5,6 +5,7 @@ to an axis (e.g. a new export-behavior variant) automatically doubles/extends
 MATRIX without touching run_matrix.py or run_matrix.sh.
 """
 import itertools
+from datetime import datetime
 from pathlib import Path
 
 # NOTE: bgpy/sav_pkg are deliberately NOT imported at module scope.
@@ -17,7 +18,9 @@ from pathlib import Path
 # run_matrix.py (on a compute node) ever calls.
 
 POLICY = ("bear_sav_pi", "bear_sav")
-SCENARIO = ("base", "min_fp", "asl")
+# *_wp = "with paths": the SAV policies also use the precomputed background
+# routes in ROUTES_DIR (every non-IXP AS announcing)
+SCENARIO = ("base", "min_fp", "asl", "base_wp", "asl_wp")
 ADOPTS = ("aspa", "asra")
 ALGS = ("a", "b")
 SPOOFING_AS = (True, False)
@@ -27,6 +30,19 @@ NUM_REFLECTORS = 5
 NUM_TRIALS = 100
 
 EXPORT_POLICY = "e2a"
+
+# Every simulation runs on this one CAIDA snapshot (serial-2 20260901, cached
+# by bgpy as CAIDAASGraphCollector_2026.09.24.txt in CAIDA_DIR), the graph the
+# background routes were precomputed on. A fixed cache dir also avoids bgpy's
+# per-day cache, which array tasks race on.
+CAIDA_DL_TIME = datetime(2026, 9, 24)
+CAIDA_DIR = "~/sav/caida"
+ROUTES_DIR = "~/sav/routes/caida_20260901"
+
+
+def num_reflectors(scenario: str) -> int:
+    # ASL places the attackers relative to a single reflector
+    return 1 if scenario.startswith("asl") else NUM_REFLECTORS
 
 
 def build_scenario_configs(
@@ -65,13 +81,14 @@ def build_scenario_configs(
         "base": SAVScenario,
         "min_fp": SAVScenarioMinFP,
         "asl": SAVScenarioASL,
+        "base_wp": SAVScenario,
+        "asl_wp": SAVScenarioASL,
     }
 
     ScenarioCls = _SCENARIO_CLS[scenario]
+    routes_dir = ROUTES_DIR if scenario.endswith("_wp") else None
     BaseSAVPolicyCls = _POLICY_CLS[(policy, alg)]
     AdoptPolicyCls = _ADOPT_CLS[adopt]
-    # ASL places the attacker relative to a single validating AS
-    num_reflectors = 1 if scenario == "asl" else NUM_REFLECTORS
 
     configs = []
     for percent in PERCENTS:
@@ -83,13 +100,40 @@ def build_scenario_configs(
                 AdoptPolicyCls=AdoptPolicyCls,
                 ctrl_plane_percent_adoption=percent,
                 victim_subcategory_attr=ASGroups.MULTIHOMED.value,
-                num_reflectors=num_reflectors,
+                num_reflectors=num_reflectors(scenario),
                 reflector_default_adopters=True,
                 attacker_broadcast=attacker_broadcast,
                 scenario_label=f"{adopt}_{round(percent * 100)}",
+                routes_dir=routes_dir,
             )
         )
     return tuple(configs)
+
+
+def as_graph_constructor_kwargs():
+    """bgpy's default Simulation kwargs, but pinned to CAIDA_DL_TIME in CAIDA_DIR"""
+
+    from frozendict import frozendict
+
+    return frozendict(
+        {
+            "as_graph_collector_kwargs": frozendict(
+                {
+                    "dl_time": CAIDA_DL_TIME,
+                    "cache_dir": Path(CAIDA_DIR).expanduser(),
+                }
+            ),
+            "as_graph_kwargs": frozendict(
+                {
+                    "store_customer_cone_size": True,
+                    "store_customer_cone_asns": False,
+                    "store_provider_cone_size": False,
+                    "store_provider_cone_asns": False,
+                }
+            ),
+            "tsv_path": None,
+        }
+    )
 
 
 def output_dir(
@@ -98,13 +142,33 @@ def output_dir(
     adopt: str,
     alg: str,
     attacker_broadcast: bool,
+    num_trials: int = NUM_TRIALS,
 ) -> Path:
-    # policy / algorithm / export_policy / scenario / attacker_model / adopt
+    # policy / algorithm / export_policy / scenario / attacker_model / adopt /
+    # reflectors_trials
     spoofing_dir = "spoofing_as" if attacker_broadcast else "spoofing_host"
     return Path(
         f"~/sav/results/{policy}/alg_{alg}/{EXPORT_POLICY}/"
-        f"{scenario}/{spoofing_dir}/{adopt}"
+        f"{scenario}/{spoofing_dir}/{adopt}/"
+        f"{num_reflectors(scenario)}r_{num_trials}t"
     ).expanduser()
+
+
+def claim_output_dir(base: Path) -> Path:
+    """
+    Creates and returns base, or base_1, base_2, ... if it already exists
+
+    mkdir with exist_ok=False is atomic, so two runs of the same combo
+    started at the same time still get different directories.
+    """
+    candidate, n = base, 0
+    while True:
+        try:
+            candidate.mkdir(parents=True, exist_ok=False)
+            return candidate
+        except FileExistsError:
+            n += 1
+            candidate = base.with_name(f"{base.name}_{n}")
 
 
 def _build_matrix() -> list[dict]:

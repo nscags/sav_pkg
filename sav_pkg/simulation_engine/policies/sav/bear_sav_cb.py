@@ -1,7 +1,11 @@
 import ipaddress
+from collections import defaultdict
+from itertools import chain
 from typing import TYPE_CHECKING
 
 from bgpy.simulation_engine import ASPA, ASRA
+
+from sav_pkg.simulation_engine.background_routes import background_ribs_in, scenario_cache
 
 from .base_sav_policy import BaseSAVPolicy
 
@@ -67,6 +71,7 @@ class BeAR_SAV_CB(BaseSAVPolicy):
     ):
         i = 0
         z_i = [{prev_hop.asn}]
+        successors = BeAR_SAV_CB._get_path_successors(as_obj, engine, scenario)
 
         while True:
             i += 1
@@ -89,16 +94,8 @@ class BeAR_SAV_CB(BaseSAVPolicy):
             # unique AS_PATHs in Adj-RIBs-In of all interfaces at the BGP
             # speaker computing the SAV filter."
             b_i = set()
-            for prefix_dict in as_obj.policy.ribs_in.data.values():
-                for ann_info in prefix_dict.values():
-                    if as_obj.policy._valid_ann(
-                        ann_info.unprocessed_ann, ann_info.recv_relationship
-                    ):
-                        ann = ann_info.unprocessed_ann
-                        as_path = ann.as_path
-                        for j in range(len(as_path) - 1):
-                            if as_path[j] in z_i[i - 1]:
-                                b_i.add(as_path[j + 1])
+            for asn in z_i[i - 1]:
+                b_i.update(successors.get(asn, ()))
 
             # "Form the union of AS-sets A(i) and B(i) and call it AS-set C.
             # From AS-set C, remove any ASNs that are present in Z(j), for j=1
@@ -144,3 +141,35 @@ class BeAR_SAV_CB(BaseSAVPolicy):
         q = q1.union(q2)
 
         return d, q
+
+    @staticmethod
+    def _get_path_successors(
+        as_obj: "AS",
+        engine: "SimulationEngine",
+        scenario: "SAVScenario",
+    ) -> dict[int, set[int]]:
+        """
+        ASN -> every ASN right after it in a valid AS_PATH in the Adj-RIBs-In
+        of all interfaces: the scenario's own announcements, plus the
+        precomputed background routes if the scenario config sets routes_dir.
+
+        Fixed for as_obj once the scenario has propagated, so built once.
+        """
+        cache = scenario_cache(scenario)
+        cache_key = ("bear_sav_cb_successors", as_obj.asn, engine.ready_to_run_round)
+        if cache_key not in cache:
+            scenario_routes = (
+                (neighbor_asn, ann_info.unprocessed_ann, ann_info.recv_relationship)
+                for neighbor_asn, prefix_dict in as_obj.policy.ribs_in.data.items()
+                for ann_info in prefix_dict.values()
+            )
+            successors: dict[int, set[int]] = defaultdict(set)
+            for _, ann, recv_relationship in chain(
+                scenario_routes, background_ribs_in(as_obj, engine, scenario)
+            ):
+                if as_obj.policy._valid_ann(ann, recv_relationship):
+                    as_path = ann.as_path
+                    for j in range(len(as_path) - 1):
+                        successors[as_path[j]].add(as_path[j + 1])
+            cache[cache_key] = successors
+        return cache[cache_key]
